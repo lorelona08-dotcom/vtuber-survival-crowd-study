@@ -1,0 +1,4676 @@
+{
+  "revision": {
+    "runtimeCommit": "44ce26c00a6e4e02579aff71969a76d64b533c1c",
+    "build": "mixed-r7",
+    "origin": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/",
+    "upstream": "1ca4d9f926535de42690583d28cb931c10e718b8",
+    "verifiedFiles": [
+      "app.js",
+      "game/crowd_aura.gd",
+      "game/crowd_renderer.gd",
+      "game/crowd_target.gd",
+      "game/crowd_worker.js",
+      "game/finish_wave.gd",
+      "game/first_use.gd",
+      "game/hostile_shot_batch.gd",
+      "game/mixed_roster.gd",
+      "game/native_boss.gd",
+      "game/normal_game.gd",
+      "game/normal_scene.gd",
+      "game/normal_scene.tscn",
+      "game/optimized_game.gd",
+      "game/render_pipeline.js",
+      "game/review_scene.gd",
+      "game/review_scene.tscn",
+      "game/stock_debug_game.gd",
+      "game/straight_shots.js",
+      "game/stress_aura.gd",
+      "game/stress_game.gd",
+      "game/swarm.js",
+      "game/wall_sparks.gd",
+      "game/wall_sparks.js",
+      "index.html",
+      "pack.js",
+      "style.css"
+    ],
+    "verifiedUtc": "2026-11-20T04:46:31.249872+00:00"
+  },
+  "environment": {
+    "cpu": "Ryzen 7 9800X3D",
+    "displayRefreshHz": 239,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5080 (0x00002C02) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "visibility": "visible",
+    "canvas": [
+      1280,
+      720
+    ],
+    "view": [
+      1280,
+      900
+    ],
+    "browser": "158.0.8127.36"
+  },
+  "measurement": "Public GitHub Pages, visible Chrome windows, normal network requests, no frame throttling. P95/P99 and max are milliseconds. A crowd image is a newly presented worker result.",
+  "runs": {
+    "moving-10k": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=100000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:40:29.338356+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 2,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 60,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 3164,
+          "wallSeconds": 40.018,
+          "browserFps": 79.1,
+          "p50ms": 12.5,
+          "p95ms": 20.8,
+          "p99ms": 29.2,
+          "maxMs": 45.9,
+          "over33ms": 10,
+          "over50ms": 0,
+          "actualCrowdFrames": {
+            "frames": 2303,
+            "wallSeconds": 40.005,
+            "p50ms": 16.4,
+            "p95ms": 30.4,
+            "p99ms": 37.3,
+            "maxMs": 89.4,
+            "over33ms": 54,
+            "over50ms": 4,
+            "hz": 57.6
+          },
+          "aliveRange": [
+            100000,
+            100007
+          ],
+          "visibleRange": [
+            96844,
+            100007
+          ],
+          "submittedBodiesRange": [
+            13286,
+            23843
+          ],
+          "updatedRange": [
+            92598,
+            100007
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            10000,
+            10000
+          ],
+          "manualProjectilesRange": [
+            9893,
+            9958
+          ],
+          "manualSubmittedRange": [
+            4495,
+            9135
+          ],
+          "manualHiddenCopiesRange": [
+            788,
+            5408
+          ],
+          "bossProjectilesRange": [
+            42,
+            106
+          ],
+          "shotFloorRange": [
+            10000,
+            10000
+          ],
+          "shotFloorTicksRange": [
+            31,
+            2431
+          ],
+          "shotFloorMinTickRange": [
+            10000,
+            10000
+          ],
+          "zonesRange": [
+            0,
+            24
+          ],
+          "nativeEffectsRange": [
+            3,
+            118
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            16
+          ],
+          "heartContactsRange": [
+            0,
+            3
+          ],
+          "nodesRange": [
+            1244,
+            1992
+          ],
+          "hpRange": [
+            49,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              3558,
+              6732
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              3136,
+              6733
+            ],
+            "bookworm_s": [
+              3445,
+              6483
+            ],
+            "chunsik": [
+              20,
+              23
+            ],
+            "cookie_s": [
+              3241,
+              6383
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              4794,
+              6863
+            ],
+            "gaetteok": [
+              5041,
+              6986
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              3613,
+              6417
+            ],
+            "jjorang": [
+              6575,
+              9960
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              19,
+              24
+            ],
+            "kyupok": [
+              26,
+              30
+            ],
+            "mimic_s": [
+              6239,
+              8321
+            ],
+            "motaku": [
+              6088,
+              7447
+            ],
+            "pochikun": [
+              6672,
+              9035
+            ],
+            "sentry": [
+              6732,
+              11660
+            ],
+            "sodasi": [
+              6733,
+              9356
+            ],
+            "swipsaekki": [
+              6732,
+              14018
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              3278,
+              6733
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 2400,
+          "simTimeDelta": 40.0,
+          "killsDelta": 465963,
+          "damageDelta": 6317030.9726,
+          "bossShotsFiredDelta": 1357,
+          "manualShotsFiredDelta": 199567,
+          "manualShotHitsDelta": 37200,
+          "manualShotExpiredDelta": 41493,
+          "manualShotBlockedDelta": 120863,
+          "hitsTakenDelta": 96,
+          "physicsWallRatio": 0.999,
+          "physicsBetweenSamplesRatio": 1.0,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 170,
+              "transitions": 35,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 200,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 60,
+              "transitions": 0,
+              "zones": 24
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 22,
+              "zones": 21
+            },
+            "daebuntang": {
+              "shots": 252,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 25,
+              "zones": 72
+            },
+            "glitch": {
+              "shots": 120,
+              "summons": 0,
+              "transitions": 20,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 629,
+              "summons": 0,
+              "transitions": 21,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 206,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 20
+            },
+            "stairs": {
+              "shots": 100,
+              "summons": 0,
+              "transitions": 29,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 995,
+            "expired": 369751,
+            "impacts": 123582,
+            "peakActive": 3771,
+            "spawned": 370746,
+            "submitted": 928
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 156
+        }
+      ]
+    },
+    "standing-30k": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=100000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:41:16.590574+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 2,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 60,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 1095,
+          "wallSeconds": 16.997,
+          "browserFps": 64.4,
+          "p50ms": 16.7,
+          "p95ms": 20.9,
+          "p99ms": 29.2,
+          "maxMs": 41.6,
+          "over33ms": 2,
+          "over50ms": 0,
+          "actualCrowdFrames": {
+            "frames": 987,
+            "wallSeconds": 16.983,
+            "p50ms": 16.4,
+            "p95ms": 29.7,
+            "p99ms": 33.5,
+            "maxMs": 40.1,
+            "over33ms": 11,
+            "over50ms": 0,
+            "hz": 58.1
+          },
+          "aliveRange": [
+            100000,
+            100009
+          ],
+          "visibleRange": [
+            99954,
+            100008
+          ],
+          "submittedBodiesRange": [
+            14618,
+            23843
+          ],
+          "updatedRange": [
+            93376,
+            100009
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            30000,
+            30000
+          ],
+          "manualProjectilesRange": [
+            29887,
+            29950
+          ],
+          "manualSubmittedRange": [
+            10013,
+            21810
+          ],
+          "manualHiddenCopiesRange": [
+            8110,
+            19902
+          ],
+          "bossProjectilesRange": [
+            49,
+            113
+          ],
+          "shotFloorRange": [
+            30000,
+            30000
+          ],
+          "shotFloorTicksRange": [
+            3,
+            1021
+          ],
+          "shotFloorMinTickRange": [
+            30000,
+            30000
+          ],
+          "zonesRange": [
+            0,
+            21
+          ],
+          "nativeEffectsRange": [
+            1,
+            117
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            7
+          ],
+          "heartContactsRange": [
+            0,
+            0
+          ],
+          "nodesRange": [
+            1246,
+            1772
+          ],
+          "hpRange": [
+            48,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              4686,
+              6732
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              4198,
+              6733
+            ],
+            "bookworm_s": [
+              4696,
+              6483
+            ],
+            "chunsik": [
+              20,
+              20
+            ],
+            "cookie_s": [
+              4928,
+              6383
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              5752,
+              6862
+            ],
+            "gaetteok": [
+              5922,
+              7017
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              5336,
+              6417
+            ],
+            "jjorang": [
+              6581,
+              7489
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              19,
+              24
+            ],
+            "kyupok": [
+              26,
+              30
+            ],
+            "mimic_s": [
+              6350,
+              6803
+            ],
+            "motaku": [
+              6164,
+              6966
+            ],
+            "pochikun": [
+              6661,
+              8452
+            ],
+            "sentry": [
+              6732,
+              9619
+            ],
+            "sodasi": [
+              6733,
+              9358
+            ],
+            "swipsaekki": [
+              6732,
+              11722
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              4482,
+              6733
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 1018,
+          "simTimeDelta": 16.9667,
+          "killsDelta": 219070,
+          "damageDelta": 2942353.1599,
+          "bossShotsFiredDelta": 563,
+          "manualShotsFiredDelta": 272781,
+          "manualShotHitsDelta": 67769,
+          "manualShotExpiredDelta": 41646,
+          "manualShotBlockedDelta": 163355,
+          "hitsTakenDelta": 41,
+          "physicsWallRatio": 0.997,
+          "physicsBetweenSamplesRatio": 1.001,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 70,
+              "transitions": 16,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 90,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 28,
+              "transitions": 0,
+              "zones": 8
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 10,
+              "zones": 9
+            },
+            "daebuntang": {
+              "shots": 126,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 12,
+              "zones": 32
+            },
+            "glitch": {
+              "shots": 56,
+              "summons": 0,
+              "transitions": 8,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 291,
+              "summons": 0,
+              "transitions": 9,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 100,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 5
+            },
+            "stairs": {
+              "shots": 40,
+              "summons": 0,
+              "transitions": 13,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 5586,
+            "expired": 497787,
+            "impacts": 167791,
+            "peakActive": 10181,
+            "spawned": 503373,
+            "submitted": 5094
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 66
+        }
+      ]
+    },
+    "moving-30k": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=100000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:41:40.967632+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 2,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 60,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 1481,
+          "wallSeconds": 24.026,
+          "browserFps": 61.6,
+          "p50ms": 16.7,
+          "p95ms": 20.9,
+          "p99ms": 29.2,
+          "maxMs": 54.1,
+          "over33ms": 5,
+          "over50ms": 1,
+          "actualCrowdFrames": {
+            "frames": 1377,
+            "wallSeconds": 24.023,
+            "p50ms": 16.4,
+            "p95ms": 28.9,
+            "p99ms": 37.6,
+            "maxMs": 86.5,
+            "over33ms": 20,
+            "over50ms": 3,
+            "hz": 57.3
+          },
+          "aliveRange": [
+            100000,
+            100009
+          ],
+          "visibleRange": [
+            99295,
+            100009
+          ],
+          "submittedBodiesRange": [
+            15087,
+            24015
+          ],
+          "updatedRange": [
+            92318,
+            100009
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            30000,
+            30000
+          ],
+          "manualProjectilesRange": [
+            29886,
+            29980
+          ],
+          "manualSubmittedRange": [
+            9782,
+            22279
+          ],
+          "manualHiddenCopiesRange": [
+            7664,
+            20130
+          ],
+          "bossProjectilesRange": [
+            19,
+            113
+          ],
+          "shotFloorRange": [
+            30000,
+            30000
+          ],
+          "shotFloorTicksRange": [
+            3,
+            1443
+          ],
+          "shotFloorMinTickRange": [
+            30000,
+            30000
+          ],
+          "zonesRange": [
+            0,
+            24
+          ],
+          "nativeEffectsRange": [
+            0,
+            119
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            10
+          ],
+          "heartContactsRange": [
+            0,
+            1
+          ],
+          "nodesRange": [
+            1246,
+            1934
+          ],
+          "hpRange": [
+            45.4,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              4883,
+              6732
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              4363,
+              6733
+            ],
+            "bookworm_s": [
+              4885,
+              6483
+            ],
+            "chunsik": [
+              20,
+              23
+            ],
+            "cookie_s": [
+              4744,
+              6383
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              5659,
+              6864
+            ],
+            "gaetteok": [
+              5786,
+              6986
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              5165,
+              6417
+            ],
+            "jjorang": [
+              6580,
+              7762
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              19,
+              24
+            ],
+            "kyupok": [
+              26,
+              30
+            ],
+            "mimic_s": [
+              6344,
+              6738
+            ],
+            "motaku": [
+              6042,
+              6967
+            ],
+            "pochikun": [
+              6461,
+              7990
+            ],
+            "sentry": [
+              6732,
+              9868
+            ],
+            "sodasi": [
+              6733,
+              9627
+            ],
+            "swipsaekki": [
+              6732,
+              12319
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              4600,
+              6733
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 1440,
+          "simTimeDelta": 24.0,
+          "killsDelta": 317649,
+          "damageDelta": 4293186.5855,
+          "bossShotsFiredDelta": 813,
+          "manualShotsFiredDelta": 366398,
+          "manualShotHitsDelta": 67084,
+          "manualShotExpiredDelta": 65593,
+          "manualShotBlockedDelta": 233701,
+          "hitsTakenDelta": 57,
+          "physicsWallRatio": 0.998,
+          "physicsBetweenSamplesRatio": 1.001,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 110,
+              "transitions": 23,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 120,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 40,
+              "transitions": 0,
+              "zones": 16
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 15,
+              "zones": 15
+            },
+            "daebuntang": {
+              "shots": 168,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 16,
+              "zones": 45
+            },
+            "glitch": {
+              "shots": 80,
+              "summons": 0,
+              "transitions": 12,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 381,
+              "summons": 0,
+              "transitions": 13,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 144,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 10
+            },
+            "stairs": {
+              "shots": 60,
+              "summons": 0,
+              "transitions": 19,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 5298,
+            "expired": 709113,
+            "impacts": 238137,
+            "peakActive": 10199,
+            "spawned": 714411,
+            "submitted": 4848
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 93
+        }
+      ]
+    },
+    "three-mixed-casts": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=100000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:42:11.726366+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 2,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 60,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 188,
+          "wallSeconds": 3.013,
+          "browserFps": 62.4,
+          "p50ms": 16.7,
+          "p95ms": 20.9,
+          "p99ms": 29.2,
+          "maxMs": 29.2,
+          "over33ms": 0,
+          "over50ms": 0,
+          "actualCrowdFrames": {
+            "frames": 175,
+            "wallSeconds": 3.012,
+            "p50ms": 16.2,
+            "p95ms": 29.1,
+            "p99ms": 36.7,
+            "maxMs": 49.2,
+            "over33ms": 3,
+            "over50ms": 0,
+            "hz": 58.1
+          },
+          "aliveRange": [
+            100000,
+            100009
+          ],
+          "visibleRange": [
+            99953,
+            100000
+          ],
+          "submittedBodiesRange": [
+            19807,
+            23187
+          ],
+          "updatedRange": [
+            99999,
+            100009
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            30000,
+            30000
+          ],
+          "manualProjectilesRange": [
+            29890,
+            29928
+          ],
+          "manualSubmittedRange": [
+            10253,
+            18321
+          ],
+          "manualHiddenCopiesRange": [
+            11570,
+            19662
+          ],
+          "bossProjectilesRange": [
+            72,
+            110
+          ],
+          "shotFloorRange": [
+            30000,
+            30000
+          ],
+          "shotFloorTicksRange": [
+            15,
+            201
+          ],
+          "shotFloorMinTickRange": [
+            30000,
+            30000
+          ],
+          "zonesRange": [
+            0,
+            12
+          ],
+          "nativeEffectsRange": [
+            11,
+            44
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            2
+          ],
+          "heartContactsRange": [
+            0,
+            0
+          ],
+          "nodesRange": [
+            1254,
+            1586
+          ],
+          "hpRange": [
+            56.4,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              5818,
+              6732
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              5020,
+              6733
+            ],
+            "bookworm_s": [
+              5698,
+              6483
+            ],
+            "chunsik": [
+              20,
+              20
+            ],
+            "cookie_s": [
+              5046,
+              6383
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              6222,
+              6862
+            ],
+            "gaetteok": [
+              6046,
+              7015
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              5567,
+              6417
+            ],
+            "jjorang": [
+              6581,
+              7278
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              20,
+              24
+            ],
+            "kyupok": [
+              26,
+              30
+            ],
+            "mimic_s": [
+              6504,
+              6750
+            ],
+            "motaku": [
+              6709,
+              6967
+            ],
+            "pochikun": [
+              6661,
+              7873
+            ],
+            "sentry": [
+              6733,
+              8703
+            ],
+            "sodasi": [
+              6733,
+              8488
+            ],
+            "swipsaekki": [
+              6733,
+              9344
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              5294,
+              6733
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 186,
+          "simTimeDelta": 3.1,
+          "killsDelta": 53073,
+          "damageDelta": 636281.9988,
+          "bossShotsFiredDelta": 83,
+          "manualShotsFiredDelta": 38700,
+          "manualShotHitsDelta": 11474,
+          "manualShotExpiredDelta": 0,
+          "manualShotBlockedDelta": 27251,
+          "hitsTakenDelta": 8,
+          "physicsWallRatio": 1.023,
+          "physicsBetweenSamplesRatio": 0.998,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 20,
+              "transitions": 5,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 30,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 12,
+              "transitions": 0,
+              "zones": 0
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 4,
+              "zones": 3
+            },
+            "daebuntang": {
+              "shots": 42,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 4,
+              "zones": 9
+            },
+            "glitch": {
+              "shots": 24,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 83,
+              "summons": 0,
+              "transitions": 3,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 44,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "stairs": {
+              "shots": 10,
+              "summons": 0,
+              "transitions": 4,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 6047,
+            "expired": 97018,
+            "impacts": 34355,
+            "peakActive": 10279,
+            "spawned": 103065,
+            "submitted": 5543
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 12
+        },
+        {
+          "frames": 155,
+          "wallSeconds": 3.017,
+          "browserFps": 51.4,
+          "p50ms": 16.7,
+          "p95ms": 29.2,
+          "p99ms": 33.3,
+          "maxMs": 33.4,
+          "over33ms": 1,
+          "over50ms": 0,
+          "actualCrowdFrames": {
+            "frames": 152,
+            "wallSeconds": 3.015,
+            "p50ms": 17.8,
+            "p95ms": 28.4,
+            "p99ms": 35.3,
+            "maxMs": 63.2,
+            "over33ms": 2,
+            "over50ms": 1,
+            "hz": 50.4
+          },
+          "aliveRange": [
+            100000,
+            100009
+          ],
+          "visibleRange": [
+            99939,
+            100000
+          ],
+          "submittedBodiesRange": [
+            20183,
+            23966
+          ],
+          "updatedRange": [
+            92779,
+            100009
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            30000,
+            30000
+          ],
+          "manualProjectilesRange": [
+            29861,
+            29919
+          ],
+          "manualSubmittedRange": [
+            19662,
+            21184
+          ],
+          "manualHiddenCopiesRange": [
+            8706,
+            10218
+          ],
+          "bossProjectilesRange": [
+            80,
+            138
+          ],
+          "shotFloorRange": [
+            30000,
+            30000
+          ],
+          "shotFloorTicksRange": [
+            308,
+            481
+          ],
+          "shotFloorMinTickRange": [
+            30000,
+            30000
+          ],
+          "zonesRange": [
+            12,
+            17
+          ],
+          "nativeEffectsRange": [
+            12,
+            54
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            3,
+            4
+          ],
+          "heartContactsRange": [
+            0,
+            0
+          ],
+          "nodesRange": [
+            2502,
+            2776
+          ],
+          "hpRange": [
+            56,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              5973,
+              6524
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              5142,
+              6428
+            ],
+            "bookworm_s": [
+              5829,
+              6503
+            ],
+            "chunsik": [
+              20,
+              23
+            ],
+            "cookie_s": [
+              5067,
+              6383
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              6246,
+              6812
+            ],
+            "gaetteok": [
+              6298,
+              7150
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              5534,
+              6437
+            ],
+            "jjorang": [
+              6611,
+              7257
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              19,
+              24
+            ],
+            "kyupok": [
+              26,
+              30
+            ],
+            "mimic_s": [
+              6570,
+              6739
+            ],
+            "motaku": [
+              6637,
+              6836
+            ],
+            "pochikun": [
+              6650,
+              7629
+            ],
+            "sentry": [
+              6964,
+              8603
+            ],
+            "sodasi": [
+              6851,
+              8383
+            ],
+            "swipsaekki": [
+              6964,
+              9010
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              5501,
+              6462
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 173,
+          "simTimeDelta": 2.8833,
+          "killsDelta": 42802,
+          "damageDelta": 510649.8154,
+          "bossShotsFiredDelta": 81,
+          "manualShotsFiredDelta": 44146,
+          "manualShotHitsDelta": 10098,
+          "manualShotExpiredDelta": 8196,
+          "manualShotBlockedDelta": 25818,
+          "hitsTakenDelta": 7,
+          "physicsWallRatio": 0.951,
+          "physicsBetweenSamplesRatio": 1.0,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 40,
+              "transitions": 10,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 60,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 16,
+              "transitions": 0,
+              "zones": 4
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 7,
+              "zones": 6
+            },
+            "daebuntang": {
+              "shots": 84,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 7,
+              "zones": 18
+            },
+            "glitch": {
+              "shots": 40,
+              "summons": 0,
+              "transitions": 1,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 153,
+              "summons": 0,
+              "transitions": 6,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 69,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "stairs": {
+              "shots": 30,
+              "summons": 0,
+              "transitions": 9,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 6118,
+            "expired": 227318,
+            "impacts": 77812,
+            "peakActive": 10279,
+            "spawned": 233436,
+            "submitted": 5476
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 11
+        },
+        {
+          "frames": 143,
+          "wallSeconds": 3.017,
+          "browserFps": 47.4,
+          "p50ms": 20.8,
+          "p95ms": 33.3,
+          "p99ms": 33.4,
+          "maxMs": 37.5,
+          "over33ms": 3,
+          "over50ms": 0,
+          "actualCrowdFrames": {
+            "frames": 140,
+            "wallSeconds": 3.017,
+            "p50ms": 18.5,
+            "p95ms": 32.3,
+            "p99ms": 38.8,
+            "maxMs": 57.7,
+            "over33ms": 5,
+            "over50ms": 1,
+            "hz": 46.4
+          },
+          "aliveRange": [
+            100000,
+            100003
+          ],
+          "visibleRange": [
+            99949,
+            100000
+          ],
+          "submittedBodiesRange": [
+            19587,
+            24391
+          ],
+          "updatedRange": [
+            100000,
+            100003
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            30000,
+            30000
+          ],
+          "manualProjectilesRange": [
+            29871,
+            29939
+          ],
+          "manualSubmittedRange": [
+            20817,
+            21642
+          ],
+          "manualHiddenCopiesRange": [
+            8292,
+            9093
+          ],
+          "bossProjectilesRange": [
+            61,
+            129
+          ],
+          "shotFloorRange": [
+            30000,
+            30000
+          ],
+          "shotFloorTicksRange": [
+            581,
+            762
+          ],
+          "shotFloorMinTickRange": [
+            30000,
+            30000
+          ],
+          "zonesRange": [
+            16,
+            25
+          ],
+          "nativeEffectsRange": [
+            8,
+            55
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            4,
+            6
+          ],
+          "heartContactsRange": [
+            0,
+            2
+          ],
+          "nodesRange": [
+            2715,
+            2899
+          ],
+          "hpRange": [
+            56,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              6014,
+              6656
+            ],
+            "bat_s": [
+              3,
+              10
+            ],
+            "bee": [
+              5292,
+              6656
+            ],
+            "bookworm_s": [
+              5862,
+              6656
+            ],
+            "chunsik": [
+              20,
+              23
+            ],
+            "cookie_s": [
+              5155,
+              6656
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              6272,
+              6907
+            ],
+            "gaetteok": [
+              6487,
+              7027
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              5627,
+              6656
+            ],
+            "jjorang": [
+              6570,
+              7142
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              19,
+              24
+            ],
+            "kyupok": [
+              28,
+              30
+            ],
+            "mimic_s": [
+              6555,
+              6742
+            ],
+            "motaku": [
+              6656,
+              6908
+            ],
+            "pochikun": [
+              6601,
+              7641
+            ],
+            "sentry": [
+              6656,
+              8339
+            ],
+            "sodasi": [
+              6656,
+              8142
+            ],
+            "swipsaekki": [
+              6656,
+              8860
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              5535,
+              6657
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 181,
+          "simTimeDelta": 3.0167,
+          "killsDelta": 44635,
+          "damageDelta": 553426.3404,
+          "bossShotsFiredDelta": 151,
+          "manualShotsFiredDelta": 48366,
+          "manualShotHitsDelta": 12060,
+          "manualShotExpiredDelta": 10369,
+          "manualShotBlockedDelta": 25964,
+          "hitsTakenDelta": 7,
+          "physicsWallRatio": 0.994,
+          "physicsBetweenSamplesRatio": 0.995,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 60,
+              "transitions": 15,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 90,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 24,
+              "transitions": 0,
+              "zones": 8
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 10,
+              "zones": 9
+            },
+            "daebuntang": {
+              "shots": 112,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 10,
+              "zones": 27
+            },
+            "glitch": {
+              "shots": 56,
+              "summons": 0,
+              "transitions": 1,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 232,
+              "summons": 0,
+              "transitions": 9,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 94,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 5
+            },
+            "stairs": {
+              "shots": 40,
+              "summons": 0,
+              "transitions": 12,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 4779,
+            "expired": 352938,
+            "impacts": 119239,
+            "peakActive": 10279,
+            "spawned": 357717,
+            "submitted": 4410
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 12
+        }
+      ],
+      "casts": [
+        {
+          "before": 100000,
+          "after": 30,
+          "hits": 99988,
+          "kills": 99970,
+          "xpAwarded": 174083,
+          "commonDamage": 1560386.37900074,
+          "ms": 10.2,
+          "survivorsByKind": {
+            "chunsik": 1,
+            "cookie_wall": 8,
+            "deukdeoji": 13,
+            "junk_pile": 6,
+            "ttakkeumi": 2
+          },
+          "survivorReasons": {
+            "eliteHP": 4,
+            "untargetable": 12,
+            "wallDamageCap": 14
+          },
+          "eventMaxFrameMs": 33.3
+        },
+        {
+          "before": 100000,
+          "after": 43,
+          "hits": 99986,
+          "kills": 99957,
+          "xpAwarded": 173198,
+          "commonDamage": 1548222.64962179,
+          "ms": 6.8,
+          "survivorsByKind": {
+            "chunsik": 1,
+            "cookie_wall": 8,
+            "deukdeoji": 15,
+            "ggultteok": 1,
+            "junk_pile": 6,
+            "ttakkeumi": 12
+          },
+          "survivorReasons": {
+            "curlArmor": 10,
+            "eliteHP": 5,
+            "untargetable": 14,
+            "wallDamageCap": 14
+          },
+          "eventMaxFrameMs": 41.7
+        },
+        {
+          "before": 100000,
+          "after": 41,
+          "hits": 99983,
+          "kills": 99959,
+          "xpAwarded": 172342,
+          "commonDamage": 1532991.07204598,
+          "ms": 7.7,
+          "survivorsByKind": {
+            "chunsik": 1,
+            "cookie_wall": 8,
+            "deukdeoji": 17,
+            "ggultteok": 1,
+            "junk_pile": 6,
+            "ttakkeumi": 8
+          },
+          "survivorReasons": {
+            "curlArmor": 6,
+            "eliteHP": 4,
+            "untargetable": 17,
+            "wallDamageCap": 14
+          },
+          "eventMaxFrameMs": 29.2
+        }
+      ]
+    },
+    "complete-mixed-wave": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=100000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:42:31.791543+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 2,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 60,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 5944,
+          "wallSeconds": 25.118,
+          "browserFps": 236.6,
+          "p50ms": 4.2,
+          "p95ms": 4.3,
+          "p99ms": 4.3,
+          "maxMs": 41.7,
+          "over33ms": 1,
+          "over50ms": 0,
+          "actualCrowdFrames": {
+            "frames": 11,
+            "wallSeconds": 0.202,
+            "p50ms": 15.8,
+            "p95ms": 35.7,
+            "p99ms": 35.7,
+            "maxMs": 35.7,
+            "over33ms": 1,
+            "over50ms": 0,
+            "hz": 54.5
+          },
+          "aliveRange": [
+            0,
+            100000
+          ],
+          "visibleRange": [
+            0,
+            100000
+          ],
+          "submittedBodiesRange": [
+            0,
+            23843
+          ],
+          "updatedRange": [
+            0,
+            100000
+          ],
+          "bossesRange": [
+            9,
+            10
+          ],
+          "hostileProjectilesRange": [
+            10000,
+            10003
+          ],
+          "manualProjectilesRange": [
+            9872,
+            9957
+          ],
+          "manualSubmittedRange": [
+            4272,
+            8989
+          ],
+          "manualHiddenCopiesRange": [
+            884,
+            5656
+          ],
+          "bossProjectilesRange": [
+            43,
+            131
+          ],
+          "shotFloorRange": [
+            10000,
+            10000
+          ],
+          "shotFloorTicksRange": [
+            31,
+            1537
+          ],
+          "shotFloorMinTickRange": [
+            10000,
+            10000
+          ],
+          "zonesRange": [
+            0,
+            21
+          ],
+          "nativeEffectsRange": [
+            1,
+            140
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            3
+          ],
+          "heartContactsRange": [
+            0,
+            0
+          ],
+          "nodesRange": [
+            1326,
+            2003
+          ],
+          "hpRange": [
+            50,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              0,
+              6732
+            ],
+            "bat_s": [
+              0,
+              10
+            ],
+            "bee": [
+              0,
+              6733
+            ],
+            "bookworm_s": [
+              0,
+              6483
+            ],
+            "chunsik": [
+              0,
+              20
+            ],
+            "cookie_s": [
+              0,
+              6383
+            ],
+            "cookie_wall": [
+              0,
+              8
+            ],
+            "deukdeoji": [
+              0,
+              20
+            ],
+            "frendi": [
+              0,
+              6733
+            ],
+            "gaetteok": [
+              0,
+              6732
+            ],
+            "ggultteok": [
+              0,
+              20
+            ],
+            "gyeoul": [
+              0,
+              6417
+            ],
+            "jjorang": [
+              0,
+              6733
+            ],
+            "junk_pile": [
+              0,
+              6
+            ],
+            "kongchi": [
+              0,
+              24
+            ],
+            "kyupok": [
+              0,
+              30
+            ],
+            "mimic_s": [
+              0,
+              6519
+            ],
+            "motaku": [
+              0,
+              6715
+            ],
+            "pochikun": [
+              0,
+              6732
+            ],
+            "sentry": [
+              0,
+              6732
+            ],
+            "sodasi": [
+              0,
+              6733
+            ],
+            "swipsaekki": [
+              0,
+              6732
+            ],
+            "ttakkeumi": [
+              0,
+              20
+            ],
+            "zzebi": [
+              0,
+              6733
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              0,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 1506,
+          "simTimeDelta": 25.1,
+          "killsDelta": 100039,
+          "damageDelta": 1450309.2057,
+          "bossShotsFiredDelta": 847,
+          "manualShotsFiredDelta": 99052,
+          "manualShotHitsDelta": 32291,
+          "manualShotExpiredDelta": 34446,
+          "manualShotBlockedDelta": 32349,
+          "hitsTakenDelta": 58,
+          "physicsWallRatio": 0.999,
+          "physicsBetweenSamplesRatio": 1.0,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 30,
+              "transitions": 11,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 130,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 40,
+              "transitions": 0,
+              "zones": 16
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 16,
+              "zones": 15
+            },
+            "daebuntang": {
+              "shots": 168,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 10,
+              "zones": 27
+            },
+            "glitch": {
+              "shots": 80,
+              "summons": 0,
+              "transitions": 12,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 402,
+              "summons": 0,
+              "transitions": 13,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 147,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 10
+            },
+            "stairs": {
+              "shots": 70,
+              "summons": 0,
+              "transitions": 20,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 0,
+            "expired": 105204,
+            "impacts": 35068,
+            "peakActive": 4035,
+            "spawned": 105204,
+            "submitted": 0
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 101
+        }
+      ],
+      "finish": {
+        "accounted": 100000,
+        "before": 100000,
+        "casts": 45,
+        "cohortVerified": true,
+        "elapsed": 24.6833333333332,
+        "id": 2,
+        "initialPacked": 99840,
+        "killed": 100000,
+        "killedByKind": {
+          "alien_s": 6732,
+          "bat_s": 4,
+          "bee": 6733,
+          "bookworm_s": 6483,
+          "chunsik": 20,
+          "cookie_s": 6383,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6733,
+          "gaetteok": 6732,
+          "ggultteok": 20,
+          "gyeoul": 6417,
+          "jjorang": 6733,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6519,
+          "motaku": 6719,
+          "pochikun": 6733,
+          "sentry": 6732,
+          "sodasi": 6733,
+          "swipsaekki": 6733,
+          "ttakkeumi": 20,
+          "zzebi": 6733
+        },
+        "liveIdsBefore": "330aeb4d-fd528240",
+        "minimumDamage": 64,
+        "nativeKilled": 160,
+        "newKilled": 52,
+        "newSpawned": 52,
+        "packedKilled": 99840,
+        "period": 0.55,
+        "radius": 768,
+        "remaining": 0,
+        "speciesBefore": {
+          "alien_s": 6732,
+          "bat_s": 4,
+          "bee": 6733,
+          "bookworm_s": 6483,
+          "chunsik": 20,
+          "cookie_s": 6383,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6733,
+          "gaetteok": 6732,
+          "ggultteok": 20,
+          "gyeoul": 6417,
+          "jjorang": 6733,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6519,
+          "motaku": 6719,
+          "pochikun": 6733,
+          "sentry": 6732,
+          "sodasi": 6733,
+          "swipsaekki": 6733,
+          "ttakkeumi": 20,
+          "zzebi": 6733
+        },
+        "status": "complete",
+        "survivorsByKind": {},
+        "timeLimit": 45,
+        "vanished": 0,
+        "vanishedByKind": {},
+        "xpAwarded": 160778
+      }
+    },
+    "ui-repeat": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=100000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:43:03.044026+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 2,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 60,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "repeat": [
+        {
+          "peak": {
+            "alive": 100000,
+            "distinctBosses": 10,
+            "hostileShots": 30000,
+            "speciesSeen": 24
+          },
+          "before": 100010,
+          "kills": 99978,
+          "after": 32,
+          "xp": 160637,
+          "eventMaxFrameMs": 50
+        },
+        {
+          "peak": {
+            "alive": 100000,
+            "distinctBosses": 10,
+            "hostileShots": 30000,
+            "speciesSeen": 24
+          },
+          "before": 100004,
+          "kills": 99966,
+          "after": 38,
+          "xp": 159945,
+          "eventMaxFrameMs": 29.3
+        }
+      ]
+    },
+    "single-100k-casts": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&preset=single&v=mixed-r7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:43:09.395695+00:00",
+      "casts": [
+        {
+          "before": 100000,
+          "after": 0,
+          "hits": 100000,
+          "kills": 100000,
+          "xpAwarded": 100000,
+          "commonDamage": 797634,
+          "ms": 5.9,
+          "survivorsByKind": {},
+          "survivorReasons": {},
+          "eventMaxFrameMs": 12.6
+        },
+        {
+          "before": 100000,
+          "after": 0,
+          "hits": 100000,
+          "kills": 100000,
+          "xpAwarded": 100000,
+          "commonDamage": 800000,
+          "ms": 5.4,
+          "survivorsByKind": {},
+          "survivorReasons": {},
+          "eventMaxFrameMs": 16.8
+        }
+      ]
+    },
+    "normal-optimized": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&preset=single&scenario=normal&v=mixed-r7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:43:55.198460+00:00",
+      "normalPlay": {
+        "frames": 6079,
+        "wallSeconds": 25.389,
+        "browserFps": 239.4,
+        "p50ms": 4.2,
+        "p95ms": 4.3,
+        "p99ms": 4.6,
+        "maxMs": 45.8,
+        "over33ms": 1,
+        "over50ms": 0,
+        "activeCombat": {
+          "frames": 6046,
+          "wallSeconds": 25.209,
+          "browserFps": 239.8,
+          "p50ms": 4.2,
+          "p95ms": 4.3,
+          "p99ms": 4.6,
+          "maxMs": 8.8,
+          "over33ms": 0,
+          "over50ms": 0
+        },
+        "aliveRange": [
+          28,
+          187
+        ],
+        "visibleRange": [
+          6,
+          99
+        ],
+        "updatedRange": [
+          28,
+          187
+        ],
+        "drawsRange": [
+          76,
+          278
+        ],
+        "killsRange": [
+          0,
+          91
+        ],
+        "damageRange": [
+          0,
+          3823.61767510434
+        ],
+        "xpRange": [
+          0,
+          38
+        ],
+        "levelRange": [
+          8,
+          8
+        ],
+        "hpRange": [
+          0,
+          100
+        ],
+        "xRange": [
+          -13.000020980835,
+          584.997314453125
+        ],
+        "yRange": [
+          0,
+          597.997192382812
+        ],
+        "projectilesRange": [
+          0,
+          16
+        ],
+        "hostileProjectilesRange": [
+          0,
+          0
+        ],
+        "playerProjectilesRange": [
+          0,
+          16
+        ],
+        "bossesRange": [
+          0,
+          1
+        ],
+        "zonesRange": [
+          0,
+          9
+        ],
+        "nodesRange": [
+          299,
+          1207
+        ],
+        "gameClockRange": [
+          291.416666666665,
+          314.883333333311
+        ],
+        "engineFpsRange": [
+          69,
+          240
+        ],
+        "simTimeDelta": 24.3117,
+        "ticksDelta": 1525,
+        "killsDelta": 91,
+        "damageDelta": 3823.6177,
+        "simulationWallRatio": 0.958,
+        "firstBossWindowMaxMs": 8.3,
+        "firstBossName": "doebaebot",
+        "playingSamples": 101,
+        "otherPhases": [
+          "ended"
+        ],
+        "timeToReadySeconds": 5.014
+      }
+    },
+    "normal-original": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=original&count=100000&seed=7&preset=single&scenario=normal&v=mixed-r7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:44:19.846008+00:00",
+      "normalPlay": {
+        "frames": 3567,
+        "wallSeconds": 14.963,
+        "browserFps": 238.4,
+        "p50ms": 4.2,
+        "p95ms": 4.3,
+        "p99ms": 4.3,
+        "maxMs": 70.8,
+        "over33ms": 1,
+        "over50ms": 1,
+        "activeCombat": {
+          "frames": 3520,
+          "wallSeconds": 14.701,
+          "browserFps": 239.4,
+          "p50ms": 4.2,
+          "p95ms": 4.3,
+          "p99ms": 4.3,
+          "maxMs": 33.3,
+          "over33ms": 0,
+          "over50ms": 0
+        },
+        "aliveRange": [
+          28,
+          161
+        ],
+        "visibleRange": [
+          6,
+          84
+        ],
+        "updatedRange": [
+          28,
+          161
+        ],
+        "drawsRange": [
+          75,
+          279
+        ],
+        "killsRange": [
+          0,
+          48
+        ],
+        "damageRange": [
+          0,
+          2188.31698873192
+        ],
+        "xpRange": [
+          0,
+          19
+        ],
+        "levelRange": [
+          8,
+          8
+        ],
+        "hpRange": [
+          0,
+          100
+        ],
+        "xRange": [
+          15.600001335144,
+          596.697204589844
+        ],
+        "yRange": [
+          0,
+          428.998779296875
+        ],
+        "projectilesRange": [
+          0,
+          16
+        ],
+        "hostileProjectilesRange": [
+          0,
+          0
+        ],
+        "playerProjectilesRange": [
+          0,
+          16
+        ],
+        "bossesRange": [
+          0,
+          1
+        ],
+        "zonesRange": [
+          0,
+          3
+        ],
+        "nodesRange": [
+          298,
+          1033
+        ],
+        "gameClockRange": [
+          291.416666666665,
+          304.366666666654
+        ],
+        "engineFpsRange": [
+          232,
+          240
+        ],
+        "simTimeDelta": 13.795,
+        "ticksDelta": 894,
+        "killsDelta": 48,
+        "damageDelta": 2205.217,
+        "simulationWallRatio": 0.922,
+        "firstBossWindowMaxMs": 33.3,
+        "firstBossName": "doebaebot",
+        "playingSamples": 59,
+        "otherPhases": [
+          "ended"
+        ],
+        "timeToReadySeconds": 8.2
+      }
+    },
+    "same-10000-optimized": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=10000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:44:20.288310+00:00",
+      "autoStart": {
+        "alive": 10004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 663,
+          "bat_s": 10,
+          "bee": 663,
+          "bookworm_s": 667,
+          "chunsik": 6,
+          "cookie_s": 663,
+          "cookie_wall": 3,
+          "deukdeoji": 6,
+          "frendi": 663,
+          "gaetteok": 662,
+          "ggultteok": 6,
+          "gyeoul": 663,
+          "jjorang": 663,
+          "junk_pile": 2,
+          "kongchi": 6,
+          "kyupok": 10,
+          "mimic_s": 663,
+          "motaku": 664,
+          "pochikun": 663,
+          "sentry": 663,
+          "sodasi": 663,
+          "swipsaekki": 663,
+          "ttakkeumi": 6,
+          "zzebi": 663
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 4,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 70,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 3505,
+          "wallSeconds": 15.009,
+          "browserFps": 233.5,
+          "p50ms": 4.2,
+          "p95ms": 4.3,
+          "p99ms": 8.4,
+          "maxMs": 12.5,
+          "over33ms": 0,
+          "over50ms": 0,
+          "actualCrowdFrames": {
+            "frames": 901,
+            "wallSeconds": 15.013,
+            "p50ms": 16.6,
+            "p95ms": 19.4,
+            "p99ms": 21.4,
+            "maxMs": 28.5,
+            "over33ms": 0,
+            "over50ms": 0,
+            "hz": 60.0
+          },
+          "aliveRange": [
+            10000,
+            10009
+          ],
+          "visibleRange": [
+            9965,
+            10009
+          ],
+          "submittedBodiesRange": [
+            5571,
+            6328
+          ],
+          "updatedRange": [
+            9171,
+            10009
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            10000,
+            10000
+          ],
+          "manualProjectilesRange": [
+            9813,
+            9931
+          ],
+          "manualSubmittedRange": [
+            2284,
+            9027
+          ],
+          "manualHiddenCopiesRange": [
+            882,
+            7585
+          ],
+          "bossProjectilesRange": [
+            68,
+            185
+          ],
+          "shotFloorRange": [
+            10000,
+            10000
+          ],
+          "shotFloorTicksRange": [
+            20,
+            923
+          ],
+          "shotFloorMinTickRange": [
+            10000,
+            10000
+          ],
+          "zonesRange": [
+            0,
+            24
+          ],
+          "nativeEffectsRange": [
+            0,
+            28
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            6
+          ],
+          "heartContactsRange": [
+            0,
+            1
+          ],
+          "nodesRange": [
+            641,
+            1252
+          ],
+          "hpRange": [
+            50,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              466,
+              670
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              406,
+              671
+            ],
+            "bookworm_s": [
+              461,
+              667
+            ],
+            "chunsik": [
+              6,
+              9
+            ],
+            "cookie_s": [
+              404,
+              663
+            ],
+            "cookie_wall": [
+              3,
+              3
+            ],
+            "deukdeoji": [
+              6,
+              6
+            ],
+            "frendi": [
+              506,
+              679
+            ],
+            "gaetteok": [
+              546,
+              704
+            ],
+            "ggultteok": [
+              6,
+              6
+            ],
+            "gyeoul": [
+              459,
+              663
+            ],
+            "jjorang": [
+              653,
+              784
+            ],
+            "junk_pile": [
+              2,
+              2
+            ],
+            "kongchi": [
+              1,
+              6
+            ],
+            "kyupok": [
+              6,
+              10
+            ],
+            "mimic_s": [
+              587,
+              663
+            ],
+            "motaku": [
+              576,
+              723
+            ],
+            "pochikun": [
+              652,
+              905
+            ],
+            "sentry": [
+              663,
+              1088
+            ],
+            "sodasi": [
+              663,
+              1037
+            ],
+            "swipsaekki": [
+              663,
+              1393
+            ],
+            "ttakkeumi": [
+              6,
+              6
+            ],
+            "zzebi": [
+              417,
+              671
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 903,
+          "simTimeDelta": 15.05,
+          "killsDelta": 26488,
+          "damageDelta": 353393.8056,
+          "bossShotsFiredDelta": 567,
+          "manualShotsFiredDelta": 46671,
+          "manualShotHitsDelta": 10161,
+          "manualShotExpiredDelta": 23216,
+          "manualShotBlockedDelta": 13363,
+          "hitsTakenDelta": 36,
+          "physicsWallRatio": 1.002,
+          "physicsBetweenSamplesRatio": 1.001,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 70,
+              "transitions": 14,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 80,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 24,
+              "transitions": 0,
+              "zones": 8
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 10,
+              "zones": 9
+            },
+            "daebuntang": {
+              "shots": 112,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 10,
+              "zones": 27
+            },
+            "glitch": {
+              "shots": 56,
+              "summons": 0,
+              "transitions": 6,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 252,
+              "summons": 0,
+              "transitions": 9,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 97,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 5
+            },
+            "stairs": {
+              "shots": 40,
+              "summons": 0,
+              "transitions": 13,
+              "zones": 0
+            }
+          },
+          "wallSparksLast": {
+            "active": 272,
+            "expired": 41959,
+            "impacts": 14077,
+            "peakActive": 1350,
+            "spawned": 42231,
+            "submitted": 272
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 60
+        }
+      ]
+    },
+    "same-10000-original": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=original&preset=mixed&count=10000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:44:41.136382+00:00",
+      "autoStart": {
+        "alive": 10004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 663,
+          "bat_s": 10,
+          "bee": 663,
+          "bookworm_s": 667,
+          "chunsik": 6,
+          "cookie_s": 663,
+          "cookie_wall": 3,
+          "deukdeoji": 6,
+          "frendi": 663,
+          "gaetteok": 662,
+          "ggultteok": 6,
+          "gyeoul": 663,
+          "jjorang": 663,
+          "junk_pile": 2,
+          "kongchi": 6,
+          "kyupok": 10,
+          "mimic_s": 663,
+          "motaku": 664,
+          "pochikun": 663,
+          "sentry": 663,
+          "sodasi": 663,
+          "swipsaekki": 663,
+          "ttakkeumi": 6,
+          "zzebi": 663
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 10,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 70,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 44,
+          "wallSeconds": 15.534,
+          "browserFps": 2.8,
+          "p50ms": 341.6,
+          "p95ms": 450,
+          "p99ms": 456.3,
+          "maxMs": 456.3,
+          "over33ms": 44,
+          "over50ms": 44,
+          "aliveRange": [
+            10000,
+            10009
+          ],
+          "visibleRange": [
+            9997,
+            10009
+          ],
+          "submittedBodiesRange": [
+            -1,
+            -1
+          ],
+          "updatedRange": [
+            9999,
+            10009
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            10000,
+            10000
+          ],
+          "manualProjectilesRange": [
+            9858,
+            9872
+          ],
+          "bossProjectilesRange": [
+            128,
+            141
+          ],
+          "shotFloorRange": [
+            10000,
+            10000
+          ],
+          "shotFloorTicksRange": [
+            56,
+            146
+          ],
+          "shotFloorMinTickRange": [
+            10000,
+            10000
+          ],
+          "zonesRange": [
+            3,
+            15
+          ],
+          "nativeEffectsRange": [
+            58,
+            1130
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            1
+          ],
+          "heartContactsRange": [
+            0,
+            0
+          ],
+          "nodesRange": [
+            70225,
+            75213
+          ],
+          "hpRange": [
+            79,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              619,
+              670
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              561,
+              670
+            ],
+            "bookworm_s": [
+              597,
+              651
+            ],
+            "chunsik": [
+              6,
+              6
+            ],
+            "cookie_s": [
+              536,
+              642
+            ],
+            "cookie_wall": [
+              3,
+              3
+            ],
+            "deukdeoji": [
+              6,
+              6
+            ],
+            "frendi": [
+              619,
+              680
+            ],
+            "gaetteok": [
+              670,
+              703
+            ],
+            "ggultteok": [
+              6,
+              6
+            ],
+            "gyeoul": [
+              554,
+              640
+            ],
+            "jjorang": [
+              647,
+              698
+            ],
+            "junk_pile": [
+              2,
+              2
+            ],
+            "kongchi": [
+              2,
+              6
+            ],
+            "kyupok": [
+              6,
+              10
+            ],
+            "mimic_s": [
+              624,
+              651
+            ],
+            "motaku": [
+              672,
+              724
+            ],
+            "pochikun": [
+              662,
+              710
+            ],
+            "sentry": [
+              670,
+              816
+            ],
+            "sodasi": [
+              670,
+              793
+            ],
+            "swipsaekki": [
+              670,
+              845
+            ],
+            "ttakkeumi": [
+              6,
+              6
+            ],
+            "zzebi": [
+              578,
+              670
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 90,
+          "simTimeDelta": 1.5,
+          "killsDelta": 3339,
+          "damageDelta": 40325.8796,
+          "bossShotsFiredDelta": 28,
+          "manualShotsFiredDelta": 4398,
+          "manualShotHitsDelta": 3792,
+          "manualShotExpiredDelta": 0,
+          "manualShotBlockedDelta": 614,
+          "hitsTakenDelta": 3,
+          "physicsWallRatio": 0.094,
+          "physicsBetweenSamplesRatio": 0.094,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 20,
+              "transitions": 4,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 20,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 8,
+              "transitions": 0,
+              "zones": 0
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 5,
+              "zones": 6
+            },
+            "daebuntang": {
+              "shots": 28,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 5,
+              "zones": 9
+            },
+            "glitch": {
+              "shots": 16,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 53,
+              "summons": 0,
+              "transitions": 3,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 41,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "stairs": {
+              "shots": 20,
+              "summons": 0,
+              "transitions": 5,
+              "zones": 0
+            }
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 45
+        }
+      ]
+    },
+    "native-wall-fx": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=optimized&preset=mixed&count=100000&seed=7&wallfx=native",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:45:13.800577+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 16,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 43,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 171,
+          "wallSeconds": 12.021,
+          "browserFps": 14.2,
+          "p50ms": 66.7,
+          "p95ms": 95.8,
+          "p99ms": 108.3,
+          "maxMs": 108.3,
+          "over33ms": 171,
+          "over50ms": 170,
+          "actualCrowdFrames": {
+            "frames": 160,
+            "wallSeconds": 12.016,
+            "p50ms": 69.2,
+            "p95ms": 104,
+            "p99ms": 204.3,
+            "maxMs": 206.5,
+            "over33ms": 160,
+            "over50ms": 160,
+            "hz": 13.3
+          },
+          "aliveRange": [
+            100000,
+            100009
+          ],
+          "visibleRange": [
+            99940,
+            99987
+          ],
+          "submittedBodiesRange": [
+            18457,
+            22037
+          ],
+          "updatedRange": [
+            99999,
+            100009
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            30000,
+            30000
+          ],
+          "manualProjectilesRange": [
+            29895,
+            29949
+          ],
+          "manualSubmittedRange": [
+            9993,
+            20971
+          ],
+          "manualHiddenCopiesRange": [
+            8943,
+            19941
+          ],
+          "bossProjectilesRange": [
+            50,
+            105
+          ],
+          "shotFloorRange": [
+            30000,
+            30000
+          ],
+          "shotFloorTicksRange": [
+            18,
+            356
+          ],
+          "shotFloorMinTickRange": [
+            30000,
+            30000
+          ],
+          "zonesRange": [
+            9,
+            19
+          ],
+          "nativeEffectsRange": [
+            3312,
+            9439
+          ],
+          "heartAliveRange": [
+            0,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            3
+          ],
+          "heartContactsRange": [
+            0,
+            0
+          ],
+          "nodesRange": [
+            1221,
+            1699
+          ],
+          "hpRange": [
+            49,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              5279,
+              6313
+            ],
+            "bat_s": [
+              1,
+              10
+            ],
+            "bee": [
+              4622,
+              6012
+            ],
+            "bookworm_s": [
+              5156,
+              6286
+            ],
+            "chunsik": [
+              20,
+              23
+            ],
+            "cookie_s": [
+              4880,
+              5951
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              5798,
+              6694
+            ],
+            "gaetteok": [
+              5722,
+              7025
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              5276,
+              6141
+            ],
+            "jjorang": [
+              6700,
+              7661
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              19,
+              24
+            ],
+            "kyupok": [
+              26,
+              30
+            ],
+            "mimic_s": [
+              6538,
+              6747
+            ],
+            "motaku": [
+              6326,
+              6842
+            ],
+            "pochikun": [
+              6814,
+              8057
+            ],
+            "sentry": [
+              7646,
+              9691
+            ],
+            "sodasi": [
+              7175,
+              9459
+            ],
+            "swipsaekki": [
+              7660,
+              10834
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              4920,
+              6135
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 338,
+          "simTimeDelta": 5.6333,
+          "killsDelta": 85878,
+          "damageDelta": 1042871.979,
+          "bossShotsFiredDelta": 177,
+          "manualShotsFiredDelta": 79865,
+          "manualShotHitsDelta": 19122,
+          "manualShotExpiredDelta": 13076,
+          "manualShotBlockedDelta": 47686,
+          "hitsTakenDelta": 14,
+          "physicsWallRatio": 0.465,
+          "physicsBetweenSamplesRatio": 0.475,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 30,
+              "transitions": 7,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 40,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 16,
+              "transitions": 0,
+              "zones": 4
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 6,
+              "zones": 6
+            },
+            "daebuntang": {
+              "shots": 56,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 7,
+              "zones": 15
+            },
+            "glitch": {
+              "shots": 32,
+              "summons": 0,
+              "transitions": 3,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 116,
+              "summons": 0,
+              "transitions": 5,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 63,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "stairs": {
+              "shots": 30,
+              "summons": 0,
+              "transitions": 9,
+              "zones": 0
+            }
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 42
+        }
+      ]
+    },
+    "same-100000-original": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&mode=original&preset=mixed&count=100000&seed=7",
+      "browser": "158.0.8127.36",
+      "dateUtc": "2026-11-20T04:46:31.477065+00:00",
+      "autoStart": {
+        "alive": 100004,
+        "speciesPresent": 24,
+        "speciesAlive": {
+          "alien_s": 6656,
+          "bat_s": 10,
+          "bee": 6656,
+          "bookworm_s": 6660,
+          "chunsik": 20,
+          "cookie_s": 6656,
+          "cookie_wall": 8,
+          "deukdeoji": 20,
+          "frendi": 6656,
+          "gaetteok": 6656,
+          "ggultteok": 20,
+          "gyeoul": 6657,
+          "jjorang": 6657,
+          "junk_pile": 6,
+          "kongchi": 24,
+          "kyupok": 30,
+          "mimic_s": 6656,
+          "motaku": 6656,
+          "pochikun": 6656,
+          "sentry": 6656,
+          "sodasi": 6656,
+          "swipsaekki": 6656,
+          "ttakkeumi": 20,
+          "zzebi": 6656
+        },
+        "bossKindsAlive": [
+          "doebaebot",
+          "daebuntang",
+          "buffering",
+          "glitch",
+          "stairs",
+          "blizzard",
+          "macaron",
+          "bookworm",
+          "bat",
+          "returnbox"
+        ],
+        "shotFloorMinTick": 10000,
+        "shotFloorTicks": 12,
+        "hostileProjectiles": 10000,
+        "bossProjectiles": 45,
+        "nativeEliteCounts": {
+          "backseat": 1,
+          "flirt": 1,
+          "hate": 1,
+          "multi": 1,
+          "spam": 1
+        },
+        "heartAlive": 1,
+        "heartSpawned": 1
+      },
+      "windows": [
+        {
+          "frames": 14,
+          "wallSeconds": 44.449,
+          "browserFps": 0.3,
+          "p50ms": 2798.1,
+          "p95ms": 7869.1,
+          "p99ms": 7869.1,
+          "maxMs": 7869.1,
+          "over33ms": 14,
+          "over50ms": 14,
+          "aliveRange": [
+            100000,
+            100000
+          ],
+          "visibleRange": [
+            99983,
+            100000
+          ],
+          "submittedBodiesRange": [
+            -1,
+            -1
+          ],
+          "updatedRange": [
+            99999,
+            100000
+          ],
+          "bossesRange": [
+            10,
+            10
+          ],
+          "hostileProjectilesRange": [
+            10000,
+            10000
+          ],
+          "manualProjectilesRange": [
+            9921,
+            9930
+          ],
+          "bossProjectilesRange": [
+            70,
+            79
+          ],
+          "shotFloorRange": [
+            10000,
+            10000
+          ],
+          "shotFloorTicksRange": [
+            58,
+            88
+          ],
+          "shotFloorMinTickRange": [
+            10000,
+            10000
+          ],
+          "zonesRange": [
+            3,
+            8
+          ],
+          "nativeEffectsRange": [
+            1071,
+            3521
+          ],
+          "heartAliveRange": [
+            1,
+            1
+          ],
+          "heartSpawnedRange": [
+            1,
+            1
+          ],
+          "heartContactsRange": [
+            0,
+            0
+          ],
+          "nodesRange": [
+            520757,
+            557647
+          ],
+          "hpRange": [
+            90,
+            100
+          ],
+          "speciesRange": {
+            "alien_s": [
+              6310,
+              6344
+            ],
+            "bat_s": [
+              2,
+              6
+            ],
+            "bee": [
+              6000,
+              6210
+            ],
+            "bookworm_s": [
+              6292,
+              6370
+            ],
+            "chunsik": [
+              20,
+              20
+            ],
+            "cookie_s": [
+              5944,
+              6206
+            ],
+            "cookie_wall": [
+              8,
+              8
+            ],
+            "deukdeoji": [
+              20,
+              20
+            ],
+            "frendi": [
+              6697,
+              6862
+            ],
+            "gaetteok": [
+              6908,
+              6971
+            ],
+            "ggultteok": [
+              20,
+              20
+            ],
+            "gyeoul": [
+              6141,
+              6294
+            ],
+            "jjorang": [
+              6581,
+              6700
+            ],
+            "junk_pile": [
+              6,
+              6
+            ],
+            "kongchi": [
+              20,
+              24
+            ],
+            "kyupok": [
+              28,
+              29
+            ],
+            "mimic_s": [
+              6504,
+              6569
+            ],
+            "motaku": [
+              6844,
+              6967
+            ],
+            "pochikun": [
+              6661,
+              6819
+            ],
+            "sentry": [
+              7221,
+              7660
+            ],
+            "sodasi": [
+              7132,
+              7176
+            ],
+            "swipsaekki": [
+              7221,
+              7660
+            ],
+            "ttakkeumi": [
+              20,
+              20
+            ],
+            "zzebi": [
+              6132,
+              6310
+            ]
+          },
+          "bossKindsRange": {
+            "bat": [
+              1,
+              1
+            ],
+            "blizzard": [
+              1,
+              1
+            ],
+            "bookworm": [
+              1,
+              1
+            ],
+            "buffering": [
+              1,
+              1
+            ],
+            "daebuntang": [
+              1,
+              1
+            ],
+            "doebaebot": [
+              1,
+              1
+            ],
+            "glitch": [
+              1,
+              1
+            ],
+            "macaron": [
+              1,
+              1
+            ],
+            "returnbox": [
+              1,
+              1
+            ],
+            "stairs": [
+              1,
+              1
+            ]
+          },
+          "ticksDelta": 30,
+          "simTimeDelta": 0.5,
+          "killsDelta": 6613,
+          "damageDelta": 77970.438,
+          "bossShotsFiredDelta": 10,
+          "manualShotsFiredDelta": 1020,
+          "manualShotHitsDelta": 0,
+          "manualShotExpiredDelta": 0,
+          "manualShotBlockedDelta": 1011,
+          "hitsTakenDelta": 1,
+          "physicsWallRatio": 0.011,
+          "physicsBetweenSamplesRatio": 0.011,
+          "bossPatternEvidence": {
+            "bat": {
+              "shots": 0,
+              "summons": 10,
+              "transitions": 3,
+              "zones": 0
+            },
+            "blizzard": {
+              "shots": 20,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "bookworm": {
+              "shots": 0,
+              "summons": 8,
+              "transitions": 0,
+              "zones": 0
+            },
+            "buffering": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 4,
+              "zones": 6
+            },
+            "daebuntang": {
+              "shots": 28,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "doebaebot": {
+              "shots": 0,
+              "summons": 0,
+              "transitions": 4,
+              "zones": 2
+            },
+            "glitch": {
+              "shots": 16,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "macaron": {
+              "shots": 38,
+              "summons": 0,
+              "transitions": 2,
+              "zones": 0
+            },
+            "returnbox": {
+              "shots": 38,
+              "summons": 0,
+              "transitions": 0,
+              "zones": 0
+            },
+            "stairs": {
+              "shots": 20,
+              "summons": 0,
+              "transitions": 5,
+              "zones": 0
+            }
+          },
+          "phases": [
+            "playing"
+          ],
+          "sampleCount": 15
+        }
+      ]
+    }
+  },
+  "matchedWallFxFirst12s": {
+    "moving-30k": {
+      "frames": 776,
+      "fps": 64.7,
+      "p95ms": 20.9,
+      "maxMs": 41.7,
+      "physicsRatio": 1.001,
+      "floorMin": 30000
+    },
+    "native-wall-fx": {
+      "frames": 170,
+      "fps": 14.2,
+      "p95ms": 95.8,
+      "maxMs": 108.3,
+      "physicsRatio": 0.475,
+      "floorMin": 30000
+    }
+  }
+}
