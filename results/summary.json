@@ -1,0 +1,2114 @@
+{
+  "dateKST": "2026-11-20",
+  "publicOrigin": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/",
+  "testedCommit": "9e7ba72f6c9d528cdef06bdaa0881db555444aa3",
+  "release": "100k-r5",
+  "upstreamCommit": "1ca4d9f926535de42690583d28cb931c10e718b8",
+  "hardware": {
+    "cpu": "AMD Ryzen 7 9800X3D",
+    "gpu": "NVIDIA GeForce RTX 5080",
+    "displayHz": 239,
+    "canvas": [
+      1280,
+      720
+    ],
+    "stressInternalPixels": [
+      640,
+      360
+    ],
+    "physicsHz": 60
+  },
+  "metricNotes": {
+    "browser": "Browser requestAnimationFrame intervals, including actual input and requested effects.",
+    "crowd": "Time between uploads of distinct displayed crowd pictures, collected separately from browser frames.",
+    "normal": "Active combat excludes level-up/result screens. The first-boss window includes the sampled transition around game time 5:00.",
+    "area": "One radius-768, minimum-damage-64 cast of Johagu's regular aura. xpAwarded is collectible experience generated, not immediate character XP.",
+    "shots": "Manually emitted simple hate bullets are simulated individually in the pool. Boss-spawned bullets use the original game objects."
+  },
+  "combat": {
+    "crowd": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&scenario=stress&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 2500,
+        "wallSeconds": 29.998,
+        "browserFps": 83.3,
+        "p50ms": 9.8,
+        "p95ms": 18.4,
+        "p99ms": 20.5,
+        "maxMs": 27.8,
+        "over33ms": 0,
+        "over50ms": 0,
+        "aliveRange": [
+          100000,
+          100000
+        ],
+        "visibleRange": [
+          94977,
+          100000
+        ],
+        "updatedRange": [
+          89335,
+          100000
+        ],
+        "drawsRange": [
+          71,
+          93
+        ],
+        "killsRange": [
+          2471,
+          557819
+        ],
+        "damageRange": [
+          50834,
+          4462552
+        ],
+        "xpRange": [
+          6,
+          4440
+        ],
+        "levelRange": [
+          28,
+          210
+        ],
+        "hpRange": [
+          30,
+          100
+        ],
+        "xRange": [
+          -3.89999723434448,
+          102.700065612793
+        ],
+        "yRange": [
+          -1.29999697208405,
+          102.700065612793
+        ],
+        "projectilesRange": [
+          0,
+          0
+        ],
+        "bossesRange": [
+          0,
+          0
+        ],
+        "bossProjectilesRange": [
+          0,
+          0
+        ],
+        "bossPatternsRange": [
+          0,
+          0
+        ],
+        "bossShotsFiredRange": [
+          0,
+          0
+        ],
+        "manualProjectilesRange": [
+          0,
+          0
+        ],
+        "zonesRange": [
+          0,
+          0
+        ],
+        "nodesRange": [
+          146,
+          562
+        ],
+        "hitsTakenRange": [
+          2,
+          66
+        ],
+        "damageTakenRange": [
+          10,
+          330
+        ],
+        "submittedBodiesRange": [
+          18905,
+          26091
+        ],
+        "engineFpsRange": [
+          73,
+          98
+        ],
+        "renderWidthRange": [
+          640,
+          640
+        ],
+        "renderHeightRange": [
+          360,
+          360
+        ],
+        "crowdDisplayHzRange": [
+          32.73240004107201,
+          58.687800965889295
+        ],
+        "crowdFrameAgeMsRange": [
+          4.699999809265137,
+          115.79999995231628
+        ],
+        "crowdPrepareMsRange": [
+          9.100000143051147,
+          69.79999995231628
+        ],
+        "crowdLagMsRange": [
+          11.200000047683716,
+          80.59999990463257
+        ],
+        "manualShotsFiredRange": [
+          0,
+          0
+        ],
+        "manualShotHitsRange": [
+          0,
+          0
+        ],
+        "manualShotExpiredRange": [
+          0,
+          0
+        ],
+        "manualShotClearedRange": [
+          0,
+          0
+        ],
+        "manualShotHpDamageRange": [
+          0,
+          0
+        ],
+        "bossShotHitsRange": [
+          0,
+          0
+        ],
+        "bossShotExpiredRange": [
+          0,
+          0
+        ],
+        "simTimeDelta": 30.0667,
+        "ticksDelta": 1804,
+        "killsDelta": 555348,
+        "damageDelta": 4411718,
+        "crowdDisplayFramesDelta": 1623,
+        "simulationWallRatio": 1.002,
+        "crowdDisplayHz": 54.1,
+        "actualCrowdFrames": {
+          "frames": 1619,
+          "wallSeconds": 29.993,
+          "p50ms": 16.8,
+          "p95ms": 34.5,
+          "p99ms": 52.8,
+          "maxMs": 213.3,
+          "over33ms": 100,
+          "over50ms": 22,
+          "hz": 54.0
+        },
+        "playingSamples": 117,
+        "otherPhases": [],
+        "timeToReadySeconds": 5.311
+      },
+      "first": {
+        "alive": 100000,
+        "bosses": 0,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 1.11666666666667,
+        "kills": 2471,
+        "level": 1
+      },
+      "last": {
+        "alive": 100000,
+        "bosses": 0,
+        "x": 27.2999992370605,
+        "y": 102.700065612793,
+        "gameClock": null,
+        "simTime": 31.1833333333328,
+        "kills": 557819,
+        "level": 210
+      },
+      "sampleCount": 117,
+      "requestedBullets": 0
+    },
+    "combined": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&scenario=stress&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 2059,
+        "wallSeconds": 25.012,
+        "browserFps": 82.3,
+        "p50ms": 9.8,
+        "p95ms": 18.3,
+        "p99ms": 20.6,
+        "maxMs": 25.5,
+        "over33ms": 0,
+        "over50ms": 0,
+        "aliveRange": [
+          100000,
+          100000
+        ],
+        "visibleRange": [
+          99999,
+          100000
+        ],
+        "updatedRange": [
+          88897,
+          100000
+        ],
+        "drawsRange": [
+          89,
+          190
+        ],
+        "killsRange": [
+          16606,
+          494647
+        ],
+        "damageRange": [
+          132848,
+          3958751.50000001
+        ],
+        "xpRange": [
+          6,
+          3802
+        ],
+        "levelRange": [
+          29,
+          181
+        ],
+        "hpRange": [
+          28,
+          100
+        ],
+        "xRange": [
+          0,
+          181.622665405273
+        ],
+        "yRange": [
+          -51.8180122375488,
+          12.7920017242432
+        ],
+        "projectilesRange": [
+          6204,
+          19232
+        ],
+        "bossesRange": [
+          4,
+          4
+        ],
+        "bossProjectilesRange": [
+          0,
+          56
+        ],
+        "bossPatternsRange": [
+          4,
+          85
+        ],
+        "bossShotsFiredRange": [
+          0,
+          276
+        ],
+        "manualProjectilesRange": [
+          6171,
+          19207
+        ],
+        "zonesRange": [
+          0,
+          13
+        ],
+        "nodesRange": [
+          312,
+          820
+        ],
+        "hitsTakenRange": [
+          2,
+          61
+        ],
+        "damageTakenRange": [
+          10,
+          1123
+        ],
+        "submittedBodiesRange": [
+          20363,
+          25103
+        ],
+        "engineFpsRange": [
+          67,
+          97
+        ],
+        "renderWidthRange": [
+          640,
+          640
+        ],
+        "renderHeightRange": [
+          360,
+          360
+        ],
+        "crowdDisplayHzRange": [
+          48.56313206937452,
+          58.254394410392365
+        ],
+        "crowdFrameAgeMsRange": [
+          4.599999904632568,
+          38.89999985694885
+        ],
+        "crowdPrepareMsRange": [
+          9.5,
+          14.800000190734863
+        ],
+        "crowdLagMsRange": [
+          10.700000047683716,
+          39.799999952316284
+        ],
+        "manualShotsFiredRange": [
+          10000,
+          100000
+        ],
+        "manualShotHitsRange": [
+          0,
+          23884
+        ],
+        "manualShotExpiredRange": [
+          0,
+          59047
+        ],
+        "manualShotClearedRange": [
+          0,
+          0
+        ],
+        "manualShotHpDamageRange": [
+          0,
+          4
+        ],
+        "bossShotHitsRange": [
+          0,
+          49
+        ],
+        "bossShotExpiredRange": [
+          0,
+          193
+        ],
+        "simTimeDelta": 25.0333,
+        "ticksDelta": 1502,
+        "killsDelta": 478041,
+        "damageDelta": 3825903.5,
+        "crowdDisplayFramesDelta": 1368,
+        "simulationWallRatio": 1.001,
+        "crowdDisplayHz": 54.7,
+        "actualCrowdFrames": {
+          "frames": 1367,
+          "wallSeconds": 25.014,
+          "p50ms": 17,
+          "p95ms": 32.9,
+          "p99ms": 37.3,
+          "maxMs": 54,
+          "over33ms": 59,
+          "over50ms": 2,
+          "hz": 54.7
+        },
+        "playingSamples": 119,
+        "otherPhases": [],
+        "timeToReadySeconds": 6.597
+      },
+      "first": {
+        "alive": 100000,
+        "bosses": 4,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 1.61666666666667,
+        "kills": 16606,
+        "level": 28
+      },
+      "last": {
+        "alive": 100000,
+        "bosses": 4,
+        "x": 174.836547851562,
+        "y": -51.8180122375488,
+        "gameClock": null,
+        "simTime": 26.6499999999998,
+        "kills": 494647,
+        "level": 181
+      },
+      "sampleCount": 119,
+      "requestedBullets": 100000
+    },
+    "normal-optimized": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&scenario=normal&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 1843,
+        "wallSeconds": 22.862,
+        "browserFps": 80.6,
+        "p50ms": 11.5,
+        "p95ms": 18.5,
+        "p99ms": 20.5,
+        "maxMs": 49.6,
+        "over33ms": 1,
+        "over50ms": 0,
+        "activeCombat": {
+          "frames": 1823,
+          "wallSeconds": 22.577,
+          "browserFps": 80.7,
+          "p50ms": 11.5,
+          "p95ms": 18.5,
+          "p99ms": 20.5,
+          "maxMs": 20.7,
+          "over33ms": 0,
+          "over50ms": 0
+        },
+        "aliveRange": [
+          29,
+          185
+        ],
+        "visibleRange": [
+          7,
+          89
+        ],
+        "updatedRange": [
+          29,
+          185
+        ],
+        "drawsRange": [
+          74,
+          285
+        ],
+        "killsRange": [
+          0,
+          81
+        ],
+        "damageRange": [
+          0,
+          3477.56711837173
+        ],
+        "xpRange": [
+          0,
+          33
+        ],
+        "levelRange": [
+          8,
+          8
+        ],
+        "hpRange": [
+          0,
+          100
+        ],
+        "xRange": [
+          16.9000015258789,
+          584.997314453125
+        ],
+        "yRange": [
+          0,
+          587.597290039062
+        ],
+        "projectilesRange": [
+          0,
+          16
+        ],
+        "hostileProjectilesRange": [
+          0,
+          0
+        ],
+        "playerProjectilesRange": [
+          0,
+          16
+        ],
+        "bossesRange": [
+          0,
+          1
+        ],
+        "zonesRange": [
+          0,
+          9
+        ],
+        "nodesRange": [
+          304,
+          1179
+        ],
+        "gameClockRange": [
+          291.449999999999,
+          312.316666666646
+        ],
+        "engineFpsRange": [
+          20,
+          95
+        ],
+        "simTimeDelta": 21.7117,
+        "ticksDelta": 1369,
+        "killsDelta": 81,
+        "damageDelta": 3477.5671,
+        "simulationWallRatio": 0.95,
+        "firstBossWindowMaxMs": 18.3,
+        "firstBossName": "doebaebot",
+        "playingSamples": 88,
+        "otherPhases": [
+          "ended"
+        ],
+        "timeToReadySeconds": 4.749
+      },
+      "first": {
+        "alive": 26,
+        "bosses": 0,
+        "x": 0,
+        "y": 0,
+        "gameClock": 291.199999999999,
+        "simTime": 1.2,
+        "kills": 0,
+        "level": 8
+      },
+      "last": {
+        "alive": 180,
+        "bosses": 1,
+        "x": 113.100067138672,
+        "y": 587.597290039062,
+        "gameClock": 312.316666666646,
+        "simTime": 22.9116666666665,
+        "kills": 81,
+        "level": 8
+      },
+      "sampleCount": 89,
+      "requestedBullets": 0
+    },
+    "normal-original": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=original&count=100000&seed=7&scenario=normal&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 2703,
+        "wallSeconds": 32.091,
+        "browserFps": 84.2,
+        "p50ms": 9.6,
+        "p95ms": 18.1,
+        "p99ms": 18.9,
+        "maxMs": 34.6,
+        "over33ms": 1,
+        "over50ms": 0,
+        "activeCombat": {
+          "frames": 2703,
+          "wallSeconds": 32.091,
+          "browserFps": 84.2,
+          "p50ms": 9.6,
+          "p95ms": 18.1,
+          "p99ms": 18.9,
+          "maxMs": 34.6,
+          "over33ms": 1,
+          "over50ms": 0
+        },
+        "aliveRange": [
+          29,
+          190
+        ],
+        "visibleRange": [
+          2,
+          121
+        ],
+        "updatedRange": [
+          29,
+          190
+        ],
+        "drawsRange": [
+          67,
+          350
+        ],
+        "killsRange": [
+          0,
+          95
+        ],
+        "damageRange": [
+          0,
+          4170.37297776159
+        ],
+        "xpRange": [
+          0,
+          24
+        ],
+        "levelRange": [
+          8,
+          8
+        ],
+        "hpRange": [
+          62,
+          100
+        ],
+        "xRange": [
+          10.3999814987183,
+          597.997192382812
+        ],
+        "yRange": [
+          0,
+          586.297302246094
+        ],
+        "projectilesRange": [
+          0,
+          16
+        ],
+        "hostileProjectilesRange": [
+          0,
+          0
+        ],
+        "playerProjectilesRange": [
+          0,
+          16
+        ],
+        "bossesRange": [
+          0,
+          1
+        ],
+        "zonesRange": [
+          0,
+          9
+        ],
+        "nodesRange": [
+          303,
+          1275
+        ],
+        "gameClockRange": [
+          291.433333333332,
+          323.183333333303
+        ],
+        "engineFpsRange": [
+          24,
+          99
+        ],
+        "simTimeDelta": 32.0,
+        "ticksDelta": 1920,
+        "killsDelta": 95,
+        "damageDelta": 4170.373,
+        "simulationWallRatio": 0.997,
+        "firstBossWindowMaxMs": 34.6,
+        "firstBossName": "doebaebot",
+        "playingSamples": 125,
+        "otherPhases": [],
+        "timeToReadySeconds": 4.558
+      },
+      "first": {
+        "alive": 26,
+        "bosses": 0,
+        "x": 0,
+        "y": 0,
+        "gameClock": 291.183333333332,
+        "simTime": 1.18333333333333,
+        "kills": 0,
+        "level": 8
+      },
+      "last": {
+        "alive": 189,
+        "bosses": 1,
+        "x": 148.200149536133,
+        "y": 1.29998028278351,
+        "gameClock": 323.183333333303,
+        "simTime": 33.1833333333327,
+        "kills": 95,
+        "level": 8
+      },
+      "sampleCount": 125,
+      "requestedBullets": 0
+    },
+    "stationary": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&scenario=stress&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 1486,
+        "wallSeconds": 18.009,
+        "browserFps": 82.5,
+        "p50ms": 9.7,
+        "p95ms": 18,
+        "p99ms": 20.1,
+        "maxMs": 20.7,
+        "over33ms": 0,
+        "over50ms": 0,
+        "aliveRange": [
+          100000,
+          100000
+        ],
+        "visibleRange": [
+          100000,
+          100000
+        ],
+        "updatedRange": [
+          90499,
+          100000
+        ],
+        "drawsRange": [
+          69,
+          93
+        ],
+        "killsRange": [
+          2471,
+          365983
+        ],
+        "damageRange": [
+          50834,
+          2927864
+        ],
+        "xpRange": [
+          6,
+          1220
+        ],
+        "levelRange": [
+          28,
+          73
+        ],
+        "hpRange": [
+          30,
+          100
+        ],
+        "xRange": [
+          0,
+          0
+        ],
+        "yRange": [
+          0,
+          0
+        ],
+        "projectilesRange": [
+          0,
+          0
+        ],
+        "bossesRange": [
+          0,
+          0
+        ],
+        "bossProjectilesRange": [
+          0,
+          0
+        ],
+        "bossPatternsRange": [
+          0,
+          0
+        ],
+        "bossShotsFiredRange": [
+          0,
+          0
+        ],
+        "manualProjectilesRange": [
+          0,
+          0
+        ],
+        "zonesRange": [
+          0,
+          0
+        ],
+        "nodesRange": [
+          146,
+          324
+        ],
+        "hitsTakenRange": [
+          2,
+          20
+        ],
+        "damageTakenRange": [
+          10,
+          100
+        ],
+        "submittedBodiesRange": [
+          22403,
+          25844
+        ],
+        "engineFpsRange": [
+          32,
+          99
+        ],
+        "renderWidthRange": [
+          640,
+          640
+        ],
+        "renderHeightRange": [
+          360,
+          360
+        ],
+        "crowdDisplayHzRange": [
+          51.416473436057935,
+          59.694005517933284
+        ],
+        "crowdFrameAgeMsRange": [
+          6.900000095367432,
+          52.60000014305115
+        ],
+        "crowdPrepareMsRange": [
+          8.700000047683716,
+          17
+        ],
+        "crowdLagMsRange": [
+          11.899999856948853,
+          31.700000047683716
+        ],
+        "manualShotsFiredRange": [
+          0,
+          0
+        ],
+        "manualShotHitsRange": [
+          0,
+          0
+        ],
+        "manualShotExpiredRange": [
+          0,
+          0
+        ],
+        "manualShotClearedRange": [
+          0,
+          0
+        ],
+        "manualShotHpDamageRange": [
+          0,
+          0
+        ],
+        "bossShotHitsRange": [
+          0,
+          0
+        ],
+        "bossShotExpiredRange": [
+          0,
+          0
+        ],
+        "simTimeDelta": 18.15,
+        "ticksDelta": 1089,
+        "killsDelta": 363512,
+        "damageDelta": 2877030,
+        "crowdDisplayFramesDelta": 1015,
+        "simulationWallRatio": 1.008,
+        "crowdDisplayHz": 56.4,
+        "actualCrowdFrames": {
+          "frames": 1006,
+          "wallSeconds": 18.012,
+          "p50ms": 16.8,
+          "p95ms": 32.6,
+          "p99ms": 42,
+          "maxMs": 54.9,
+          "over33ms": 43,
+          "over50ms": 8,
+          "hz": 55.9
+        },
+        "playingSamples": 71,
+        "otherPhases": [],
+        "timeToReadySeconds": 5.177
+      },
+      "first": {
+        "alive": 100000,
+        "bosses": 0,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 1.13333333333333,
+        "kills": 2471,
+        "level": 1
+      },
+      "last": {
+        "alive": 100000,
+        "bosses": 0,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 19.2833333333335,
+        "kills": 365983,
+        "level": 73
+      },
+      "sampleCount": 71,
+      "requestedBullets": 0
+    },
+    "projectiles": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=300&seed=7&scenario=stress&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 1227,
+        "wallSeconds": 15.007,
+        "browserFps": 81.8,
+        "p50ms": 10.1,
+        "p95ms": 18.2,
+        "p99ms": 19.3,
+        "maxMs": 20.6,
+        "over33ms": 0,
+        "over50ms": 0,
+        "aliveRange": [
+          0,
+          0
+        ],
+        "visibleRange": [
+          0,
+          0
+        ],
+        "updatedRange": [
+          0,
+          0
+        ],
+        "drawsRange": [
+          53,
+          66
+        ],
+        "killsRange": [
+          7,
+          7
+        ],
+        "damageRange": [
+          147,
+          147
+        ],
+        "xpRange": [
+          2,
+          2
+        ],
+        "levelRange": [
+          2,
+          2
+        ],
+        "hpRange": [
+          31,
+          95
+        ],
+        "xRange": [
+          1.30000007152557,
+          84.4999389648438
+        ],
+        "yRange": [
+          0,
+          64.219970703125
+        ],
+        "projectilesRange": [
+          0,
+          19507
+        ],
+        "bossesRange": [
+          0,
+          0
+        ],
+        "bossProjectilesRange": [
+          0,
+          0
+        ],
+        "bossPatternsRange": [
+          0,
+          0
+        ],
+        "bossShotsFiredRange": [
+          0,
+          0
+        ],
+        "manualProjectilesRange": [
+          0,
+          19507
+        ],
+        "zonesRange": [
+          0,
+          0
+        ],
+        "nodesRange": [
+          146,
+          146
+        ],
+        "hitsTakenRange": [
+          1,
+          17
+        ],
+        "damageTakenRange": [
+          5,
+          69
+        ],
+        "submittedBodiesRange": [
+          0,
+          0
+        ],
+        "engineFpsRange": [
+          73,
+          107
+        ],
+        "renderWidthRange": [
+          640,
+          640
+        ],
+        "renderHeightRange": [
+          360,
+          360
+        ],
+        "crowdDisplayHzRange": [
+          0,
+          0
+        ],
+        "crowdFrameAgeMsRange": [
+          0,
+          0
+        ],
+        "crowdPrepareMsRange": [
+          0.20000004768371582,
+          0.20000004768371582
+        ],
+        "crowdLagMsRange": [
+          0.20000004768371582,
+          0.20000004768371582
+        ],
+        "manualShotsFiredRange": [
+          0,
+          60000
+        ],
+        "manualShotHitsRange": [
+          0,
+          5847
+        ],
+        "manualShotExpiredRange": [
+          0,
+          44771
+        ],
+        "manualShotClearedRange": [
+          0,
+          0
+        ],
+        "manualShotHpDamageRange": [
+          0,
+          64
+        ],
+        "bossShotHitsRange": [
+          0,
+          0
+        ],
+        "bossShotExpiredRange": [
+          0,
+          0
+        ],
+        "simTimeDelta": 14.9,
+        "ticksDelta": 894,
+        "killsDelta": 0,
+        "damageDelta": 0,
+        "crowdDisplayFramesDelta": 0,
+        "simulationWallRatio": 0.993,
+        "crowdDisplayHz": 0.0,
+        "playingSamples": 65,
+        "otherPhases": [],
+        "timeToReadySeconds": 6.61
+      },
+      "first": {
+        "alive": 0,
+        "bosses": 0,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 1.35,
+        "kills": 7,
+        "level": 2
+      },
+      "last": {
+        "alive": 0,
+        "bosses": 0,
+        "x": 15.8599462509155,
+        "y": 45.5,
+        "gameClock": null,
+        "simTime": 16.2500000000004,
+        "kills": 7,
+        "level": 2
+      },
+      "sampleCount": 65,
+      "requestedBullets": 60000
+    },
+    "projectiles-original": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=original&count=300&seed=7&scenario=stress&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 283,
+        "wallSeconds": 15.673,
+        "browserFps": 18.1,
+        "p50ms": 50,
+        "p95ms": 119,
+        "p99ms": 147.7,
+        "maxMs": 165.5,
+        "over33ms": 209,
+        "over50ms": 141,
+        "aliveRange": [
+          0,
+          0
+        ],
+        "visibleRange": [
+          0,
+          0
+        ],
+        "updatedRange": [
+          0,
+          0
+        ],
+        "drawsRange": [
+          52,
+          64
+        ],
+        "killsRange": [
+          7,
+          7
+        ],
+        "damageRange": [
+          147,
+          147
+        ],
+        "xpRange": [
+          2,
+          2
+        ],
+        "levelRange": [
+          2,
+          2
+        ],
+        "hpRange": [
+          68,
+          100
+        ],
+        "xRange": [
+          2.60000014305115,
+          84.2399826049805
+        ],
+        "yRange": [
+          0,
+          62.3999938964844
+        ],
+        "projectilesRange": [
+          0,
+          26515
+        ],
+        "bossesRange": [
+          0,
+          0
+        ],
+        "bossProjectilesRange": [
+          0,
+          0
+        ],
+        "bossPatternsRange": [
+          0,
+          0
+        ],
+        "bossShotsFiredRange": [
+          0,
+          0
+        ],
+        "manualProjectilesRange": [
+          0,
+          26515
+        ],
+        "zonesRange": [
+          0,
+          0
+        ],
+        "nodesRange": [
+          140,
+          58482
+        ],
+        "hitsTakenRange": [
+          0,
+          8
+        ],
+        "damageTakenRange": [
+          0,
+          32
+        ],
+        "submittedBodiesRange": [
+          -1,
+          -1
+        ],
+        "engineFpsRange": [
+          8,
+          90
+        ],
+        "renderWidthRange": [
+          640,
+          640
+        ],
+        "renderHeightRange": [
+          360,
+          360
+        ],
+        "manualShotsFiredRange": [
+          0,
+          40000
+        ],
+        "manualShotHitsRange": [
+          0,
+          4531
+        ],
+        "manualShotExpiredRange": [
+          0,
+          8954
+        ],
+        "manualShotClearedRange": [
+          0,
+          0
+        ],
+        "bossShotHitsRange": [
+          0,
+          0
+        ],
+        "bossShotExpiredRange": [
+          0,
+          0
+        ],
+        "simTimeDelta": 8.1167,
+        "ticksDelta": 487,
+        "killsDelta": 0,
+        "damageDelta": 0,
+        "simulationWallRatio": 0.518,
+        "playingSamples": 61,
+        "otherPhases": [],
+        "timeToReadySeconds": 5.313
+      },
+      "first": {
+        "alive": 0,
+        "bosses": 0,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 1.43333333333333,
+        "kills": 7,
+        "level": 2
+      },
+      "last": {
+        "alive": 0,
+        "bosses": 0,
+        "x": 56.160026550293,
+        "y": 62.3999938964844,
+        "gameClock": null,
+        "simTime": 9.55000000000005,
+        "kills": 7,
+        "level": 2
+      },
+      "sampleCount": 61,
+      "requestedBullets": 60000
+    },
+    "bosses": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=300&seed=7&scenario=stress&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 1038,
+        "wallSeconds": 13.003,
+        "browserFps": 79.8,
+        "p50ms": 13.4,
+        "p95ms": 18.9,
+        "p99ms": 20.6,
+        "maxMs": 20.7,
+        "over33ms": 0,
+        "over50ms": 0,
+        "aliveRange": [
+          0,
+          0
+        ],
+        "visibleRange": [
+          0,
+          0
+        ],
+        "updatedRange": [
+          0,
+          0
+        ],
+        "drawsRange": [
+          66,
+          167
+        ],
+        "killsRange": [
+          7,
+          7
+        ],
+        "damageRange": [
+          147,
+          280
+        ],
+        "xpRange": [
+          2,
+          2
+        ],
+        "levelRange": [
+          2,
+          2
+        ],
+        "hpRange": [
+          26,
+          100
+        ],
+        "xRange": [
+          1.30000007152557,
+          448.954162597656
+        ],
+        "yRange": [
+          -198.900283813477,
+          1.30000007152557
+        ],
+        "projectilesRange": [
+          0,
+          58
+        ],
+        "bossesRange": [
+          4,
+          4
+        ],
+        "bossProjectilesRange": [
+          0,
+          58
+        ],
+        "bossPatternsRange": [
+          4,
+          46
+        ],
+        "bossShotsFiredRange": [
+          0,
+          138
+        ],
+        "manualProjectilesRange": [
+          0,
+          0
+        ],
+        "zonesRange": [
+          0,
+          13
+        ],
+        "nodesRange": [
+          166,
+          282
+        ],
+        "hitsTakenRange": [
+          0,
+          9
+        ],
+        "damageTakenRange": [
+          0,
+          134
+        ],
+        "submittedBodiesRange": [
+          0,
+          0
+        ],
+        "engineFpsRange": [
+          72,
+          90
+        ],
+        "renderWidthRange": [
+          640,
+          640
+        ],
+        "renderHeightRange": [
+          360,
+          360
+        ],
+        "crowdDisplayHzRange": [
+          0,
+          0
+        ],
+        "crowdFrameAgeMsRange": [
+          0,
+          0
+        ],
+        "crowdPrepareMsRange": [
+          0.10000014305114746,
+          0.10000014305114746
+        ],
+        "crowdLagMsRange": [
+          0.10000014305114746,
+          0.10000014305114746
+        ],
+        "manualShotsFiredRange": [
+          0,
+          0
+        ],
+        "manualShotHitsRange": [
+          0,
+          0
+        ],
+        "manualShotExpiredRange": [
+          0,
+          0
+        ],
+        "manualShotClearedRange": [
+          0,
+          0
+        ],
+        "manualShotHpDamageRange": [
+          0,
+          0
+        ],
+        "bossShotHitsRange": [
+          0,
+          3
+        ],
+        "bossShotExpiredRange": [
+          0,
+          99
+        ],
+        "simTimeDelta": 12.95,
+        "ticksDelta": 777,
+        "killsDelta": 0,
+        "damageDelta": 133,
+        "crowdDisplayFramesDelta": 0,
+        "simulationWallRatio": 0.996,
+        "crowdDisplayHz": 0.0,
+        "playingSamples": 55,
+        "otherPhases": [],
+        "timeToReadySeconds": 7.009
+      },
+      "first": {
+        "alive": 0,
+        "bosses": 4,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 1.55,
+        "kills": 7,
+        "level": 2
+      },
+      "last": {
+        "alive": 0,
+        "bosses": 4,
+        "x": 448.954162597656,
+        "y": -112.905349731445,
+        "gameClock": null,
+        "simTime": 14.5000000000003,
+        "kills": 7,
+        "level": 2
+      },
+      "sampleCount": 55,
+      "requestedBullets": 0
+    },
+    "headed-combined": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&scenario=stress&v=100k-r5",
+      "headed": true,
+      "summary": {
+        "frames": 1831,
+        "wallSeconds": 22.066,
+        "browserFps": 83.0,
+        "p50ms": 9.6,
+        "p95ms": 18.1,
+        "p99ms": 19.5,
+        "maxMs": 26.2,
+        "over33ms": 0,
+        "over50ms": 0,
+        "aliveRange": [
+          100000,
+          100000
+        ],
+        "visibleRange": [
+          99997,
+          100000
+        ],
+        "updatedRange": [
+          91048,
+          100000
+        ],
+        "drawsRange": [
+          92,
+          190
+        ],
+        "killsRange": [
+          16606,
+          436345
+        ],
+        "damageRange": [
+          132848,
+          3492184.80000001
+        ],
+        "xpRange": [
+          6,
+          3564
+        ],
+        "levelRange": [
+          28,
+          182
+        ],
+        "hpRange": [
+          34,
+          100
+        ],
+        "xRange": [
+          -48.3080062866211,
+          55.9000091552734
+        ],
+        "yRange": [
+          0,
+          85.6308288574219
+        ],
+        "projectilesRange": [
+          6176,
+          19085
+        ],
+        "bossesRange": [
+          4,
+          4
+        ],
+        "bossProjectilesRange": [
+          0,
+          54
+        ],
+        "bossPatternsRange": [
+          4,
+          71
+        ],
+        "bossShotsFiredRange": [
+          0,
+          254
+        ],
+        "manualProjectilesRange": [
+          6144,
+          19041
+        ],
+        "zonesRange": [
+          0,
+          12
+        ],
+        "nodesRange": [
+          348,
+          762
+        ],
+        "hitsTakenRange": [
+          2,
+          54
+        ],
+        "damageTakenRange": [
+          10,
+          1012
+        ],
+        "submittedBodiesRange": [
+          20638,
+          25125
+        ],
+        "engineFpsRange": [
+          67,
+          101
+        ],
+        "renderWidthRange": [
+          640,
+          640
+        ],
+        "renderHeightRange": [
+          360,
+          360
+        ],
+        "crowdDisplayHzRange": [
+          51.77180196029153,
+          59.759955809194786
+        ],
+        "crowdFrameAgeMsRange": [
+          5.6000001430511475,
+          57.59999990463257
+        ],
+        "crowdPrepareMsRange": [
+          9,
+          14.600000143051147
+        ],
+        "crowdLagMsRange": [
+          10.799999952316284,
+          35.799999952316284
+        ],
+        "manualShotsFiredRange": [
+          10000,
+          90000
+        ],
+        "manualShotHitsRange": [
+          0,
+          19724
+        ],
+        "manualShotExpiredRange": [
+          0,
+          51658
+        ],
+        "manualShotClearedRange": [
+          0,
+          0
+        ],
+        "manualShotHpDamageRange": [
+          0,
+          4
+        ],
+        "bossShotHitsRange": [
+          0,
+          31
+        ],
+        "bossShotExpiredRange": [
+          0,
+          176
+        ],
+        "simTimeDelta": 21.95,
+        "ticksDelta": 1317,
+        "killsDelta": 419739,
+        "damageDelta": 3359336.8,
+        "crowdDisplayFramesDelta": 1246,
+        "simulationWallRatio": 0.995,
+        "crowdDisplayHz": 56.5,
+        "actualCrowdFrames": {
+          "frames": 1254,
+          "wallSeconds": 22.092,
+          "p50ms": 16.6,
+          "p95ms": 33,
+          "p99ms": 38,
+          "maxMs": 57.8,
+          "over33ms": 61,
+          "over50ms": 7,
+          "hz": 56.8
+        },
+        "playingSamples": 103,
+        "otherPhases": [],
+        "timeToReadySeconds": 5.362
+      },
+      "first": {
+        "alive": 100000,
+        "bosses": 4,
+        "x": 0,
+        "y": 0,
+        "gameClock": null,
+        "simTime": 1.51666666666667,
+        "kills": 16606,
+        "level": 28
+      },
+      "last": {
+        "alive": 100000,
+        "bosses": 4,
+        "x": 8.20299053192139,
+        "y": 65.7018280029297,
+        "gameClock": null,
+        "simTime": 23.4666666666666,
+        "kills": 436345,
+        "level": 182
+      },
+      "sampleCount": 103,
+      "requestedBullets": 90000
+    },
+    "stock": {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=original&count=100000&seed=7&v=100k-r5",
+      "headed": false,
+      "summary": {
+        "frames": 5,
+        "wallSeconds": 10.224,
+        "browserFps": 0.5,
+        "p50ms": 2018.4,
+        "p95ms": 2202.9,
+        "p99ms": 2202.9,
+        "maxMs": 2202.9,
+        "over33ms": 5,
+        "over50ms": 5
+      },
+      "alive": [
+        100000,
+        100000
+      ],
+      "nodes": 500175,
+      "draws": 200068,
+      "simSeconds": 0.4333333333333333
+    }
+  },
+  "areaAttacks": {
+    "controls": [
+      {
+        "before": {
+          "alive": 100000,
+          "projectiles": 0,
+          "manualProjectiles": 0,
+          "bossProjectiles": 0,
+          "bosses": 0,
+          "zones": 0
+        },
+        "result": {
+          "after": 0,
+          "before": 100000,
+          "commonDamage": 799972,
+          "damage": 799972,
+          "gameKillDelta": 100000,
+          "hits": 100000,
+          "id": 6,
+          "kills": 100000,
+          "liveIdsAfter": "00000000",
+          "liveIdsBefore": "83a480ba",
+          "minimumDamage": 64,
+          "ms": 10,
+          "radius": 768,
+          "source": "menhera",
+          "xpAwarded": 100000
+        },
+        "clickToAckMs": 41.5,
+        "eventMaxFrameMs": 18.8,
+        "twoSecondWindowMaxMs": 20.6,
+        "after": {
+          "alive": 0,
+          "level": 21,
+          "xp": 123,
+          "xpQueued": 0,
+          "dropBinsPending": 0
+        }
+      },
+      {
+        "before": {
+          "alive": 100000,
+          "projectiles": 0,
+          "manualProjectiles": 0,
+          "bossProjectiles": 0,
+          "bosses": 0,
+          "zones": 0
+        },
+        "result": {
+          "after": 0,
+          "before": 100000,
+          "commonDamage": 800000,
+          "damage": 800000,
+          "gameKillDelta": 100000,
+          "hits": 100000,
+          "id": 8,
+          "kills": 100000,
+          "liveIdsAfter": "00000000",
+          "liveIdsBefore": "83a480ba",
+          "minimumDamage": 64,
+          "ms": 5.5,
+          "radius": 768,
+          "source": "menhera",
+          "xpAwarded": 100000
+        },
+        "clickToAckMs": 51.9,
+        "eventMaxFrameMs": 17.1,
+        "twoSecondWindowMaxMs": 20.6,
+        "after": {
+          "alive": 0,
+          "level": 23,
+          "xp": 79,
+          "xpQueued": 0,
+          "dropBinsPending": 0
+        }
+      },
+      {
+        "before": {
+          "alive": 100000,
+          "projectiles": 0,
+          "manualProjectiles": 0,
+          "bossProjectiles": 0,
+          "bosses": 0,
+          "zones": 0
+        },
+        "result": {
+          "after": 0,
+          "before": 100000,
+          "commonDamage": 800000,
+          "damage": 800000,
+          "gameKillDelta": 100000,
+          "hits": 100000,
+          "id": 10,
+          "kills": 100000,
+          "liveIdsAfter": "00000000",
+          "liveIdsBefore": "83a480ba",
+          "minimumDamage": 64,
+          "ms": 3.8,
+          "radius": 768,
+          "source": "menhera",
+          "xpAwarded": 100000
+        },
+        "clickToAckMs": 30.2,
+        "eventMaxFrameMs": 16.7,
+        "twoSecondWindowMaxMs": 20.9,
+        "after": {
+          "alive": 0,
+          "level": 24,
+          "xp": 58,
+          "xpQueued": 0,
+          "dropBinsPending": 0
+        }
+      }
+    ],
+    "combined-nova": [
+      {
+        "before": {
+          "alive": 100000,
+          "projectiles": 10022,
+          "manualProjectiles": 10000,
+          "bossProjectiles": 22,
+          "bosses": 4,
+          "zones": 0
+        },
+        "result": {
+          "after": 0,
+          "before": 100000,
+          "commonDamage": 800000,
+          "damage": 800192,
+          "gameKillDelta": 100000,
+          "hits": 100000,
+          "id": 10,
+          "kills": 100000,
+          "liveIdsAfter": "00000000",
+          "liveIdsBefore": "83a480ba",
+          "minimumDamage": 64,
+          "ms": 4.7,
+          "radius": 768,
+          "source": "menhera",
+          "xpAwarded": 100000
+        },
+        "clickToAckMs": 25.4,
+        "eventMaxFrameMs": 25.9,
+        "twoSecondWindowMaxMs": 25.9,
+        "after": {
+          "alive": 0,
+          "level": 48,
+          "xp": 258,
+          "xpQueued": 0,
+          "dropBinsPending": 0
+        }
+      }
+    ],
+    "stock": [
+      {
+        "before": {
+          "alive": 100000,
+          "projectiles": 0,
+          "manualProjectiles": 0,
+          "bossProjectiles": 0,
+          "bosses": 0,
+          "zones": 0
+        },
+        "result": {
+          "after": 0,
+          "before": 100000,
+          "commonDamage": 758280,
+          "damage": 758280,
+          "gameKillDelta": 100000,
+          "hits": 100000,
+          "id": 1,
+          "kills": 100000,
+          "liveIdsAfter": "00000000",
+          "liveIdsBefore": "d3dce7cd",
+          "minimumDamage": 64,
+          "ms": 41262,
+          "radius": 768,
+          "source": "menhera",
+          "xpAwarded": 100000
+        },
+        "clickToAckMs": 42598.6,
+        "eventMaxFrameMs": 43712.4,
+        "twoSecondWindowMaxMs": 43712.4,
+        "after": {
+          "alive": 0,
+          "level": 2,
+          "xp": 2,
+          "xpQueued": 0,
+          "dropBinsPending": 0
+        }
+      }
+    ]
+  },
+  "controls": [
+    {
+      "control": "clear",
+      "kind": null,
+      "sample": {
+        "alive": 0,
+        "projectiles": 0,
+        "manualProjectiles": 0,
+        "manualShotsFired": 0,
+        "manualShotHits": 0,
+        "manualShotExpired": 0,
+        "manualShotCleared": 0,
+        "manualShotHpDamage": 0,
+        "bosses": 0,
+        "bossShotsFired": 0,
+        "zones": 0,
+        "lastPattern": ""
+      }
+    },
+    {
+      "control": "projectiles",
+      "kind": null,
+      "observed": {
+        "alive": 0,
+        "projectiles": 500,
+        "manualProjectiles": 500,
+        "manualShotsFired": 500,
+        "manualShotHits": 0,
+        "manualShotExpired": 0,
+        "manualShotCleared": 0,
+        "manualShotHpDamage": 0,
+        "bosses": 0,
+        "bossShotsFired": 0,
+        "zones": 0,
+        "lastPattern": ""
+      },
+      "removed": {
+        "alive": 0,
+        "projectiles": 0,
+        "manualProjectiles": 0,
+        "manualShotsFired": 500,
+        "manualShotHits": 0,
+        "manualShotExpired": 0,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 0,
+        "bosses": 0,
+        "bossShotsFired": 0,
+        "zones": 0,
+        "lastPattern": ""
+      }
+    },
+    {
+      "control": "tenThousandExpire",
+      "kind": null,
+      "observed": {
+        "alive": 0,
+        "projectiles": 10000,
+        "manualProjectiles": 10000,
+        "manualShotsFired": 10500,
+        "manualShotHits": 0,
+        "manualShotExpired": 0,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 0,
+        "bosses": 0,
+        "bossShotsFired": 0,
+        "zones": 0,
+        "lastPattern": ""
+      },
+      "ended": {
+        "alive": 0,
+        "projectiles": 0,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 0,
+        "bossShotsFired": 0,
+        "zones": 0,
+        "lastPattern": ""
+      }
+    },
+    {
+      "control": "pattern",
+      "kind": "daebuntang",
+      "after": {
+        "alive": 0,
+        "projectiles": 14,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 1,
+        "bossShotsFired": 14,
+        "zones": 0,
+        "lastPattern": "대분탕 원형탄 14발"
+      },
+      "start": {
+        "alive": 0,
+        "projectiles": 0,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 1,
+        "bossShotsFired": 0,
+        "zones": 0,
+        "lastPattern": "daebuntang / walk"
+      }
+    },
+    {
+      "control": "pattern",
+      "kind": "doebaebot",
+      "after": {
+        "alive": 0,
+        "projectiles": 27,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 2,
+        "bossShotsFired": 28,
+        "zones": 7,
+        "lastPattern": "도배봇 감속 장판 1개"
+      },
+      "start": {
+        "alive": 0,
+        "projectiles": 14,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 2,
+        "bossShotsFired": 14,
+        "zones": 0,
+        "lastPattern": "doebaebot / walk"
+      }
+    },
+    {
+      "control": "pattern",
+      "kind": "buffering",
+      "after": {
+        "alive": 0,
+        "projectiles": 13,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 3,
+        "bossShotsFired": 28,
+        "zones": 12,
+        "lastPattern": "buffering / walk"
+      },
+      "start": {
+        "alive": 0,
+        "projectiles": 27,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 3,
+        "bossShotsFired": 28,
+        "zones": 9,
+        "lastPattern": "buffering / walk"
+      }
+    },
+    {
+      "control": "pattern",
+      "kind": "glitch",
+      "after": {
+        "alive": 0,
+        "projectiles": 35,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 4,
+        "bossShotsFired": 50,
+        "zones": 12,
+        "lastPattern": "대분탕 원형탄 14발"
+      },
+      "start": {
+        "alive": 0,
+        "projectiles": 21,
+        "manualProjectiles": 0,
+        "manualShotsFired": 10500,
+        "manualShotHits": 4000,
+        "manualShotExpired": 6000,
+        "manualShotCleared": 500,
+        "manualShotHpDamage": 4,
+        "bosses": 4,
+        "bossShotsFired": 36,
+        "zones": 12,
+        "lastPattern": "글리치 역전탄 8발"
+      }
+    }
+  ],
+  "rawArchive": "public-runs.zip",
+  "browser": "158.0.8127.36",
+  "visualCheck": {
+    "scope": "Local frozen 100,000-enemy scene, 640x360 internally, same camera and seeded positions",
+    "imageSize": [
+      1280,
+      720
+    ],
+    "differentPixels": 0,
+    "imageSha256Both": "f989d60080c49c4be0d31aabc302e0864b8aa2099dea596422aad66981a5694d",
+    "bodyInstancesBefore": 100000,
+    "bodyInstancesAfter": 33518,
+    "shadowInstancesAfter": 2059,
+    "r4MaskRegression": "The r4/r5 mask output for all three GPU buffers matched r3 on all 595 compared frames."
+  },
+  "separateScreenshotRuns": [
+    {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&v=100k-r5",
+      "browser": "158.0.8127.36",
+      "displayed": "직전 100,000 · 처치 100,000 · 남은 적 0\n적중 100,000회 · 발생 경험치 100,000\n공격 처리 7.0 ms · 최장 프레임 34.2 ms"
+    },
+    {
+      "url": "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7&v=100k-r5",
+      "browser": "158.0.8127.36",
+      "displayed": "직전 100,000 · 처치 100,000 · 남은 적 0\n적중 100,000회 · 발생 경험치 100,000\n공격 처리 7.6 ms · 최장 프레임 20.6 ms"
+    }
+  ],
+  "rawArchiveSha256": "975823bcd233c6e7e02b80e9f9ff371363c98438fcfbfee648f3b27ea57d19b7"
+}

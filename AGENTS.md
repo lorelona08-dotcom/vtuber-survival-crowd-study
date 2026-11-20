@@ -8,4 +8,6 @@
 4. **보스·탄환·일반 플레이** — [review_scene.gd](game/review_scene.gd)가 원작 보스 패턴을 발동한다. 보스 탄은 원작 개체이고, 버튼으로 추가하는 직선탄은 [발사체 풀](game/straight_shots.js)에서 충돌·수명을 개별 계산한다. [normal_scene.gd](game/normal_scene.gd)는 혼합 웨이브·수동 레벨업·5분 보스를 사용한다.
 5. **재검증** — `python qa/debug_controls.py --big-wave`가 10만 적중·처치·경험치와 탄환의 소멸을 확인한다. `python qa/play.py --case combined --boss-kind all --shot-count 10000`은 군중·탄막·보스를, `--case normal`은 혼합 웨이브를 측정한다. 실제 군중 그림 사이의 P99, 공격 프레임, 게임 시계 진행률도 본다. [테스트 코드](qa/)
 
-원작에 옮길 때는 검증한 공원 일반 쪼랭이와 단순 직선탄부터 연결한다. 엘리트·보스·다른 무기는 각자의 충돌·처치 보상·명중 콜백을 검증하며 확장한다. 고정 인원 보충과 768 범위 광역기는 시험 씬의 설정이다.
+원작에 옮길 때는 웹 템플릿에 `swarm.js`·`render_pipeline.js`·`straight_shots.js`를 로드한다. 공원의 일반 쪼랭이부터 `spawn_enemy`를 슬롯 생성에 연결하고, 물리 틱·범위 공격·소환 상한이 같은 생존 집계를 보게 한다. 엘리트·다른 무기는 각자의 충돌·처치 보상·명중 콜백을 확인하며 확장한다. 고정 인원 보충과 768 범위 광역기는 시험 씬의 설정이다.
+
+검증한 코드 커밋·기기·프레임 시간·투사체 및 적 생사 집계는 [공개 측정 요약](results/summary.json)에 있다.
