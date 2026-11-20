@@ -68,7 +68,7 @@ def summarize(intervals):
 
 
 def capture(browser, args, output):
-    config = {"mode": args.mode, "count": args.count, "seed": args.seed,
+    config = {"mode": args.mode, "count": args.count, "seed": args.seed, "preset": "single",
               "scenario": "normal" if args.case == "normal" else "stress"}
     if args.build:
         config["v"] = args.build

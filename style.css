@@ -45,9 +45,12 @@ h1 {margin: 0; font-size: clamp(26px, 3.15vw, 38px); line-height: 1.15; letter-s
 .conditions select, .conditions input, .conditions button {font-size: 13px; height: 33px; padding: 0 9px; color: #e7e9df}
 .conditions input {width: 62px}
 .conditions button:hover {border-color: #777d6f}
-.play-layout {display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 12px; align-items: start}
+.play-layout {display: grid; grid-template-columns: minmax(0, 1fr) 261px; grid-template-areas: "game panel" "metrics panel"; gap: 0 12px; align-items: start; align-content: start}
+.play-layout > .play {grid-area: game}
+.play-layout > .metrics {grid-area: metrics}
+.play-layout > .debug-panel {grid-area: panel}
 .debug-panel {background: var(--panel); border: 1px solid var(--border); border-radius: 7px; padding: 0 11px}
-.debug-group, .debug-end {padding: 10px 0; display: grid; gap: 8px}
+.debug-group, .debug-end {padding: 10px 0; display: grid; gap: 8px; min-width: 0}
 .debug-group + .debug-group, .debug-end {border-top: 1px solid var(--border)}
 .debug-heading {display: flex; justify-content: space-between; align-items: baseline; gap: 6px; font-size: 12px; color: var(--muted)}
 .debug-heading h2 {margin: 0; color: #e5e8dd; font-size: 14px; font-weight: 700; letter-spacing: -.03em}
@@ -59,17 +62,49 @@ h1 {margin: 0; font-size: clamp(26px, 3.15vw, 38px); line-height: 1.15; letter-s
 .debug-actions {display: flex; gap: 5px}
 .debug-actions button {background: #2a2f27; border-color: #41493b; min-height: 30px; padding: 3px 6px; font-size: 12px; flex: 1 1 auto; white-space: nowrap}
 .debug-actions button:hover {background: #394031; border-color: #7e8c6b}
+.floor-actions button[aria-pressed="true"] {color: var(--lime); border-color: #81955e}
+.single-boss-control summary {cursor: pointer; color: var(--muted); font-size: 11px; padding: 2px 0}
+.single-boss-control .boss-select {margin: 5px 0}
 #fill-enemies {color: var(--lime)}
 .area-attack {font-size: 12px; min-height: 30px; background: #483b43; color: #ffe0ef; border-color: #67515f}
 .area-attack:hover {background: #58414f}
 .area-attack:disabled {opacity: .65; cursor: progress}
+.attack-actions {display: flex; flex-wrap: wrap; gap: 4px}
+.attack-actions button {flex: 1 1 auto; padding: 3px 5px}
+#finish-result {border-top: 1px solid var(--border); padding-top: 7px}
+#finish-result strong {color: #ffdcf0}
 .area-result {display: grid; gap: 3px; color: #e4e9de; font-size: 11px; line-height: 1.4}
 .area-result span:last-child {color: var(--muted); font-variant-numeric: tabular-nums}
 .boss-select {display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted)}
 .boss-select select {color: #e3e6db; min-width: 0; flex: 1; background: #252923; height: 27px; font-size: 12px}
 #command-status {min-height: 16px; color: #bcc6b2; font-size: 11px; line-height: 1.45}
 .play-layout:fullscreen {box-sizing: border-box; width: 100vw; height: 100vh; overflow: auto; align-content: center; background: #0d0f0d; padding: 12px}
-.normal-wave .debug-actions, .normal-wave .area-attack, .normal-wave .boss-select {display: none}
+.normal-wave .debug-actions, .normal-wave .area-attack, .normal-wave .single-boss-control {display: none}
+.peak-controls {display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 11px 0; padding: 10px 13px; background: var(--panel); border: 1px solid var(--border); border-radius: 6px}
+.peak-intro {display: flex; gap: 9px; align-items: baseline; flex-wrap: wrap; margin-right: auto}
+.peak-intro h2 {font-size: 14px; letter-spacing: -.035em; margin: 0}
+.peak-intro span, #repeat-status {font-size: 12px; color: var(--muted)}
+.peak-buttons {display: flex; gap: 6px; flex-wrap: wrap}
+.peak-buttons button {font-size: 12px; min-height: 30px; padding: 4px 9px; background: #2a2f27; border-color: #49503f}
+.peak-buttons button:hover {border-color: #899b74}
+.peak-buttons button:disabled {opacity: .55}
+#repeat-status {width: 100%; margin: 0; line-height: 1.5; font-variant-numeric: tabular-nums}
+.inspection {display: grid; grid-template-columns: 1.1fr 1.1fr .8fr; gap: 8px; margin: 10px 0; align-items: start}
+.inspection details {min-width: 0; border: 1px solid var(--border); border-radius: 5px; background: #1a1d1a; padding: 0 10px}
+.inspection summary {cursor: pointer; padding: 9px 0; font-size: 13px; font-weight: 650}
+.inspection summary span {font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 7px}
+.inspection-scroll {overflow: auto; max-height: 325px}
+.inspection table {border-collapse: collapse; width: 100%; font-size: 11px; font-variant-numeric: tabular-nums; text-align: left; line-height: 1.5}
+.inspection th, .inspection td {padding: 4px; border-top: 1px solid var(--border); overflow-wrap: anywhere}
+.inspection thead th {position: sticky; top: 0; background: #222720; color: #c1c8ba; font-weight: 550}
+.inspection tbody th {font-weight: 500}
+#species-detail :is(td,th):nth-child(n+2), #boss-detail :is(td,th):last-child {text-align: right}
+#last-pattern {margin: 7px 0 8px; color: var(--muted); font-size: 11px; line-height: 1.5}
+.inspection .elite-detail {border: 0; border-top: 1px solid var(--border); border-radius: 0; padding: 0; margin-top: 5px; background: transparent}
+#heart-count {margin: 5px 0 8px; font-size: 11px; line-height: 1.45; color: var(--muted)}
+.shot-audit {margin: 0 0 7px; font-size: 11px}
+.shot-audit div {display: flex; justify-content: space-between; padding: 4px; border-top: 1px solid var(--border)}
+.shot-audit dd {margin: 0; font-variant-numeric: tabular-nums}
 .play {border: 1px solid var(--border); background: #20231f; border-radius: 7px; overflow: hidden}
 .stage {width: 100%; aspect-ratio: 16/9; background: #0c0e0d; position: relative; isolation: isolate}
 #game {display: block; width: 100%; height: 100%; outline-offset: -3px; image-rendering: pixelated; touch-action: none}
@@ -113,7 +148,7 @@ footer a {font-size: inherit; white-space: nowrap}
   .metrics {padding: 14px 0 13px}
 }
 @media (max-width: 870px) {
-  .play-layout {grid-template-columns: minmax(0, 1fr)}
+  .play-layout {grid-template-columns: minmax(0, 1fr); grid-template-areas: "game" "metrics" "panel"; gap: 8px}
   .debug-panel {display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); column-gap: 12px}
   .debug-group + .debug-group {border-top: 0}
   .debug-end {grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; padding: 6px 0}
@@ -127,6 +162,8 @@ footer a {font-size: inherit; white-space: nowrap}
   .head-inner, main {width: calc(100% - 28px)}
   .head-inner {height: 46px}
   .head-inner nav {gap: 12px}
+  .conditions {flex-wrap: wrap}
+  .inspection {grid-template-columns: 1fr}
   .title-row {margin: 20px 0 13px}
   .title-row p {font-size: 12px}
   .controls {gap: 8px}
@@ -144,12 +181,14 @@ footer a {font-size: inherit; white-space: nowrap}
   .debug-group:nth-child(3), .debug-end {border-top: 1px solid var(--border)}
   .debug-group:nth-child(3) {grid-column: 1 / -1; grid-template-columns: 1fr 1fr; align-items: center; gap: 5px 12px}
   .debug-group:nth-child(3) .debug-heading {justify-content: start; gap: 8px}
-  .debug-group:nth-child(3) .debug-actions {grid-row: 2; grid-column: 2}
-  .debug-group:nth-child(3) .debug-grid {grid-row: 2; grid-column: 1; justify-content: start}
+  .debug-group:nth-child(3) > .single-boss-control {align-self: start}
+  .debug-group:nth-child(3) .debug-grid {justify-content: start}
   .debug-actions {gap: 3px}
   .debug-actions button {font-size: 10px; padding: 2px 4px}
   .debug-heading .population {font-size: 21px}
   .debug-grid {font-size: 10px; gap: 3px}
+  .peak-intro {gap: 3px 8px}
+  .peak-intro span {font-size: 11px}
 }
 @media (max-width: 460px) {
   .head-inner, main {width: calc(100% - 20px)}
@@ -164,4 +203,9 @@ footer a {font-size: inherit; white-space: nowrap}
   .conditions select, .conditions input, .conditions button {padding: 0 5px}
   .stage-caption {gap: 8px; padding: 6px 7px; font-size: 10px}
   .metric-label {font-size: 11px}
+}
+@media (max-width: 350px) {
+  .debug-panel {grid-template-columns: minmax(0, 1fr)}
+  .debug-group + .debug-group {border-top: 1px solid var(--border)}
+  .debug-group:nth-child(3) {grid-template-columns: minmax(0, 1fr)}
 }

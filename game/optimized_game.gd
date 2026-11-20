@@ -1,4 +1,4 @@
-extends "res://scripts/game/game.gd"
+extends "res://review/stress_game.gd"
 
 const CrowdRenderer = preload("res://review/crowd_renderer.gd")
 const CrowdTarget = preload("res://review/crowd_target.gd")
@@ -9,7 +9,6 @@ var crowd
 var renderer
 var manual_shots
 var target_handles: Dictionary = {}
-var review_enemy: Dictionary
 var aura_window
 var drop_cells: Dictionary = {}
 var pulses := 0
@@ -49,10 +48,6 @@ func give_weapon(id: String):
 	player.weapons.append(weapon)
 	return weapon
 
-func _ready() -> void:
-	super._ready()
-	review_enemy = Data.ENEMIES["jjorang"]
-
 func configure_crowd(capacity: int) -> void:
 	crowd = JavaScriptBridge.get_interface("VSCrowd")
 	for item in ["gem_s", "gem_m", "gem_l", "coin", "cheese", "ticket", "hate", "bullet_glitch"]:
@@ -74,14 +69,15 @@ func advance_crowd(delta: float) -> void:
 	var pos: Vector2 = player.global_position
 	var speed_multiplier: float = enemy_speed_mult * enemy_slow * time_slow
 	var start_us := Time.get_ticks_usec()
-	var contact_id := int(crowd.step(delta, pos.x, pos.y, speed_multiplier, player.hit_r()))
+	var contact_id := int(crowd.step(delta, pos.x, pos.y, speed_multiplier, player.hit_r(), t, Engine.physics_ticks_per_second, Engine.time_scale))
 	motion_peak_us = maxi(motion_peak_us, Time.get_ticks_usec() - start_us)
 	# Ordinary contact applies the player's original shared hurt cooldown. Extra
 	# contacts in a cooldown window produce no further damage or knockback.
 	if contact_id >= 0 and player.alive and player.hurt_cd <= 0.0 and player.invuln <= 0.0:
 		var row := _unpack(crowd.snapshot(contact_id))
 		if row.size() == 4:
-			player.contact(float(review_enemy.dmg), _target(row, 0))
+			var target = _target(row, 0)
+			player.contact(float(Data.ENEMIES[target.kind].dmg), target)
 	manual_shots.advance(delta)
 	if pending_bin_count > 0:
 		start_us = Time.get_ticks_usec()
@@ -113,8 +109,7 @@ func hit(target, amount: float, weapon = null, knock := Vector2.ZERO) -> bool:
 
 func resolve_aura(origin: Vector2, weapon, amount: float, slow_factor: float, duration: float) -> void:
 	# This scenario has a single non-awakened starter and no crit equipment.
-	# Bosses and other native scene enemies have already used the original
-	# per-enemy hit path. The packed path covers normal Jjorang only.
+	# Native specialists and bosses use the upstream per-enemy hit path.
 	var result: PackedFloat32Array
 	var start_us := Time.get_ticks_usec()
 	if weapon.full_cast:
@@ -123,8 +118,8 @@ func resolve_aura(origin: Vector2, weapon, amount: float, slow_factor: float, du
 			player.crit_mult, _drop_chance("cheese"), _drop_chance("ticket"), weapon.radius()
 		))
 	else:
-		result = _unpack(crowd.pulse(
-			origin.x, origin.y, weapon.radius() + float(review_enemy.r), amount * enemy_vuln,
+		result = _unpack(crowd.pulseWeapon(
+			origin.x, origin.y, weapon.radius(), amount * enemy_vuln,
 			slow_factor, duration, player.crit, player.crit_mult,
 			_drop_chance("cheese"), _drop_chance("ticket")
 		))
@@ -188,7 +183,7 @@ func _queue_packet(rows: PackedFloat32Array, start: int, count: int, origin: Vec
 			near_bins.append(i)
 		else:
 			distant_bins.append(i)
-	var xp_value: float = gems * float(review_enemy.xp)
+	var xp_value: float = gems
 	xp_dropped += int(xp_value)
 	coin_dropped += coins * 5
 	queued_xp += xp_value
@@ -206,7 +201,7 @@ func _flush_drops() -> void:
 		var index: int = packet.order[packet.next]
 		var rows: PackedFloat32Array = packet.rows
 		var point := Vector2(rows[index], rows[index + 1])
-		var xp_value: float = rows[index + 2] * float(review_enemy.xp)
+		var xp_value: float = rows[index + 2]
 		var gold: float = rows[index + 3] * 5.0
 		if xp_value > 0.0:
 			queued_xp -= xp_value
@@ -259,9 +254,7 @@ func _target(rows: PackedFloat32Array, offset: int):
 		target = CrowdTarget.new()
 		target.game = self
 		target.crowd_id = id
-		target.radius = review_enemy.r
-		target.xp = review_enemy.xp
-		target.max_hp = review_enemy.hp
+		target.configure_species(str(crowd.speciesOf(id)))
 		target_handles[id] = target
 	target.global_position = Vector2(rows[offset + 1], rows[offset + 2])
 	target.hp = rows[offset + 3]

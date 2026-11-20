@@ -27,7 +27,7 @@ def main():
     parser.add_argument("--headed", action="store_true")
     parser.add_argument("--output", type=Path, default=Path("qa-output/debug.json"))
     args = parser.parse_args()
-    query = {"mode": args.mode, "count": args.count, "seed": args.seed}
+    query = {"mode": args.mode, "count": args.count, "seed": args.seed, "preset": "single"}
     if args.build:
         query["v"] = args.build
     url = args.url.rstrip("/") + "/?" + urlencode(query)

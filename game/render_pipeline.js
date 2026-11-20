@@ -5,7 +5,7 @@
   const fields = [
     ["slowUntil", Float64Array], ["flashUntil", Float64Array],
     ["x", Float32Array], ["y", Float32Array], ["phase", Float32Array], ["born", Float32Array],
-    ["flip", Uint8Array], ["live", Uint8Array],
+    ["flip", Uint8Array], ["live", Uint8Array], ["kind", Uint8Array],
   ];
   function views(buffer, capacity) {
     const out = {};
@@ -22,7 +22,7 @@
 
   const pipelineURL = new URL(document.currentScript.src);
   const workerURL = new URL("crowd_worker.js", pipelineURL);
-  workerURL.searchParams.set("v", pipelineURL.searchParams.get("v") || "100k-r5");
+  workerURL.searchParams.set("v", pipelineURL.searchParams.get("v") || "mixed-r6");
   const forceSync = new URLSearchParams(location.search).get("render") === "sync";
   const strides = [8, 12, 12];
   const empty = new Uint8Array(0);

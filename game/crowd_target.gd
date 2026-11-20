@@ -19,6 +19,19 @@ var scale_f := 1.0
 var xp_half := false
 var last_weapon
 
+func configure_species(key: String) -> void:
+	var info: Dictionary = Data.ENEMIES[key]
+	kind = key
+	move = info.move
+	max_hp = info.hp
+	xp = info.xp
+	radius = info.r
+	if bool(game.crowd.isMinionSpecies(key)):
+		max_hp *= 0.4
+		radius *= 0.8
+		scale_f = 0.75
+		xp = 1
+
 func damage(amount: float, weapon = null, knock_vec := Vector2.ZERO) -> bool:
 	if dead:
 		return false

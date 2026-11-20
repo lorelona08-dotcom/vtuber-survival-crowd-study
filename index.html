@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#151716">
   <title>V-tuber 서바이벌 · 전투 디버그</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="./style.css?v=100k-r5">
+  <link rel="stylesheet" href="./style.css?v=mixed-r6">
 </head>
 <body>
   <header class="page-head">
@@ -23,8 +23,8 @@
   <main>
     <div class="title-row">
       <div>
-        <h1 id="scene-title">대규모 전투 디버그</h1>
-        <p id="scene-description">공원에서 조하구로 이동하며 적의 수, 투사체, 보스 패턴을 직접 바꿔 보세요.</p>
+        <h1 id="scene-title">혼합 전투 디버그</h1>
+        <p id="scene-description">공원에서 조하구로 플레이하며 원작 몬스터 전체, 보스 10종과 적탄 1만 발을 함께 확인하세요.</p>
       </div>
       <div class="scenario-actions">
         <a id="normal-play" class="entry-link" href="?scenario=normal">일반 웨이브 플레이 →</a>
@@ -38,6 +38,12 @@
         <a id="original" href="?mode=original">원본 처리</a>
       </nav>
       <div class="conditions">
+        <label id="initial-preset">구성
+          <select id="preset">
+            <option value="mixed">전 종류 혼합</option>
+            <option value="single">쪼랭이 단일</option>
+          </select>
+        </label>
         <label id="initial-population">시작 적 수
           <select id="count">
             <option value="300">300마리</option>
@@ -77,29 +83,49 @@
           <div class="debug-heading"><h2>생존 일반 적</h2><strong id="alive" class="population">—</strong></div>
           <div class="debug-grid"><span>화면 안 생존 <b id="visible-count">—</b></span><span>직전 틱 갱신 <b id="updated">—</b></span></div>
           <div class="debug-grid" id="crowd-display-info"><span>그린 몸통 <b id="drawn-bodies">—</b></span><span>몸통 갱신 <b id="crowd-hz">—</b> Hz</span></div>
-          <div class="debug-actions"><button id="fill-enemies" type="button">10만 마리 나오게 하기</button><button id="clear-enemies" type="button">적 삭제하기</button></div>
-          <button id="area-attack" class="area-attack" type="button">광역기로 전원 공격</button>
+          <div class="debug-grid"><span>생존 종류 <b id="species-present">—</b></span><span>도감 종류 <b id="catalog-count">—</b></span></div>
+          <div class="debug-actions"><button id="fill-enemies" type="button">10만 채우기</button><button id="all-enemies" type="button">전 종류 배치</button><button id="clear-enemies" type="button">적 삭제</button></div>
+          <div class="attack-actions"><button id="area-attack" class="area-attack" type="button" title="광역기 한 번">광역기로 전원 공격</button><button id="finish-wave" class="area-attack" type="button" title="원작 광역기를 실제 게임 시간 간격으로 반복합니다.">현재 무리 끝까지 공격</button></div>
           <div id="area-result" class="area-result" hidden aria-live="polite">
             <span id="area-kills"></span>
             <span id="area-experience"></span>
+            <span id="area-survivors" hidden></span>
             <span id="area-timing"></span>
+          </div>
+          <div id="finish-result" class="area-result" hidden aria-live="off">
+            <strong id="finish-state"></strong>
+            <span id="finish-cohort"></span>
+            <span id="finish-reward"></span>
+            <span id="finish-arrivals"></span>
+            <span id="finish-survivors" hidden></span>
           </div>
         </div>
         <div class="debug-group">
-          <div class="debug-heading"><h2>투사체</h2><strong id="projectiles">—</strong></div>
-          <div class="debug-actions"><button id="add-projectiles" type="button">+500발</button><button id="add-projectiles-10k" type="button">+1만 발</button><button id="clear-projectiles" type="button">투사체 삭제</button></div>
+          <div class="debug-heading"><h2>활성 적탄</h2><strong id="hostile-total">—</strong></div>
+          <div class="debug-grid"><span>원작 AI <b id="ai-shots">—</b></span><span>실험 추가 <b id="manual-shots">—</b></span><span>유지 하한 <b id="shot-floor">—</b></span></div>
+          <div class="debug-actions floor-actions" aria-label="적탄 유지 하한"><button id="floor-10000" type="button">1만 유지</button><button id="floor-30000" type="button">3만 유지</button><button id="floor-off" type="button">유지 끄기</button></div>
+          <div class="debug-actions"><button id="add-projectiles" type="button">+500발</button><button id="add-projectiles-10k" type="button">+1만 발</button><button id="clear-projectiles" type="button">탄 지우기</button></div>
+          <div class="debug-grid"><span>플레이어 탄 <b id="player-shots">—</b></span><span>전체 투사체 <b id="projectiles">—</b></span></div>
         </div>
         <div class="debug-group">
           <div class="debug-heading"><h2>보스</h2><strong id="bosses">—</strong></div>
-          <label class="boss-select">종류
+          <div class="debug-grid"><span>서로 다른 종류 <b id="boss-distinct">—</b></span><span>관측한 패턴 <b id="pattern-events">—</b></span></div>
+          <div class="debug-actions"><button id="spawn-bosses-10" type="button">10종 동시 소환</button><button id="trigger-patterns-10" type="button">동시 패턴 발동</button></div>
+          <details class="single-boss-control"><summary>보스 한 종 조작</summary><label class="boss-select">종류
             <select id="boss-kind">
               <option value="daebuntang">대분탕 · 원형 탄막</option>
               <option value="doebaebot">도배봇 · 돌진과 장판</option>
               <option value="buffering">버퍼링 · 순간이동</option>
               <option value="glitch">글리치 · 역전탄</option>
+              <option value="stairs">끝없는 계단 · 점멸</option>
+              <option value="blizzard">눈보라 정령 · 파편탄</option>
+              <option value="macaron">마카롱 포탑 · 회전탄</option>
+              <option value="bookworm">책벌레 · 새끼 소환</option>
+              <option value="bat">박쥐 떼 · 분신 돌진</option>
+              <option value="returnbox">연체 반납함 · 부채꼴 탄</option>
             </select>
           </label>
-          <div class="debug-actions"><button id="add-boss" type="button">보스 소환</button><button id="trigger-pattern" type="button">특수 패턴 발동</button></div>
+          <div class="debug-actions"><button id="add-boss" type="button">보스 소환</button><button id="trigger-pattern" type="button">특수 패턴 발동</button></div></details>
           <div class="debug-grid"><span>보스 탄 <b id="boss-projectiles">—</b></span><span>장판 <b id="zones">—</b></span></div>
         </div>
         <div class="debug-end">
@@ -107,7 +133,6 @@
           <span id="command-status" role="status">전투를 준비하고 있습니다.</span>
         </div>
       </aside>
-    </section>
     <section class="metrics" aria-label="실시간 전투 측정">
       <div class="metric"><span class="metric-label">누적 처치</span><strong id="kills">—</strong></div>
       <div class="metric"><span class="metric-label">브라우저 FPS</span><strong id="fps">—</strong></div>
@@ -118,6 +143,44 @@
         <canvas id="plot" width="260" height="42" aria-label="최근 5초간 프레임 시간 그래프"></canvas>
       </div>
     </section>
+    </section>
+    <section class="peak-controls" id="peak-controls" aria-label="복합 스트레스 시험">
+      <div class="peak-intro"><h2>복합 부하</h2><span>전 종류 10만 마리 · 보스 10종 패턴 · 적탄 3만 발 유지</span></div>
+      <div class="peak-buttons"><button id="combined-peak" type="button">최대 부하 재현</button><button id="repeat-peak" type="button">광역기 2회 반복</button><button id="cancel-repeat" type="button" hidden>반복 중단</button></div>
+      <p id="repeat-status" role="status" hidden></p>
+    </section>
+    <section class="inspection" aria-label="실제 개체 상세 정보">
+      <details id="species-detail">
+        <summary>종류별 몬스터 <span id="species-summary">집계 대기</span></summary>
+        <div class="inspection-scroll"><table><thead><tr><th scope="col">원작 몬스터</th><th scope="col">현재 생존</th><th scope="col">누적 등장</th></tr></thead><tbody id="species-rows"></tbody></table></div>
+        <details id="elite-detail" class="elite-detail" hidden>
+          <summary>흑화 엘리트 속성</summary>
+          <table><thead><tr><th scope="col">원작 속성</th><th scope="col">현재 생존</th><th scope="col">누적 등장</th></tr></thead><tbody id="elite-rows"></tbody></table>
+          <p id="heart-count"></p>
+        </details>
+      </details>
+      <details id="boss-detail">
+        <summary>실제 보스와 패턴 <span id="boss-summary">집계 대기</span></summary>
+        <div class="inspection-scroll"><table><thead><tr><th scope="col">현재 보스</th><th scope="col">원작 AI 상태</th><th scope="col">관측한 패턴·효과</th></tr></thead><tbody id="boss-rows"></tbody></table></div>
+        <p id="last-pattern" hidden></p>
+      </details>
+      <details id="shot-detail">
+        <summary>추가 적탄의 실제 결과</summary>
+        <dl class="shot-audit">
+          <div><dt>누적 발사</dt><dd id="shot-fired">—</dd></div>
+          <div><dt>플레이어 접촉</dt><dd id="shot-hits">—</dd></div>
+          <div><dt>벽 충돌</dt><dd id="shot-blocked">—</dd></div>
+          <div><dt>그린 실험탄</dt><dd id="shot-drawn">—</dd></div>
+          <div><dt>같은 도트에 겹친 실험탄</dt><dd id="shot-hidden">—</dd></div>
+          <div id="spark-audit-row" hidden><dt>벽 불꽃 생성 / 생존</dt><dd id="spark-totals">—</dd></div>
+          <div><dt>수명 만료</dt><dd id="shot-expired">—</dd></div>
+          <div><dt>직접 삭제</dt><dd id="shot-cleared">—</dd></div>
+          <div><dt>체력 피해</dt><dd id="shot-damage">—</dd></div>
+          <div><dt>하한 유지 중 실제 최저</dt><dd id="floor-observed-min">—</dd></div>
+          <div><dt>하한 확인 물리 틱</dt><dd id="floor-observed-ticks">—</dd></div>
+        </dl>
+      </details>
+    </section>
     <footer>
       <p>원작은 <a href="https://github.com/vtuber-survival/vtuber-survival.github.io" target="_blank" rel="noopener noreferrer">V-tuber 서바이벌</a>입니다. 이 페이지는 원작자에게 최적화 방법을 제안하기 위한 비공식 실험입니다.</p>
       <a id="source-link" href="https://github.com/lorelona08-dotcom/vtuber-survival-crowd-study/tree/main/game" target="_blank" rel="noopener noreferrer">전투 구현 보기 ↗</a>
@@ -125,9 +188,10 @@
     <div id="feedback" role="status" aria-live="polite"></div>
     <noscript>게임을 실행하려면 브라우저에서 JavaScript를 켜 주세요.</noscript>
   </main>
-  <script src="./game/straight_shots.js?v=100k-r5"></script>
-  <script src="./game/swarm.js?v=100k-r5"></script>
-  <script src="./game/render_pipeline.js?v=100k-r5"></script>
-  <script type="module" src="./app.js?v=100k-r5"></script>
+  <script src="./game/straight_shots.js?v=mixed-r6"></script>
+  <script src="./game/wall_sparks.js?v=mixed-r6"></script>
+  <script src="./game/swarm.js?v=mixed-r6"></script>
+  <script src="./game/render_pipeline.js?v=mixed-r6"></script>
+  <script type="module" src="./app.js?v=mixed-r6"></script>
 </body>
 </html>

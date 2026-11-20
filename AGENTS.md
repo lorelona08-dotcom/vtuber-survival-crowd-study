@@ -1,13 +1,14 @@
-# 군중 최적화 인수인계
+# 원작자와 다음 에이전트를 위한 구현 메모
 
-**[10만 디버그 전투](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r5&mode=optimized&count=100000&seed=7) · [일반 웨이브](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r5&scenario=normal&mode=optimized&seed=7)**
+공원에서 조하구를 움직이며 10만 마리, 원작 보스 10종, 적탄 1만 발을 함께 시험할 수 있습니다. [혼합 전투](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r6&preset=mixed&mode=optimized&count=100000&seed=7) · [일반 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r6&scenario=normal&mode=optimized&seed=7)
 
-1. **배포** — [app.js](app.js)가 고정된 원작 웹 빌드를 해시로 확인하고, [pack.js](pack.js)가 브라우저 메모리에서 실험 씬을 추가한다. GitHub Pages는 이 저장소의 `main` 루트를 서비스한다.
-2. **10만 개체** — [swarm.js](game/swarm.js)는 적별 좌표·체력·속도·상태를 두고 매 물리 틱 이동한다. 공격 후보는 공간 격자에서 찾고 생존 수는 생사 플래그로 센다. [렌더 워커](game/crowd_worker.js)는 640×360 도트 화면에서 가려진 픽셀을 검사한다. [crowd_renderer.gd](game/crowd_renderer.gd)가 남은 몸통·그림자를 MultiMesh로 그린다. UI의 화면 안 생존 수, 제출한 몸통 수, Godot 노드 수는 서로 다른 지표다.
-3. **광역기** — [stress_aura.gd](game/stress_aura.gd)는 조하구 원작 무기에 시험 반경 768·최소 피해 64를 한 번 적용한다. [optimized_game.gd](game/optimized_game.gd)가 개별 HP와 사망을 처리하고 가까운 드롭을 묶어 물리 아이템으로 만든다. 디버그 삭제는 보상을 발생시키지 않는다.
-4. **보스·탄환·일반 플레이** — [review_scene.gd](game/review_scene.gd)가 원작 보스 패턴을 발동한다. 보스 탄은 원작 개체이고, 버튼으로 추가하는 직선탄은 [발사체 풀](game/straight_shots.js)에서 충돌·수명을 개별 계산한다. [normal_scene.gd](game/normal_scene.gd)는 혼합 웨이브·수동 레벨업·5분 보스를 사용한다.
-5. **재검증** — `python qa/debug_controls.py --big-wave`가 10만 적중·처치·경험치와 탄환의 소멸을 확인한다. `python qa/play.py --case combined --boss-kind all --shot-count 10000`은 군중·탄막·보스를, `--case normal`은 혼합 웨이브를 측정한다. 실제 군중 그림 사이의 P99, 공격 프레임, 게임 시계 진행률도 본다. [테스트 코드](qa/)
+| 원작에 적용할 순서 | 구현과 확인할 조건 |
+| --- | --- |
+| 1. 대량으로 등장하는 일반 적부터 묶습니다. | 15종의 원래 체력·반경·속도·XP를 `Data.ENEMIES`에서 읽습니다. 개체별 위치·HP·상태를 배열에 두고 60Hz로 갱신합니다. 범위·접촉은 격자로 찾습니다. 연쇄 추종, 잠복, 회전, 벽 등 특수 9종과 엘리트·하트·보스는 원래 스크립트를 사용합니다. [군중](game/swarm.js) · [특수 몹과 지형](game/mixed_roster.gd) |
+| 2. 이동·생사와 그리기를 분리합니다. | 원작의 15개 그림을 브라우저에서 하나의 아틀라스로 만들고, 워커에서 Y순서·현재 프레임·뒤집기·불투명 도트를 계산합니다. 가려진 적도 이동하고 공격받습니다. 네이티브와 15종의 몸통·그림자를 대조했습니다. [아틀라스와 그리기](game/crowd_renderer.gd) · [워커](game/crowd_worker.js) |
+| 3. 광역 공격은 진짜 HP와 보상을 처리합니다. | 한 공격에서 범위 안 개체별 방어·치명타·HP를 계산하고, 죽은 위치별로 드롭 가치를 합칩니다. 디버그 광역기는 조하구 무기를 반경 768·최소 피해 64로 한 번 발동합니다. 연속 공격은 시작 시 개체를 고정하고 사망·자연 이탈·새 소환을 각각 셉니다. [무기](game/stress_aura.gd) · [피격·드롭](game/optimized_game.gd) · [전멸 집계](game/finish_wave.gd) |
+| 4. 직선탄과 벽 충돌 불꽃을 묶습니다. | 추가 적탄은 모든 탄의 위치·속도·만료·벽·플레이어 충돌을 유지합니다. 똑같은 탄이 같은 틱에 여러 발 맞으면 원작 피해 쿨다운에 필요한 첫 접촉만 엔진에 보내고 전체 명중 수를 기록합니다. 불꽃은 충돌당 3개씩 원작 난수 순서와 수명으로 생성합니다. 보스 고유 탄환·장판·소환은 원작 객체가 처리합니다. [직선탄](game/straight_shots.js) · [벽 불꽃](game/wall_sparks.gd) · [보스 관측](game/native_boss.gd) |
 
-원작에 옮길 때는 웹 템플릿에 `swarm.js`·`render_pipeline.js`·`straight_shots.js`를 로드한다. 공원의 일반 쪼랭이부터 `spawn_enemy`를 슬롯 생성에 연결하고, 물리 틱·범위 공격·소환 상한이 같은 생존 집계를 보게 한다. 엘리트·다른 무기는 각자의 충돌·처치 보상·명중 콜백을 확인하며 확장한다. 고정 인원 보충과 768 범위 광역기는 시험 씬의 설정이다.
+검토할 때는 브라우저 프레임 간격과 실제 새 군중 그림 간격, 게임 시계 진행률을 함께 봅니다. `python qa/mixed.py`는 공개 Pages에서 키보드로 이동하여 종별 수와 매 물리 틱의 탄 하한을 검사합니다. `--floor 30000 --case cycles`는 재생성·반복 광역 공격을, `--case finish`는 처음 무리의 끝까지를 검사합니다. [웹 검증 코드](qa/mixed.py)
 
-검증한 코드 커밋·기기·프레임 시간·투사체 및 적 생사 집계는 [공개 측정 요약](results/summary.json)에 있다.
+이 저장소는 고정 원작 배포의 해시를 확인하고 브라우저 메모리에서 실험 씬을 추가합니다. 소환 하한, 자동 체력 회복, 빠른 레벨업 선택은 극한 시험의 조건입니다. 일반 웨이브 링크는 원작의 소환 일정·공격·수동 레벨업으로 들어갑니다. [원작 빌드](https://github.com/vtuber-survival/vtuber-survival.github.io/tree/1ca4d9f926535de42690583d28cb931c10e718b8) · [웹 로더](app.js) · [일반 플레이 진입점](game/normal_scene.gd)
