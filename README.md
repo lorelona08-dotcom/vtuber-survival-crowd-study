@@ -1,5 +1,7 @@
 # V-tuber 서바이벌 혼합 전투 성능 실험
 
+**원작자 전달 자료** · [짧은 설명](handoff/01-creator.md) · [에이전트용 TXT](handoff/02-agent.txt) · [코드별 상세 설명](handoff/03-code-review.md) · [세 문서 ZIP](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/handoff/vtuber-survival-handoff-ko.zip)
+
 **[10만 마리·보스 10종·적탄 1만 발로 바로 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&preset=mixed&mode=optimized&count=100000&seed=7)** · [일반 웨이브와 5분 보스](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&scenario=normal&mode=optimized&seed=7) · [구현 메모](AGENTS.md)
 
 원작 Godot 웹 엔진·맵·조하구·무기로 플레이하는 비공식 디버그 빌드입니다. 공원에서 WASD·방향키·터치로 이동합니다. 원작 배포 파일은 브라우저에서 고정 커밋의 SHA-256을 확인하고 읽습니다. 원작 제작진과 리소스의 출처는 원작 프로젝트입니다. [원작 게임](https://vtuber-survival.github.io/) · [기준 배포](https://github.com/vtuber-survival/vtuber-survival.github.io/tree/1ca4d9f926535de42690583d28cb931c10e718b8)

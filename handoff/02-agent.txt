@@ -1,0 +1,53 @@
+V-tuber 서바이벌 원작자용 에이전트 인계문
+
+원작 웹판에서 전투를 그리는 비용을 줄일 방법을 검토해 주세요.
+원작의 게임 진행 코드와 메커니즘 보존이 필수입니다. 적·탄·무기 객체가 결정한 상태를
+표시 모듈에서 읽는 방식으로 접근해 주세요.
+변경 범위는 별도 표시 모듈과 기존 그리기 함수입니다. game.gd, enemy.gd, projectile.gd,
+무기·진행·저장 코드는 읽기 전용으로 대조하세요. 이 코드를 수정해야 하는 아이디어는
+병목 설명에만 기록해 주세요.
+
+대조 기준은 원작 vtuber-survival/vtuber-survival.github.io의 1ca4d9f9,
+실험판 lorelona08-dotcom/vtuber-survival-crowd-study의 44ce26c0 (mixed-r7)입니다.
+
+1. 먼저 벽 충돌 불꽃을 보세요.
+   원작 res://scripts/game/projectile.gd의 _physics_process가 벽 충돌 뒤 fx.sparks를
+   호출합니다. res://scripts/game/fx.gd의 sparks가 불꽃별 위치·속도·수명을 정하고,
+   _process가 이를 갱신하며, _draw가 꼬리·몸통·중심을 그립니다.
+   첫 후보는 이미 갱신된 불꽃을 _draw에서 MultiMesh로 묶어 그리는 것입니다.
+   다른 효과가 사이에 있으면 묶음을 끊어 원래 그리기 순서를 지켜 주세요.
+   참고할 코드는 실험판 game/wall_sparks.gd의 _spark_mesh와 셰이더입니다.
+   같은 파일의 take_impacts는 실험용 탄 풀을 읽고 난수를 따로 소비합니다.
+   원작 sparks가 정한 값을 사용하면 난수 중복 호출을 피할 수 있습니다.
+
+2. 그다음 같은 도트에 포개진 적탄을 보세요.
+   실험판 game/straight_shots.js의 prepareRender는 완전히 겹친 동일 적탄 중
+   그리기 순서상 마지막 한 장을 제출합니다. 원작에 검토할 때는 표시 크기,
+   카메라 픽셀 정렬, 동일한 재질과 앞뒤 순서, 알파가 0 또는 255인지 확인하세요.
+   조건이 맞지 않는 그림은 기존 경로로 그립니다.
+
+3. 게임 규칙은 기존 함수가 전담합니다.
+   웨이브·보스 일정, AI·표적 선택, 물리 틱, 피해·무적·상태 효과·명중 콜백,
+   개별 드롭·획득·레벨업·저장, 전역 난수 순서를 보존해 주세요.
+   실험판 swarm.js의 이동·피격, optimized_game.gd의 광역·보상 합산,
+   normal_game.gd의 nearest_enemy, review_scene.gd·stress_aura.gd·finish_wave.gd의
+   강제 소환·자동 회복·강화 광역기·반복 공격은 독립 부하 시험에만 사용합니다.
+
+4. 게임 결과와 성능을 각각 확인해 주세요.
+   같은 시드·틱별 입력·프레임 시간으로 재생해 소환 순서, 적과 플레이어 HP,
+   탄 명중·만료·소유자 콜백, 사망·개별 드롭·획득 시점, 레벨업과 다음 난수를 대조하세요.
+   카메라가 소수 좌표에 있거나 다른 효과가 겹치는 프레임의 픽셀도 비교하세요.
+   이후 실제 GitHub Pages의 일반 웨이브에서 프레임 시간 P95·최장과 게임 시계 진행률을
+   측정해 주세요. 원작자에게는 변경한 표시 파일·함수, 전투 기록 대조 결과, 웹 측정값을 전달해 주세요.
+
+기존 측정에서 몹 10만·보스 10종·적탄 3만의 같은 첫 12초에 벽 불꽃 경로만 바꾸면
+14.2 → 64.7 FPS였습니다. 불꽃 보관·갱신·그리기를 함께 바꾼 값입니다.
+위의 그리기만 적용하는 후보는 자체 실측이 필요합니다. 적탄 1만에서의 전체 비교
+0.3 → 79.1 FPS에는 전투 시뮬레이션 변경도 포함됩니다.
+
+함수별 소스 링크와 재현 명령
+https://github.com/lorelona08-dotcom/vtuber-survival-crowd-study/blob/main/handoff/03-code-review.md
+
+공개 플레이와 프레임별 원자료
+https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&preset=mixed&mode=optimized&count=100000&seed=7
+https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/results/mixed-r7-runs.zip
