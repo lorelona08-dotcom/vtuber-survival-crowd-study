@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://raw.githubusercontent.com/vtuber-survival/vtuber-survival.github.io/1ca4d9f926535de42690583d28cb931c10e718b8/; img-src 'self' data: blob:; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="theme-color" content="#151716">
+  <title>V-tuber 서바이벌 · 대규모 전투 비교</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="page-head">
+    <div class="head-inner">
+      <div class="wordmark"><span class="mark" aria-hidden="true"></span>V-tuber 서바이벌</div>
+      <nav aria-label="외부 링크">
+        <a href="https://vtuber-survival.github.io/" target="_blank" rel="noopener noreferrer">원작 게임 <span aria-hidden="true">↗</span></a>
+        <a href="https://github.com/lorelona08-dotcom/vtuber-survival-crowd-study" target="_blank" rel="noopener noreferrer">검토용 코드 <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="title-row">
+      <div>
+        <h1>대규모 전투 비교</h1>
+        <p>공원에서 조하구로 플레이하며 같은 적 수와 배치로 두 구현을 비교하세요.</p>
+      </div>
+      <button id="share" class="subtle-button" type="button">조건 링크 복사</button>
+    </div>
+    <div class="controls">
+      <nav class="modes" aria-label="전투 구현">
+        <a id="optimized" href="?mode=optimized">개선판</a>
+        <a id="original" href="?mode=original">원본 처리</a>
+      </nav>
+      <div class="conditions">
+        <label>적 수
+          <select id="count">
+            <option value="300">300마리</option>
+            <option value="10000" selected>10,000마리</option>
+            <option value="12000">12,000마리</option>
+          </select>
+        </label>
+        <form id="seed-form">
+          <label>시드 <input id="seed" type="number" required min="1" max="2147483646" value="7" inputmode="numeric"></label>
+          <button type="submit">다시 시작</button>
+        </form>
+      </div>
+    </div>
+    <section class="play" aria-label="조작 가능한 게임">
+      <div class="stage" id="stage">
+        <canvas id="game" width="1280" height="720" tabindex="0" aria-label="공원 전투. WASD 또는 방향키로 이동"></canvas>
+        <div id="cover" class="cover" role="status">
+          <div class="cover-inner">
+            <span class="pulse" aria-hidden="true"></span>
+            <strong id="status-title">게임을 불러오는 중</strong>
+            <span id="status-detail">고정된 원작 배포본을 준비하고 있습니다.</span>
+            <a id="retry" href="" hidden>다시 열기</a>
+          </div>
+        </div>
+      </div>
+      <div class="stage-caption">
+        <span id="run-status" role="status">로딩 중</span>
+        <span class="keys"><kbd>WASD</kbd> <span>또는</span> <kbd>방향키</kbd> 이동</span>
+        <button id="fullscreen" class="subtle-button" type="button">전체 화면</button>
+      </div>
+    </section>
+    <section class="metrics" aria-label="실시간 전투 측정">
+      <div class="metric"><span class="metric-label">살아 있는 적</span><strong id="alive">—</strong></div>
+      <div class="metric"><span class="metric-label">화면 안의 적</span><strong id="visible-count">—</strong></div>
+      <div class="metric"><span class="metric-label">누적 처치</span><strong id="kills">—</strong></div>
+      <div class="metric"><span class="metric-label">브라우저 FPS</span><strong id="fps">—</strong></div>
+      <div class="metric"><span class="metric-label">프레임 시간 P95</span><strong><span id="p95">—</span><small> ms</small></strong></div>
+      <div class="chart">
+        <span class="metric-label">최근 5초 <span>· 기준선 16.7ms</span></span>
+        <canvas id="plot" width="260" height="42" aria-label="최근 5초간 프레임 시간 그래프"></canvas>
+      </div>
+    </section>
+    <footer>
+      <p>원작은 <a href="https://github.com/vtuber-survival/vtuber-survival.github.io" target="_blank" rel="noopener noreferrer">V-tuber 서바이벌</a>입니다. 이 페이지는 원작자에게 최적화 방법을 제안하기 위한 비공식 실험입니다.</p>
+      <a id="source-link" href="https://github.com/lorelona08-dotcom/vtuber-survival-crowd-study/tree/main/game" target="_blank" rel="noopener noreferrer">전투 구현 보기 ↗</a>
+    </footer>
+    <div id="feedback" role="status" aria-live="polite"></div>
+    <noscript>게임을 실행하려면 브라우저에서 JavaScript를 켜 주세요.</noscript>
+  </main>
+  <script src="./game/swarm.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
