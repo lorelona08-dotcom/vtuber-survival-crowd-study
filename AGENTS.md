@@ -1,6 +1,6 @@
 # 군중 최적화 인수인계
 
-**[10만 디버그 전투](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?mode=optimized&count=100000&seed=7) · [일반 웨이브](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?scenario=normal&mode=optimized&seed=7)**
+**[10만 디버그 전투](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&mode=optimized&count=100000&seed=7) · [일반 웨이브](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&scenario=normal&mode=optimized&seed=7)**
 
 1. **배포** — [app.js](app.js)가 고정된 원작 웹 빌드를 해시로 확인하고, [pack.js](pack.js)가 브라우저 메모리에서 실험 씬을 추가한다. GitHub Pages는 이 저장소의 `main` 루트를 서비스한다.
 2. **10만 개체** — [swarm.js](game/swarm.js)는 적별 좌표·체력·속도·상태를 두고 매 물리 틱 이동한다. 공격 후보는 공간 격자에서 찾고 생존 수는 생사 플래그로 센다. [렌더 워커](game/crowd_worker.js)는 640×360 도트 화면에서 가려진 픽셀을 검사한다. [crowd_renderer.gd](game/crowd_renderer.gd)가 남은 몸통·그림자를 MultiMesh로 그린다. UI의 화면 안 생존 수, 제출한 몸통 수, Godot 노드 수는 서로 다른 지표다.

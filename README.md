@@ -2,7 +2,7 @@
 
 공원에서 조하구를 움직여 보세요. 두 링크는 같은 적 수와 배치 시드로 시작합니다. 전투 중에는 멘헤라 발동으로 쪼랭이를 공격하고, 적에게 닿으면 체력이 줄고, 경험치를 주우면 레벨이 오릅니다.
 
-**[10만 마리 디버그 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r3&mode=optimized&count=100000&seed=7) · [일반 웨이브와 5분 보스](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r3&scenario=normal&mode=optimized&seed=7) · [원본 적 처리 방식으로 비교](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r3&mode=original&count=100000&seed=7)**
+**[10만 마리 디버그 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&mode=optimized&count=100000&seed=7) · [일반 웨이브와 5분 보스](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&scenario=normal&mode=optimized&seed=7) · [원본 적 처리 방식으로 비교](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&mode=original&count=100000&seed=7)**
 
 다른 에이전트나 원작 개발자가 이어 볼 파일과 재현 명령을 한 페이지에 정리했습니다. [구현 인수인계](AGENTS.md)
 

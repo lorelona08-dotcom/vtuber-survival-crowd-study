@@ -13,131 +13,123 @@
   const SHADOW_STRIDE = 8;
   const EMPTY = new ArrayBuffer(0);
 
-  // The native Godot 2D viewport snaps transformed quad vertices to whole
-  // pixels. Precompute the opaque pixels the nearest sampler will actually
-  // fetch. A four-row coverage hierarchy rejects enclosed spans cheaply.
+  // The native renderer snaps quad vertices to whole logical pixels. Each
+  // column of this 32-pixel-high sprite fits in one word before translation.
   class NativeCoverage {
     constructor(pixels, sheetWidth, height, worldWidth, worldHeight) {
       const width = sheetWidth / 4;
       this.valid = Number.isInteger(worldWidth) && Number.isInteger(worldHeight) &&
-        worldWidth <= 32 && worldWidth > 0 && worldHeight > 0;
+        worldWidth <= 32 && worldHeight <= 32 && worldWidth > 0 && worldHeight > 0;
       if (!this.valid) return;
       this.halfW = worldWidth / 2;
       this.halfH = worldHeight / 2;
       this.poses = [];
       for (let frame = 0; frame < 2; frame++) {
         for (let flip = 0; flip < 2; flip++) {
-          const nativeRows = [];
-          let first = -1, end = 0;
-          for (let y = 0; y < worldHeight; y++) {
-            const sy = Math.min(height - 1, Math.floor((y + 0.5) * height / worldHeight + 0.0001));
-            let mask = 0;
-            for (let x = 0; x < worldWidth; x++) {
-              const u = (flip ? worldWidth - x - 0.5 : x + 0.5) / worldWidth;
-              const sx = Math.min(width - 1, Math.floor(u * width + 0.0001));
+          const columns = new Int32Array(worldWidth);
+          let left = worldWidth, right = 0;
+          for (let x = 0; x < worldWidth; x++) {
+            const u = (flip ? worldWidth - x - 0.5 : x + 0.5) / worldWidth;
+            const sx = Math.min(width - 1, Math.floor(u * width + 0.0001));
+            for (let y = 0; y < worldHeight; y++) {
+              const sy = Math.min(height - 1, Math.floor((y + 0.5) * height / worldHeight + 0.0001));
               const alpha = pixels.charCodeAt((sy * sheetWidth + frame * width + sx) * 4 + 3);
               if (alpha !== 0 && alpha !== 255) this.valid = false;
-              if (alpha === 255) mask |= 1 << x;
+              if (alpha === 255) columns[x] |= 1 << y;
             }
-            nativeRows.push(mask);
-            if (mask) {
-              if (first === -1) first = y;
-              end = y + 1;
-            }
+            if (columns[x]) { left = Math.min(left, x); right = x + 1; }
           }
-          first = Math.max(0, first);
           const shifts = [];
-          for (let s = 0; s < 32; s++) {
-            const lo = new Int32Array(end - first);
-            const hi = new Int32Array(end - first);
-            for (let j = first; j < end; j++) {
-              lo[j - first] = nativeRows[j] << s;
-              hi[j - first] = s ? nativeRows[j] >>> (32 - s) : 0;
+          for (let shift = 0; shift < 32; shift++) {
+            const n = Math.max(0, right - left);
+            const low = new Int32Array(n), high = new Int32Array(n);
+            let upper = 0, lower = 0;
+            for (let j = 0; j < n; j++) {
+              low[j] = columns[left + j] << shift;
+              high[j] = shift ? columns[left + j] >>> (32 - shift) : 0;
+              lower |= low[j]; upper |= high[j];
             }
-            const layouts = [];
-            for (let a = 0; a < 4; a++) {
-              const groups = [];
-              for (let j = 0; j < lo.length;) {
-                const from = j;
-                const stop = Math.min(lo.length, j + 4 - ((j + a) & 3));
-                let lm = 0, hm = 0;
-                while (j < stop) {
-                  lm |= lo[j];
-                  hm |= hi[j++];
-                }
-                groups.push({from, stop, lm, hm});
-              }
-              layouts.push(groups);
-            }
-            shifts.push({lo, hi, layouts});
+            shifts.push({low, high, upper, lower});
           }
-          this.poses.push({first, shifts});
+          this.poses.push({left, shifts});
         }
       }
     }
 
     begin(cx, cy, halfWidth, halfHeight, margin) {
-      const pad = Math.ceil(2 * margin + 16);
+      this.pad = Math.ceil(2 * margin + 16);
       this.left = cx - halfWidth;
       this.top = cy - halfHeight;
-      this.pad = pad;
-      this.words = Math.ceil((Math.ceil(2 * halfWidth) + 2 * pad) / 32) + 2;
-      const rows = 4 * Math.ceil((Math.ceil(2 * halfHeight) + 2 * pad + 8) / 4);
-      const len = rows * this.words;
-      if (!this.bits || this.bits.length < len) {
-        this.bits = new Uint32Array(len);
-        this.blocks = new Uint32Array(len / 4);
-      } else {
-        this.bits.fill(0, 0, len);
-        this.blocks.fill(0, 0, len / 4);
-      }
+      this.width = Math.ceil(2 * halfWidth) + 2 * this.pad + 4;
+      this.height = Math.ceil(2 * halfHeight) + 2 * this.pad + 4;
+      const len = this.width * (Math.ceil(this.height / 32) + 1);
+      if (!this.bits || this.bits.length < len) this.bits = new Int32Array(len);
+      else this.bits.fill(0, 0, len);
     }
 
     stamp(x, y, frame, flip) {
-      const px = Math.floor(x - this.halfW - this.left + 0.5) + this.pad;
       const pose = this.poses[2 * frame + flip];
-      const py = Math.floor(y - this.halfH - this.top + 0.5) + this.pad + pose.first;
-      const shape = pose.shifts[px & 31];
-      const groups = shape.layouts[py & 3];
-      const w = this.words, col = px >>> 5;
-      const bits = this.bits, blocks = this.blocks, lo = shape.lo, hi = shape.hi;
+      const px = Math.floor(x - this.halfW - this.left + 0.5) + this.pad + pose.left;
+      const py = Math.floor(y - this.halfH - this.top + 0.5) + this.pad;
+      const shape = pose.shifts[py & 31];
+      const width = this.width, bits = this.bits;
+      const lo = shape.low, hi = shape.high;
       let changed = 0;
-      for (let g = 0; g < groups.length; g++) {
-        const block = groups[g];
-        const row = py + block.from;
-        const floor = (row >>> 2) * w + col;
-        if (!(block.lm & ~blocks[floor]) && !(block.hm & ~blocks[floor + 1])) continue;
-        let dl = 0, dh = 0;
-        for (let j = block.from, k = row * w + col; j < block.stop; j++, k += w) {
-          const l = lo[j], h = hi[j];
-          dl |= l & ~bits[k];
-          dh |= h & ~bits[k + 1];
-          bits[k] |= l;
-          bits[k + 1] |= h;
+      let base = (py >>> 5) * width + px;
+      if (!shape.upper || !shape.lower) {
+        const row = shape.upper ? hi : lo;
+        if (shape.upper) base += width;
+        for (let i = 0; i < row.length; i++) {
+          const old = bits[base + i], joined = old | row[i];
+          bits[base + i] = joined;
+          changed |= joined ^ old;
         }
-        const aligned = (row & ~3) * w + col;
-        if (dl) blocks[floor] = bits[aligned] & bits[aligned + w] & bits[aligned + 2 * w] & bits[aligned + 3 * w];
-        if (dh) blocks[floor + 1] = bits[aligned + 1] & bits[aligned + w + 1] & bits[aligned + 2 * w + 1] & bits[aligned + 3 * w + 1];
-        changed |= dl | dh;
+      } else {
+        for (let i = 0; i < lo.length; i++) {
+          const a = base + i, b = a + width;
+          const oldA = bits[a], oldB = bits[b];
+          const joinedA = oldA | lo[i], joinedB = oldB | hi[i];
+          bits[a] = joinedA; bits[b] = joinedB;
+          changed |= (joinedA ^ oldA) | (joinedB ^ oldB);
+        }
       }
       return changed !== 0;
     }
 
+    finish(shadowWidth) {
+      // A horizontal run with the shadow's half-open width can be covered by
+      // two overlapping power-of-two intervals. Precompute their bitwise AND.
+      const span = 2 ** Math.floor(Math.log2(Math.max(1, Math.floor(shadowWidth))));
+      this.span = span;
+      const len = this.width * Math.ceil(this.height / 32);
+      if (!this.reduceA || this.reduceA.length < len) {
+        this.reduceA = new Int32Array(len);
+        this.reduceB = new Int32Array(len);
+      }
+      let src = this.bits;
+      let dest = this.reduceA;
+      for (let offset = 1; offset < span; offset *= 2) {
+        // Queries stay within the padded image; unused right-edge entries
+        // can read into the next band without contributing to a result.
+        for (let i = 0; i < len - offset; i++) dest[i] = src[i] & src[i + offset];
+        src = dest;
+        dest = dest === this.reduceA ? this.reduceB : this.reduceA;
+      }
+      this.shadowMask = src;
+    }
+
     coversShadow(x, y, hw, hh) {
       const l = Math.floor(x - hw - this.left + 0.5) + this.pad;
-      const r = Math.floor(x + hw - this.left + 0.5) + this.pad - 1;
-      const t = Math.floor(y - hh - this.top + 0.5) + this.pad;
-      const b = Math.floor(y + hh - this.top + 0.5) + this.pad;
-      const lw = l >>> 5, rw = r >>> 5, lo = -1 << (l & 31), hi = -1 >>> (31 - (r & 31));
-      const mask = lo & hi, bits = this.bits, w = this.words;
-      for (let a = t * w, last = b * w; a < last; a += w) {
-        if (lw === rw) {
-          if ((bits[a + lw] & mask) !== mask) return false;
-        } else if ((bits[a + lw] & lo) !== lo || (bits[a + rw] & hi) !== (hi | 0)) {
-          return false;
-        }
-      }
-      return true;
+      const r = Math.floor(x + hw - this.left + 0.5) + this.pad;
+      const top = Math.floor(y - hh - this.top + 0.5) + this.pad;
+      const bottom = Math.floor(y + hh - this.top + 0.5) + this.pad - 1;
+      const band = top >>> 5, lastBand = bottom >>> 5, w = this.width;
+      const lo = -1 << (top & 31), hi = (-1 >>> (31 - (bottom & 31))) | 0;
+      const data = this.shadowMask;
+      const first = band * w + l, last = band * w + r - this.span;
+      const common = data[first] & data[last];
+      if (band === lastBand) return (common & lo & hi) === (lo & hi);
+      return (common & lo) === lo && (data[first + w] & data[last + w] & hi) === hi;
     }
   }
 
@@ -665,6 +657,7 @@
           this.bodyIds[bodies++] = i;
         }
       }
+      if (mask) mask.finish(2 * this.shadowHalfWidth);
       const shadows = this.layers[0];
       for (let k = 0; k < inView; k++) {
         const i = this.shadowIds[k];

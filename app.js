@@ -1,6 +1,6 @@
-import {buildReviewPack} from "./pack.js?v=100k-r3";
+import {buildReviewPack} from "./pack.js?v=100k-r4";
 
-const build = "100k-r3";
+const build = "100k-r4";
 const commit = "1ca4d9f926535de42690583d28cb931c10e718b8";
 const upstream = "https://raw.githubusercontent.com/vtuber-survival/vtuber-survival.github.io/" + commit + "/";
 const hashes = {

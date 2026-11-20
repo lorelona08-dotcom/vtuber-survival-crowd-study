@@ -15,7 +15,8 @@ from playwright.sync_api import sync_playwright
 PAGES = "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/"
 RECORD = """
 (() => {
-    const record = { frames: [], times: [], longTasks: [], enabled: false, previous: null };
+    const record = { frames: [], times: [], longTasks: [], crowdIntervals: [], enabled: false,
+        previous: null, lastCrowdSequence: null, lastCrowdAt: null, generation: null };
     window.reviewCapture = record;
     function tick(time) {
         if (record.enabled) {
@@ -24,6 +25,16 @@ RECORD = """
                 record.times.push(time);
             }
             record.previous = time;
+            const renderer = window.VSRender?.stats();
+            if (renderer?.bodies > 0 && renderer.applied !== record.lastCrowdSequence) {
+                const at = performance.now() - renderer.ageMs;
+                if (renderer.generation === record.generation && record.lastCrowdAt !== null) {
+                    record.crowdIntervals.push(at - record.lastCrowdAt);
+                }
+                record.lastCrowdAt = at;
+                record.lastCrowdSequence = renderer.applied;
+                record.generation = renderer.generation;
+            }
         }
         requestAnimationFrame(tick);
     }
@@ -129,7 +140,8 @@ def capture(browser, args, output):
                 next_pattern = time.monotonic() + 4
             key = ("KeyD", "KeyS", "KeyA", "KeyW")[step % 4]
             wall = time.monotonic()
-            page.keyboard.down(key)
+            if not args.stationary:
+                page.keyboard.down(key)
             if args.case == "normal":
                 # A longer kiting route gives regular enemies room to pursue.
                 # A 1.3 s square would repeatedly walk into the same pack.
@@ -144,8 +156,9 @@ def capture(browser, args, output):
                         page.keyboard.press("Digit1")
             else:
                 page.wait_for_timeout(int(1000 * min(1.3, remaining)))
-            page.keyboard.up(key)
-            movements.append([key, round(time.monotonic() - wall, 3)])
+            if not args.stationary:
+                page.keyboard.up(key)
+                movements.append([key, round(time.monotonic() - wall, 3)])
             if finished_play:
                 break
         end = page.evaluate("""() => {
@@ -156,7 +169,8 @@ def capture(browser, args, output):
             const metrics = window.VSReview.exportMetrics();
             return {at:performance.now(), sample:window.VSReview.snapshot().sample,
                 samples:metrics.samples, visibility:document.visibilityState, gpu,
-                canvas:[canvas.width,canvas.height], frames:r.frames, times:r.times, longTasks:r.longTasks};
+                canvas:[canvas.width,canvas.height], frames:r.frames, times:r.times, longTasks:r.longTasks,
+                crowdIntervals:r.crowdIntervals};
         }""")
         samples = [s for s in end["samples"] if begin["at"] <= s["at"] <= end["at"]]
         active = [s for s in samples if s.get("phase") == "playing" and s.get("ready")]
@@ -189,6 +203,10 @@ def capture(browser, args, output):
         stats["simulationWallRatio"] = round(stats.get("simTimeDelta", 0) / stats["wallSeconds"], 3)
         if "crowdDisplayFramesDelta" in stats:
             stats["crowdDisplayHz"] = round(stats["crowdDisplayFramesDelta"] / stats["wallSeconds"], 1)
+        if end["crowdIntervals"]:
+            actual_crowd = summarize(end["crowdIntervals"])
+            actual_crowd["hz"] = actual_crowd.pop("browserFps")
+            stats["actualCrowdFrames"] = actual_crowd
         for previous, current in zip(samples, samples[1:]):
             if previous.get("bosses") == 0 and current.get("bosses", 0) > 0:
                 frames = [interval for at, interval in zip(end["times"], end["frames"])
@@ -204,10 +222,11 @@ def capture(browser, args, output):
             "url": page.url, "dateUtc": datetime.now(timezone.utc).isoformat(), "browser": browser.version,
             "headed": args.headed, "gpu": end["gpu"], "canvas": end["canvas"], "visibility": end["visibility"],
             "loadedBuild": (state.get("config") or {}).get("build"),
-            "cpuThrottle": args.throttle, "configuration": config, "case": args.case,
+            "cpuThrottle": args.throttle, "configuration": config, "case": args.case, "stationary": args.stationary,
             "bossKind": args.boss_kind, "wavesPerBurst": args.waves, "summary": stats,
             "first": earliest, "last": latest, "input": movements, "samples": samples,
             "millisecondsPerBrowserFrame": end["frames"], "frameTimes": end["times"], "longTasks": end["longTasks"],
+            "millisecondsPerCrowdImage": end["crowdIntervals"],
             "originsAndStatus": sorted(requests), "scriptErrors": errors,
         }
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -244,6 +263,7 @@ def main():
     parser.add_argument("--build")
     parser.add_argument("--render", choices=("sync", "worker"))
     parser.add_argument("--headed", action="store_true")
+    parser.add_argument("--stationary", action="store_true")
     parser.add_argument("--screenshot", action="store_true")
     parser.add_argument("--throttle", type=float, default=1)
     parser.add_argument("--output", type=Path, default=Path("qa-output/play.json"))

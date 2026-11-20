@@ -19,10 +19,15 @@ def main():
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--casts", type=int, default=3)
     parser.add_argument("--only-nova", action="store_true")
+    parser.add_argument("--with-boss-fire", action="store_true")
+    parser.add_argument("--build")
     parser.add_argument("--headed", action="store_true")
     parser.add_argument("--output", type=Path, default=Path("qa-output/debug.json"))
     args = parser.parse_args()
-    url = args.url.rstrip("/") + "/?" + urlencode({"mode": args.mode, "count": args.count, "seed": args.seed})
+    query = {"mode": args.mode, "count": args.count, "seed": args.seed}
+    if args.build:
+        query["v"] = args.build
+    url = args.url.rstrip("/") + "/?" + urlencode(query)
     report = {"url": url, "dateUtc": datetime.now(timezone.utc).isoformat(), "casts": [], "checks": []}
 
     with sync_playwright() as pw:
@@ -54,6 +59,9 @@ def main():
             page.goto(url, wait_until="domcontentloaded", timeout=75000)
             first = until("s.ready && s.alive === value", args.count, timeout=210000)
             report["first"] = first
+            report["loadedBuild"] = page.evaluate("() => window.VSReview.snapshot().config.build")
+            if args.build:
+                assert report["loadedBuild"] == args.build
             if not args.only_nova:
                 button("clear-enemies")
                 clear = until("s.phase==='playing' && s.alive===0")
@@ -69,6 +77,14 @@ def main():
                 if index or not args.only_nova:
                     button("fill-enemies")
                     until("s.ready && s.alive === 100000", timeout=210000)
+                if args.with_boss_fire:
+                    for kind in ("daebuntang", "doebaebot", "buffering", "glitch"):
+                        page.locator("#boss-kind").select_option(kind)
+                        button("add-boss")
+                        until("s.bossKind===value", kind)
+                        button("trigger-pattern")
+                    button("add-projectiles")
+                    until("s.projectiles>=200 && s.bosses>=1")
                 # Scroll before the timed event. Let any layout and previous commands settle.
                 page.locator("#area-attack").scroll_into_view_if_needed()
                 page.wait_for_timeout(350)
@@ -77,21 +93,32 @@ def main():
                     r.previous=null; r.enabled=true;
                     return {at:performance.now(),sample:window.VSReview.snapshot().sample};
                 }""")
-                button("area-attack")
+                if args.mode == "original":
+                    # The stock implementation can block the browser input
+                    # protocol for longer than a normal pointer action timeout.
+                    # Queue the page's own button handler before waiting on it.
+                    page.locator("#area-attack").evaluate("(button) => { setTimeout(() => button.click(), 60); }")
+                else:
+                    button("area-attack")
                 prior_id = (begin["sample"].get("nova") or {}).get("id", -1)
-                nova_sample = until("s.nova && s.nova.id>value && s.nova.before>0 && s.nova.after===0", prior_id, timeout=180000)
+                nova_sample = until("s.nova && s.nova.id>value && s.nova.before>0 && s.nova.after===0", prior_id, timeout=300000 if args.mode == "original" else 30000)
                 page.wait_for_function("id=>window.VSReview.snapshot().areaFrame?.id===id",
-                                       arg=nova_sample["nova"]["id"], timeout=45000)
+                                       arg=nova_sample["nova"]["id"], timeout=120000 if args.mode == "original" else 45000)
                 page.wait_for_timeout(2100)
                 capture = page.evaluate("""() => {
                     const r=window.reviewCapture; r.enabled=false;
                     const state=window.VSReview.snapshot();
-                    return {area:state.areaFrame,nova:state.sample.nova,sample:state.sample,
+                    return {area:state.areaFrame,nova:state.sample.nova,sample:state.sample,render:state.render,
                         frames:r.frames,times:r.times,longTasks:r.longTasks};
                 }""")
                 nova = capture["nova"]
                 assert nova["hits"] == nova["kills"] == nova["before"] and nova["after"] == 0
                 assert nova["xpAwarded"] == nova["kills"] and nova["damage"] > 0
+                if "liveIdsAfter" in nova:
+                    assert nova["liveIdsAfter"] == "00000000" and nova["liveIdsBefore"] != "00000000"
+                    assert nova["commonDamage"] > 0
+                if args.mode == "optimized" and capture.get("render"):
+                    assert capture["render"]["bodies"] == 0
                 assert capture["sample"]["alive"] == 0
                 area = capture["area"]
                 around = [d for t, d in zip(capture["times"], capture["frames"])
@@ -99,7 +126,8 @@ def main():
                 entry = {"before": begin["sample"], "nova": nova, "areaFrame": area,
                          "clickToAckMs": round(area["ackAt"] - area["queuedAt"], 2),
                          "window": summarize(capture["frames"]), "aroundClickFramesMs": around,
-                         "afterRewards": capture["sample"], "longTasks": capture["longTasks"]}
+                         "afterRewards": capture["sample"], "afterRender": capture.get("render"),
+                         "longTasks": capture["longTasks"]}
                 report["casts"].append(entry)
                 print(json.dumps({"cast": index + 1, "before": nova["before"], "after": nova["after"],
                                   "kills": nova["kills"], "xp": nova["xpAwarded"], "workMs": nova["ms"],
@@ -115,6 +143,10 @@ def main():
                     report["checks"].append({"control": "pattern", "kind": kind, "start": triggered, "after": sample()})
             report["scriptErrors"] = errors
             assert not errors, errors[:3]
+        except Exception as error:
+            report["error"] = str(error)[:800]
+            report["scriptErrors"] = errors
+            raise
         finally:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
