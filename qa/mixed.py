@@ -139,6 +139,8 @@ def play_window(page, duration, stationary, floor, require_counts=True):
         assert stats["shotFloorMinTickRange"][0] >= floor, stats
         assert all(v[0] > 0 for v in stats["bossKindsRange"].values()), stats["bossKindsRange"]
         assert all(sum(stats["bossPatternEvidence"].get(kind, {}).values()) > 0 for kind in BOSSES), stats["bossPatternEvidence"]
+        if raw["last"]["mode"] == "optimized" and stats["manualProjectilesRange"][0] >= 2048:
+            assert stats["manualHiddenCopiesRange"][1] > 0, "No coincident shot was culled at native resolution"
     if not stationary:
         assert any(stats[k][0] != stats[k][1] for k in ("xRange", "yRange"))
     return {"summary": stats, "stationary": stationary, **raw}
@@ -196,7 +198,15 @@ def run(browser, args, report):
             button(page, "floor-30000")
         ready_window(page, args.floor, args.count)
         page.locator("#game").focus()
-        if args.case == "finish":
+        if args.case == "repeat":
+            button(page, "repeat-peak")
+            page.wait_for_function("() => VSReview.exportMetrics().repeat?.results?.length === 2", timeout=200000)
+            repeat = report["repeat"] = page.evaluate("() => VSReview.exportMetrics().repeat")
+            for item in repeat["results"]:
+                nova = item["nova"]
+                assert nova["before"] >= args.count and nova["kills"] + nova["after"] == nova["before"]
+                assert nova["xpAwarded"] > 0 and item["frame"]["maxMs"] > 0
+        elif args.case == "finish":
             start = capture_start(page)
             button(page, "finish-wave")
             ongoing = wait_sample(page, "s.finishWave?.status === 'running'", timeout=90000)
@@ -250,11 +260,11 @@ def run(browser, args, report):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", default=PAGES)
-    parser.add_argument("--build", default="mixed-r6")
+    parser.add_argument("--build", default="mixed-r7")
     parser.add_argument("--mode", choices=("optimized", "original"), default="optimized")
     parser.add_argument("--count", choices=(300, 10000, 100000), type=int, default=100000)
     parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--case", choices=("play", "cycles", "finish"), default="play")
+    parser.add_argument("--case", choices=("play", "cycles", "finish", "repeat"), default="play")
     parser.add_argument("--seconds", type=float, default=30)
     parser.add_argument("--floor", type=int, choices=(10000, 30000), default=10000)
     parser.add_argument("--stationary", action="store_true")

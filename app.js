@@ -1,6 +1,6 @@
-import {buildReviewPack} from "./pack.js?v=mixed-r6";
+import {buildReviewPack} from "./pack.js?v=mixed-r7";
 
-const build = "mixed-r6";
+const build = "mixed-r7";
 const commit = "1ca4d9f926535de42690583d28cb931c10e718b8";
 const upstream = "https://raw.githubusercontent.com/vtuber-survival/vtuber-survival.github.io/" + commit + "/";
 const hashes = {

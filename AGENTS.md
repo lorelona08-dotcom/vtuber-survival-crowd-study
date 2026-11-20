@@ -1,6 +1,6 @@
 # 원작자와 다음 에이전트를 위한 구현 메모
 
-공원에서 조하구를 움직이며 10만 마리, 원작 보스 10종, 적탄 1만 발을 함께 시험할 수 있습니다. [혼합 전투](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r6&preset=mixed&mode=optimized&count=100000&seed=7) · [일반 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r6&scenario=normal&mode=optimized&seed=7)
+공원에서 조하구를 움직이며 10만 마리, 원작 보스 10종, 적탄 1만 발을 함께 시험할 수 있습니다. [혼합 전투](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&preset=mixed&mode=optimized&count=100000&seed=7) · [일반 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=mixed-r7&scenario=normal&mode=optimized&seed=7)
 
 | 원작에 적용할 순서 | 구현과 확인할 조건 |
 | --- | --- |

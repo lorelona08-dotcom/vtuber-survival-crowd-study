@@ -1,7 +1,7 @@
 /* A bounded read-only render job using the same estimator and atlas as the
  * synchronous path. The three resulting MultiMesh buffers go back to Godot. */
 "use strict";
-const release = encodeURIComponent(new URL(self.location.href).searchParams.get("v") || "mixed-r6");
+const release = encodeURIComponent(new URL(self.location.href).searchParams.get("v") || "mixed-r7");
 importScripts("./swarm.js?v=" + release, "./render_pipeline.js?v=" + release);
 
 const strides = [8, 12, 12];

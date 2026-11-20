@@ -22,7 +22,7 @@
 
   const pipelineURL = new URL(document.currentScript.src);
   const workerURL = new URL("crowd_worker.js", pipelineURL);
-  workerURL.searchParams.set("v", pipelineURL.searchParams.get("v") || "mixed-r6");
+  workerURL.searchParams.set("v", pipelineURL.searchParams.get("v") || "mixed-r7");
   const forceSync = new URLSearchParams(location.search).get("render") === "sync";
   const strides = [8, 12, 12];
   const empty = new Uint8Array(0);

@@ -29,7 +29,9 @@ func setup(world_game) -> void:
 	if image.is_compressed():
 		image.decompress()
 	image.convert(Image.FORMAT_RGBA8)
-	opaque_odd_sprite = image.get_width() % 2 == 1 and image.get_height() % 2 == 1 \
+	# Data.tex may return a high-resolution backing image with a logical
+	# size override. Vertices use the logical quad, alpha comes from the image.
+	opaque_odd_sprite = texture.get_width() % 2 == 1 and texture.get_height() % 2 == 1 \
 		and ProjectSettings.get_setting("rendering/2d/snap/snap_2d_vertices_to_pixel", false) \
 		and ProjectSettings.get_setting("rendering/2d/snap/snap_2d_transforms_to_pixel", false)
 	var rgba := image.get_data()
