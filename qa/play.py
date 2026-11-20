@@ -124,6 +124,7 @@ def capture(browser, args, output):
         movements = []
         next_wave = next_pattern = time.monotonic()
         finished_play = False
+        requested_bullets = requested_patterns = 0
         # The sequence and hold duration are identical for both implementations.
         for step in range(1000):
             remaining = deadline - time.monotonic()
@@ -131,12 +132,15 @@ def capture(browser, args, output):
                 break
             if args.case in ("projectiles", "combined") and time.monotonic() >= next_wave:
                 for _ in range(args.waves):
-                    page.locator("#add-projectiles").evaluate("(button) => button.click()")
-                next_wave = time.monotonic() + 3
+                    selector = "#add-projectiles-10k" if args.shot_count == 10000 else "#add-projectiles"
+                    page.locator(selector).evaluate("(button) => button.click()")
+                    requested_bullets += args.shot_count
+                next_wave = time.monotonic() + args.wave_seconds
             if args.case in ("boss", "combined") and time.monotonic() >= next_pattern:
                 for kind in boss_kinds:
                     page.locator("#boss-kind").select_option(kind)
                     page.locator("#trigger-pattern").evaluate("(button) => button.click()")
+                    requested_patterns += 1
                 next_pattern = time.monotonic() + 4
             key = ("KeyD", "KeyS", "KeyA", "KeyW")[step % 4]
             wall = time.monotonic()
@@ -192,7 +196,9 @@ def capture(browser, args, output):
                       "projectiles", "hostileProjectiles", "playerProjectiles", "bosses", "bossProjectiles",
                       "bossPatterns", "bossShotsFired", "manualProjectiles", "zones", "nodes", "gameClock",
                       "hitsTaken", "damageTaken", "submittedBodies", "engineFps", "renderWidth", "renderHeight",
-                      "crowdDisplayHz", "crowdFrameAgeMs", "crowdPrepareMs", "crowdLagMs"):
+                      "crowdDisplayHz", "crowdFrameAgeMs", "crowdPrepareMs", "crowdLagMs",
+                      "manualShotsFired", "manualShotHits", "manualShotExpired", "manualShotCleared",
+                      "manualShotHpDamage", "bossShotHits", "bossShotExpired"):
             values = [s[field] for s in active if isinstance(s.get(field), (float, int))]
             if values:
                 stats[field + "Range"] = [min(values), max(values)]
@@ -223,7 +229,9 @@ def capture(browser, args, output):
             "headed": args.headed, "gpu": end["gpu"], "canvas": end["canvas"], "visibility": end["visibility"],
             "loadedBuild": (state.get("config") or {}).get("build"),
             "cpuThrottle": args.throttle, "configuration": config, "case": args.case, "stationary": args.stationary,
-            "bossKind": args.boss_kind, "wavesPerBurst": args.waves, "summary": stats,
+            "bossKind": args.boss_kind, "wavesPerBurst": args.waves, "shotCountPerBurst": args.shot_count,
+            "waveSeconds": args.wave_seconds, "requestedBullets": requested_bullets,
+            "requestedPatterns": requested_patterns, "summary": stats,
             "first": earliest, "last": latest, "input": movements, "samples": samples,
             "millisecondsPerBrowserFrame": end["frames"], "frameTimes": end["times"], "longTasks": end["longTasks"],
             "millisecondsPerCrowdImage": end["crowdIntervals"],
@@ -256,6 +264,8 @@ def main():
     parser.add_argument("--case", choices=("crowd", "projectiles", "boss", "combined", "normal"), default="crowd")
     parser.add_argument("--boss-kind", choices=("daebuntang", "doebaebot", "buffering", "glitch", "all"), default="daebuntang")
     parser.add_argument("--waves", type=int, default=1, choices=(1, 2, 4))
+    parser.add_argument("--shot-count", type=int, default=500, choices=(500, 10000))
+    parser.add_argument("--wave-seconds", type=float, default=3)
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--seconds", type=float, default=30)
     parser.add_argument("--timeout", type=int, default=240)

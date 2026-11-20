@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlencode
@@ -20,6 +21,8 @@ def main():
     parser.add_argument("--casts", type=int, default=3)
     parser.add_argument("--only-nova", action="store_true")
     parser.add_argument("--with-boss-fire", action="store_true")
+    parser.add_argument("--big-wave", action="store_true")
+    parser.add_argument("--walk-before-cast", type=float, default=0)
     parser.add_argument("--build")
     parser.add_argument("--headed", action="store_true")
     parser.add_argument("--output", type=Path, default=Path("qa-output/debug.json"))
@@ -62,6 +65,28 @@ def main():
             report["loadedBuild"] = page.evaluate("() => window.VSReview.snapshot().config.build")
             if args.build:
                 assert report["loadedBuild"] == args.build
+            if args.walk_before_cast > 0:
+                page.locator("#game").focus()
+                at = page.evaluate("""() => {
+                    const r=window.reviewCapture;r.enabled=true;r.previous=null;
+                    return performance.now();
+                }""")
+                start = time.monotonic()
+                step = 0
+                while time.monotonic() - start < args.walk_before_cast:
+                    key = ("KeyD", "KeyS", "KeyA", "KeyW")[step % 4]
+                    page.keyboard.down(key)
+                    page.wait_for_timeout(1300)
+                    page.keyboard.up(key)
+                    step += 1
+                window = page.evaluate("""() => {
+                    const r=window.reviewCapture;r.enabled=false;
+                    return {frames:r.frames.slice(), last:window.VSReview.snapshot().sample,
+                        samples:window.VSReview.exportMetrics().samples,at:performance.now()};
+                }""")
+                report["movement"] = {"summary": summarize(window["frames"]), "intervals": window["frames"],
+                                      "first": first, "last": window["last"],
+                                      "samples": [s for s in window["samples"] if at <= s["at"] <= window["at"]]}
             if not args.only_nova:
                 button("clear-enemies")
                 clear = until("s.phase==='playing' && s.alive===0")
@@ -73,6 +98,14 @@ def main():
                 button("clear-projectiles")
                 removed = until("s.projectiles === 0")
                 report["checks"].append({"control": "projectiles", "observed": shots, "removed": removed})
+                if args.big_wave:
+                    button("add-projectiles-10k")
+                    dense = until("s.manualProjectiles >= 9900")
+                    empty = until("s.manualProjectiles === 0 && s.projectilesPending === 0", timeout=30000)
+                    report["checks"].append({"control": "tenThousandExpire", "observed": dense, "ended": empty})
+                    if all(k in empty for k in ("manualShotsFired", "manualShotHits", "manualShotExpired", "manualShotCleared")):
+                        assert empty["manualShotsFired"] == empty["manualShotHits"] + empty["manualShotExpired"] + empty["manualShotCleared"]
+                        assert empty["manualShotsFired"] >= 10000
             for index in range(args.casts):
                 if index or not args.only_nova:
                     button("fill-enemies")
@@ -83,8 +116,8 @@ def main():
                         button("add-boss")
                         until("s.bossKind===value", kind)
                         button("trigger-pattern")
-                    button("add-projectiles")
-                    until("s.projectiles>=200 && s.bosses>=1")
+                    button("add-projectiles-10k" if args.big_wave else "add-projectiles")
+                    until("s.projectiles>=value && s.bosses>=1", 9500 if args.big_wave else 200)
                 # Scroll before the timed event. Let any layout and previous commands settle.
                 page.locator("#area-attack").scroll_into_view_if_needed()
                 page.wait_for_timeout(350)

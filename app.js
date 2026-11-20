@@ -1,6 +1,6 @@
-import {buildReviewPack} from "./pack.js?v=100k-r4";
+import {buildReviewPack} from "./pack.js?v=100k-r5";
 
-const build = "100k-r4";
+const build = "100k-r5";
 const commit = "1ca4d9f926535de42690583d28cb931c10e718b8";
 const upstream = "https://raw.githubusercontent.com/vtuber-survival/vtuber-survival.github.io/" + commit + "/";
 const hashes = {
@@ -21,6 +21,7 @@ const sceneName = scenario === "normal" ? "normal_scene.tscn" : "review_scene.ts
 const resources = [
   "first_use.gd",
   "optimized_game.gd", "crowd_target.gd", "crowd_renderer.gd", "crowd_aura.gd", "stress_aura.gd",
+  "hostile_shot_batch.gd",
   ...(scenario === "normal" ? ["normal_game.gd", "normal_scene.gd"] : ["stock_debug_game.gd", "review_scene.gd"]),
   sceneName,
 ];
@@ -44,7 +45,8 @@ const areaFrames = [];
 let lastAnimation = null;
 let pendingArea = null;
 const commandLabels = {
-  fill: "일반 적 10만 마리 배치", clear: "일반 적 삭제", projectiles: "투사체 추가",
+  fill: "일반 적 10만 마리 배치", clear: "일반 적 삭제", projectiles: "투사체 500발 추가",
+  projectiles10k: "투사체 1만 발 추가",
   clearProjectiles: "투사체 삭제", boss: "보스 소환", pattern: "특수 패턴 발동", nova: "광역기 발동",
 };
 const bossKinds = Array.from(element("boss-kind").options, option => option.value);
@@ -56,6 +58,7 @@ function queue(action, options = {}) {
   const command = {id: nextCommandId++, action};
   if (action === "fill") command.count = 100000;
   if (action === "projectiles") command.count = 500;
+  if (action === "projectiles10k") command.count = 10000;
   if (action === "boss" || action === "pattern") {
     const kind = options.kind ?? element("boss-kind").value;
     if (!bossKinds.includes(kind)) throw new Error("지원하지 않는 보스입니다.");
@@ -225,7 +228,8 @@ requestAnimationFrame(animationFrame);
 
 for (const [id, action] of [
   ["fill-enemies", "fill"], ["clear-enemies", "clear"], ["add-projectiles", "projectiles"],
-  ["clear-projectiles", "clearProjectiles"], ["add-boss", "boss"], ["trigger-pattern", "pattern"], ["area-attack", "nova"],
+  ["add-projectiles-10k", "projectiles10k"], ["clear-projectiles", "clearProjectiles"],
+  ["add-boss", "boss"], ["trigger-pattern", "pattern"], ["area-attack", "nova"],
 ]) {
   element(id).addEventListener("click", () => {
     queue(action);

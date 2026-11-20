@@ -3,9 +3,11 @@ extends "res://scripts/game/game.gd"
 const CrowdRenderer = preload("res://review/crowd_renderer.gd")
 const CrowdTarget = preload("res://review/crowd_target.gd")
 const CrowdAura = preload("res://review/crowd_aura.gd")
+const HostileShotBatch = preload("res://review/hostile_shot_batch.gd")
 
 var crowd
 var renderer
+var manual_shots
 var target_handles: Dictionary = {}
 var review_enemy: Dictionary
 var aura_window
@@ -58,6 +60,9 @@ func configure_crowd(capacity: int) -> void:
 	renderer = CrowdRenderer.new()
 	add_child(renderer)
 	renderer.setup(self, capacity)
+	manual_shots = HostileShotBatch.new()
+	add_child(manual_shots)
+	manual_shots.setup(self)
 
 func begin_crowd_aura(weapon) -> void:
 	aura_window = weapon
@@ -77,6 +82,7 @@ func advance_crowd(delta: float) -> void:
 		var row := _unpack(crowd.snapshot(contact_id))
 		if row.size() == 4:
 			player.contact(float(review_enemy.dmg), _target(row, 0))
+	manual_shots.advance(delta)
 	if pending_bin_count > 0:
 		start_us = Time.get_ticks_usec()
 		_flush_drops()

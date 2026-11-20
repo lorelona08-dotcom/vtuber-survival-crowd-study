@@ -40,7 +40,13 @@ var active_pattern := ""
 var other_enemies: Dictionary = {}
 var manual_bullet := false
 var pending_bullets := 0
+var staged_bullets := 0
 var bullet_index := 0
+var bullet_requests: Array = []
+var native_shot_totals := {
+	"manual": {"fired": 0, "hits": 0, "expired": 0, "cleared": 0},
+	"boss": {"fired": 0, "hits": 0, "expired": 0, "cleared": 0}
+}
 var clear_index := -1
 var first_fill := true
 var pending_nova := 0
@@ -227,14 +233,26 @@ func _read_commands() -> void:
 					game.process_mode = Node.PROCESS_MODE_DISABLED
 					game.visible = false
 				command_message = "일반 적 제거"
-			"projectiles":
+			"projectiles", "projectiles10k":
 				_watch_native_world()
-				pending_bullets += 500
-				command_message = "원작 적 탄환 500개 발사 요청"
+				var count := 10000 if request.action == "projectiles10k" else 500
+				var center: Vector2 = game.player.global_position
+				if optimized:
+					game.manual_shots.add_wave(count, center, bullet_index)
+				else:
+					bullet_requests.append({"left": count, "index": bullet_index, "center": center, "staged": []})
+					pending_bullets += count
+				bullet_index += count
+				command_message = "원작 적 탄환 %s개 발사 요청" % ("10,000" if count == 10000 else "500")
 			"clearProjectiles":
 				pending_bullets = 0
+				staged_bullets = 0
+				bullet_requests.clear()
+				if optimized:
+					game.manual_shots.clear_wave()
 				for shot in game.projectiles:
 					if is_instance_valid(shot):
+						shot.set_meta("review_cleared", true)
 						shot.set_physics_process(false)
 						shot.hide()
 						shot.queue_free()
@@ -275,30 +293,67 @@ func _clear_some() -> void:
 func _watch_native_world() -> void:
 	if not game.world.child_entered_tree.is_connected(_native_child):
 		game.world.child_entered_tree.connect(_native_child)
+		game.world.child_exiting_tree.connect(_native_exiting)
 
 func _native_child(node: Node) -> void:
 	if node.get_script() == NativeEnemy and (node.boss or node.minion or node.kind != "jjorang"):
 		other_enemies[node.get_instance_id()] = node
 	elif node.get_script() == NativeProjectile:
-		node.set_meta("review_source", "manual" if manual_bullet else "boss")
+		var source := "manual" if manual_bullet else "boss"
+		node.set_meta("review_source", source)
 		if not manual_bullet:
+			native_shot_totals.boss.fired += 1
 			boss_shots += 1
 			var family := str(node.kind)
 			shot_events[family] = int(shot_events.get(family, 0)) + 1
 
+func _native_exiting(node: Node) -> void:
+	if node.get_script() != NativeProjectile or not node.has_meta("review_source") or node.get_meta("review_staged", false):
+		return
+	var count: Dictionary = native_shot_totals[node.get_meta("review_source")]
+	if node.get_meta("review_cleared", false):
+		count.cleared += 1
+	elif node.hit_list.has("p"):
+		count.hits += 1
+	elif node.life <= 0.0:
+		count.expired += 1
+
 func _emit_projectiles() -> void:
-	var p: Vector2 = game.player.global_position
 	var deadline := Time.get_ticks_usec() + 1600
+	var made := 0
 	manual_bullet = true
 	while pending_bullets > 0:
-		var turn := TAU * float(bullet_index % 100) / 100.0
-		var band := (bullet_index / 100) % 5
+		var request: Dictionary = bullet_requests[0]
+		var i: int = request.index
+		# Rotate each group of 500 independently. At 10,000 one-click shots,
+		# all admitted body trajectories are distinct in both implementations.
+		var turn := TAU * float(i % 100) / 100.0 + (i / 500) * 2.39996322972865
+		var band := (i / 100) % 5
 		var outward := Vector2.from_angle(turn + band * 0.075)
-		var at := p + outward * (98.0 + 14.0 * band)
-		game.spawn_bullet(at, -outward.rotated(0.08 * (band - 2)) * (50.0 + 8.0 * band), 4.0)
-		bullet_index += 1
+		var at: Vector2 = request.center + outward * (98.0 + 14.0 * band)
+		var shot = game.spawn_bullet(at, -outward.rotated(0.08 * (band - 2)) * (50.0 + 8.0 * band), 4.0)
+		# Native node construction may span several browser frames. Arm the
+		# entire requested wave together so its hit timing and lifetime match
+		# the packed launch even when a large group takes longer to allocate.
+		shot.set_meta("review_staged", true)
+		shot.set_physics_process(false)
+		shot.hide()
+		request.staged.append(shot)
+		staged_bullets += 1
+		request.index += 1
+		request.left -= 1
+		if request.left == 0:
+			for projectile in request.staged:
+				projectile.remove_meta("review_staged")
+				projectile.show()
+				projectile.set_physics_process(true)
+			var admitted: int = request.staged.size()
+			native_shot_totals.manual.fired += admitted
+			staged_bullets -= admitted
+			bullet_requests.pop_front()
 		pending_bullets -= 1
-		if Time.get_ticks_usec() >= deadline:
+		made += 1
+		if made >= 192 and Time.get_ticks_usec() >= deadline:
 			break
 	manual_bullet = false
 
@@ -427,9 +482,23 @@ func _report() -> void:
 	var native_shots := 0
 	var debug_shots := 0
 	for shot in game.projectiles:
+		if shot.get_meta("review_staged", false):
+			continue
 		match str(shot.get_meta("review_source", "")):
 			"boss": native_shots += 1
 			"manual": debug_shots += 1
+	var pooled_live := 0
+	var fired: int = native_shot_totals.manual.fired
+	var hits: int = native_shot_totals.manual.hits
+	var expired: int = native_shot_totals.manual.expired
+	var cleared: int = native_shot_totals.manual.cleared
+	if optimized:
+		var pooled = game.manual_shots.api
+		pooled_live = int(pooled.audit())
+		fired += int(pooled.fired("manual"))
+		hits += int(pooled.hits("manual"))
+		expired += int(pooled.expired("manual"))
+		cleared += int(pooled.cleared("manual"))
 	var data := {
 		"mode": mode, "phase": "paused" if get_tree().paused else phase,
 		"ready": phase == "playing" and ticks > 0 and not get_tree().paused,
@@ -450,8 +519,15 @@ func _report() -> void:
 		"bosses": boss_count, "bossKind": str(boss.kind) if is_instance_valid(boss) and not boss.dead else "",
 		"bossState": str(boss.b_state) if is_instance_valid(boss) and not boss.dead else "",
 		"lastPattern": active_pattern, "patternEvents": pattern_events, "bossPatterns": pattern_events,
-		"projectiles": game.projectiles.size(), "bossProjectiles": native_shots, "manualProjectiles": debug_shots,
-		"bossShotsFired": boss_shots, "projectilesPending": pending_bullets, "zones": game.zones.size(),
+		"projectiles": game.projectiles.size() - staged_bullets + pooled_live, "bossProjectiles": native_shots,
+		"manualProjectiles": debug_shots + pooled_live, "pooledProjectiles": pooled_live,
+		"nativeProjectiles": game.projectiles.size() - staged_bullets, "manualShotsFired": fired, "manualShotHits": hits,
+		"manualShotExpired": expired, "manualShotCleared": cleared,
+		"manualShotHpDamage": game.manual_shots.hp_lost_to_wave if optimized else null,
+		"shotSlowRemaining": game.player.slow_t, "shotSlowFactor": game.player.slow_mult,
+		"bossShotHits": native_shot_totals.boss.hits, "bossShotExpired": native_shot_totals.boss.expired,
+		"bossShotCleared": native_shot_totals.boss.cleared,
+		"bossShotsFired": boss_shots, "projectilesPending": pending_bullets + staged_bullets, "zones": game.zones.size(),
 		"xpQueued": game.queued_xp if optimized else 0, "dropBinsPending": game.pending_bin_count if optimized else 0,
 		"commandId": command_id, "commandMessage": command_message, "nova": nova
 	}
@@ -460,11 +536,13 @@ func _report() -> void:
 			"motion": game.motion_peak_us / 1000.0,
 			"rewardNodes": game.reward_peak_us / 1000.0,
 			"areaHit": game.area_peak_us / 1000.0,
-			"replacement": refill_peak_us / 1000.0
+			"replacement": refill_peak_us / 1000.0,
+			"straightShots": game.manual_shots.peak_step_us / 1000.0
 		}
 		game.motion_peak_us = 0
 		game.reward_peak_us = 0
 		game.area_peak_us = 0
+		game.manual_shots.peak_step_us = 0
 		refill_peak_us = 0
 	bridge.sample(JSON.stringify(data))
 

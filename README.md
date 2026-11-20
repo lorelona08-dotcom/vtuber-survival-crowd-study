@@ -2,14 +2,14 @@
 
 공원에서 조하구를 움직여 보세요. 두 링크는 같은 적 수와 배치 시드로 시작합니다. 전투 중에는 멘헤라 발동으로 쪼랭이를 공격하고, 적에게 닿으면 체력이 줄고, 경험치를 주우면 레벨이 오릅니다.
 
-**[10만 마리 디버그 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&mode=optimized&count=100000&seed=7) · [일반 웨이브와 5분 보스](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&scenario=normal&mode=optimized&seed=7) · [원본 적 처리 방식으로 비교](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r4&mode=original&count=100000&seed=7)**
+**[10만 마리 디버그 플레이](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r5&mode=optimized&count=100000&seed=7) · [일반 웨이브와 5분 보스](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r5&scenario=normal&mode=optimized&seed=7) · [원본 적 처리 방식으로 비교](https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/?v=100k-r5&mode=original&count=100000&seed=7)**
 
 다른 에이전트나 원작 개발자가 이어 볼 파일과 재현 명령을 한 페이지에 정리했습니다. [구현 인수인계](AGENTS.md)
 
 1. 게임 화면을 클릭하고 WASD 또는 방향키로 이동합니다. 적이 모인 쪽으로 지나가면서 이동, 타격, 처치, 화면의 프레임 시간 그래프를 같이 봅니다.
 2. 상단에서 **원본 처리**와 **개선판**을 바꾸면 같은 조건에서 다시 시작합니다. 두 탭을 나란히 열면 브라우저가 배경 탭의 속도를 제한할 수 있으므로 한 탭에서 번갈아 비교하는 편이 정확합니다.
 3. **광역기로 전원 공격**을 누르면 조하구의 공격 판정이 디버그 반경 768, 최소 피해 64로 딱 한 번 발동합니다. 직전 생존 수, 적중, 처치, 남은 적, 발생한 경험치와 그 순간의 최장 화면 프레임이 표시됩니다. **적 삭제하기**는 보상을 발생시키지 않는 디버그 조작입니다.
-4. **10만 마리 나오게 하기**로 다시 채우고, **500발 추가**와 보스의 **특수 패턴 발동**을 함께 눌러 보세요. 화면은 생존 슬롯, 활성 투사체, 보스, Godot 노드를 각각 집계합니다. **조건 링크 복사**로 같은 실험을 전달할 수 있습니다.
+4. **10만 마리 나오게 하기**로 다시 채우고, 투사체의 **+500발** 또는 **+1만 발**과 보스의 **특수 패턴 발동**을 함께 눌러 보세요. 화면은 생존 슬롯, 활성 투사체, 보스, Godot 노드를 각각 집계합니다. **조건 링크 복사**로 같은 실험을 전달할 수 있습니다.
 
 ## 무엇을 바꿨나
 
@@ -20,13 +20,14 @@
 | 위치, 체력, 속도, 밀치기, 둔화 시간을 적별 배열에 저장합니다. 물리 틱 한 번에 살아 있는 적을 순회하고 공간 격자로 공격 범위에 들어온 개체를 찾습니다. | [군중 갱신과 탐색](game/swarm.js) |
 | 워커가 원래 도트 시트의 불투명 픽셀을 보고 가림을 계산합니다. 그림자와 플레이어 앞뒤 몸통을 세 묶음으로 그립니다. 실제 개체는 가려져도 이동하고 피격됩니다. | [워커](game/crowd_worker.js) · [렌더 전달](game/render_pipeline.js) · [Godot MultiMesh](game/crowd_renderer.gd) |
 | 범위 공격은 실제로 해당하는 적의 HP·둔화·생사를 일괄 갱신하고, 경험치와 드롭 가치는 위치별로 묶습니다. 다른 표적 요청은 해당 개체의 피격 핸들로 연결합니다. | [전투 연결](game/optimized_game.gd) · [광역 공격](game/crowd_aura.gd) · [피격 대상](game/crowd_target.gd) |
+| 디버그 직선탄은 발사체별 위치, 속도, 수명과 충돌을 저장하고 한 묶음으로 그립니다. 맞은 탄은 제거하고 원작 플레이어의 피격·둔화를 실행합니다. 보스가 자체 발사한 탄은 원래 개체와 명중 콜백을 사용합니다. | [직선탄 시뮬레이션](game/straight_shots.js) · [표시 및 플레이어 피격](game/hostile_shot_batch.gd) |
 | 비교용 씬에서 양쪽에 같은 인원·시드·초기 능력치·편의 규칙을 적용하고 측정값을 화면에 보냅니다. | [비교 장면](game/review_scene.gd) |
 
-10만 군중 경로의 대상은 공원의 일반 쪼랭이입니다. 보스와 탄환은 원작 코드로 동작합니다. **일반 웨이브**에서는 게임 시계 4분 50초, 조하구 레벨 8과 원작 멘헤라·레코드 무기로 들어갑니다. 원래 혼합 적 소환, 보스 시간표, 접촉 피해, 수동 레벨업을 사용합니다. 일반 웨이브 개선판은 일부 일반 적의 그림자를 모아 그리고 가까운 표적 네 개를 한 번의 순회로 고릅니다. [일반 플레이 진입점](game/normal_scene.gd) · [일반 플레이 변경](game/normal_game.gd)
+10만 군중 경로의 대상은 공원의 일반 쪼랭이입니다. 보스 패턴과 보스가 발사하는 탄은 원작 코드로 동작합니다. **일반 웨이브**에서는 게임 시계 4분 50초, 조하구 레벨 8과 원작 멘헤라·레코드 무기로 들어갑니다. 원래 혼합 적 소환, 보스 시간표, 접촉 피해, 수동 레벨업을 사용합니다. 일반 웨이브 개선판은 일부 일반 적의 그림자를 모아 그리고 가까운 표적 네 개를 한 번의 순회로 고릅니다. 첫 보스의 그림과 소리는 로딩 중에 준비합니다. [일반 플레이 진입점](game/normal_scene.gd) · [일반 플레이 변경](game/normal_game.gd) · [첫 사용 자원 준비](game/first_use.gd)
 
 ## 비교 조건
 
-- 원작의 일반 웨이브에는 동시 출현 상한이 있습니다. 이 장면은 처음부터 지정 인원을 화면 안에 배치하고, 죽은 만큼 화면 가장자리에서 보충합니다. 등장 중과 전투 중을 화면 상태로 구분합니다.
+- 원작의 일반 웨이브에는 동시 출현 상한이 있습니다. 이 장면은 처음부터 지정 인원을 화면 안에 배치하고, 죽은 만큼 화면 가장자리에서 보충합니다. **광역기로 전원 공격**과 **적 삭제하기**를 누르면 보충을 멈춥니다. 새 군중을 확인하려면 **10만 마리 나오게 하기**를 누르세요.
 - 스트레스 양쪽은 1배속, 60Hz 물리, 원래 도트 해상도 640×360, 최대 2회 물리 따라잡기, 같은 시드와 기본 장비를 사용합니다. 레벨 보상은 자동 선택하고 연속 측정을 위해 낮아진 체력을 보충합니다. 일반 웨이브는 원작 표시 설정과 수동 레벨업을 사용합니다.
 - 브라우저 FPS와 P95는 화면 프레임 사이의 실제 시간으로 계산합니다. P95가 16.7ms라면 표본의 95%가 16.7ms 이내였다는 뜻입니다. 게임 시계와 물리 틱도 함께 기록해 시뮬레이션 진행 속도를 확인합니다.
 - 원작의 공개 웹 빌드에서 엔진과 게임 데이터를 읽고 SHA-256을 대조합니다. 이 저장소는 비교 페이지와 새로 작성한 실험 코드를 제공합니다. 원작·캐릭터·그림·음향의 출처는 원작 프로젝트입니다. [원작 게임](https://vtuber-survival.github.io/) · [비교 기준 커밋](https://github.com/vtuber-survival/vtuber-survival.github.io/tree/1ca4d9f926535de42690583d28cb931c10e718b8)
@@ -36,6 +37,6 @@
 Python Playwright와 Chrome이 있는 PC에서 아래 명령을 실행하면 실제 GitHub Pages 주소에서 방향키에 해당하는 WASD 입력으로 전투합니다. 결과 파일에는 프레임 간격 원자료, 화면 안의 적 수, 이동 좌표, 체력·경험치·처치 기록이 담깁니다. [측정 코드](qa/play.py)
 
 ```console
-python qa/play.py --mode original --count 10000 --seconds 30 --output qa-output/original-10000.json
-python qa/play.py --mode optimized --count 10000 --seconds 30 --output qa-output/optimized-10000.json
+python qa/play.py --mode optimized --count 100000 --case combined --boss-kind all --shot-count 10000 --seconds 30 --output qa-output/combined.json
+python qa/debug_controls.py --big-wave --with-boss-fire --only-nova --casts 1 --output qa-output/area-attack.json
 ```
