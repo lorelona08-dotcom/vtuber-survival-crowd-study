@@ -5,16 +5,12 @@ extends Node2D
 const BODY_SHADER := """
 shader_type canvas_item;
 render_mode unshaded;
-uniform float simulation_seconds;
-
 void vertex() {
-	float age = max(0.0, simulation_seconds - INSTANCE_CUSTOM.w);
-	float phase = INSTANCE_CUSTOM.x;
-	float frame = mod(floor(age * 6.0 + phase), 2.0);
+	float frame = INSTANCE_CUSTOM.x;
 	float u = mix(UV.x, 1.0 - UV.x, INSTANCE_CUSTOM.y);
 	UV.x = (u + frame) * 0.25;
 	UV.y = 1.0 - UV.y;
-	VERTEX.y -= round(sin(fract(age * 2.6 + phase) * 3.14159265) * 3.0);
+	VERTEX.y -= INSTANCE_CUSTOM.w;
 	if (INSTANCE_CUSTOM.z > 1.5) {
 		COLOR.rgb *= 3.0;
 	} else if (INSTANCE_CUSTOM.z > 0.5) {
@@ -32,6 +28,7 @@ void vertex() {
 
 var game
 var api
+var render_api
 var batches: Array[MultiMesh] = []
 var body_material: ShaderMaterial
 var sprite_offset_y: float
@@ -42,6 +39,7 @@ var previous_view := Rect2()
 func setup(owner_game, capacity: int) -> void:
 	game = owner_game
 	api = JavaScriptBridge.get_interface("VSCrowd")
+	render_api = JavaScriptBridge.get_interface("VSRender")
 	var high_res := ResourceLoader.exists("res://assets/enemies/jjorang_hd.png")
 	var body: Texture2D = Data.tex("res://assets/enemies/jjorang_hd.png" if high_res else "res://assets/enemies/jjorang.png")
 	var shadow: Texture2D = Data.tex("res://assets/fx/shadow.png")
@@ -55,7 +53,8 @@ func setup(owner_game, capacity: int) -> void:
 		if pixels.is_compressed():
 			pixels.decompress()
 		pixels.convert(Image.FORMAT_RGBA8)
-		api.configureAtlas(pixels.get_width(), pixels.get_height(), body_size.x, body_size.y,
+		var driver = render_api if render_api != null else api
+		driver.configureAtlas(pixels.get_width(), pixels.get_height(), body_size.x, body_size.y,
 			Marshalls.raw_to_base64(pixels.get_data()), shadow_size.x, shadow_size.y)
 	var shader := Shader.new()
 	shader.code = BODY_SHADER
@@ -98,20 +97,27 @@ func _process(_delta: float) -> void:
 	var to_world := get_canvas_transform().affine_inverse()
 	var visible_rect := Rect2(to_world * rect.position, Vector2.ZERO).expand(to_world * rect.end)
 	var revision: int = int(api.revision())
-	if revision == previous_revision and visible_rect == previous_view:
+	if render_api == null and revision == previous_revision and visible_rect == previous_view:
 		return
 	var view_moved := previous_view != visible_rect
-	previous_revision = revision
-	previous_view = visible_rect
 	var center := visible_rect.get_center()
 	var half := visible_rect.size * 0.5
-	api.prepareRender(center.x, center.y, half.x, half.y, game.player.global_position.y, sprite_offset_y, edge_margin)
-	body_material.set_shader_parameter("simulation_seconds", float(api.clock()))
+	var raster_size := get_viewport().get_texture().get_size()
+	var pitch_x := visible_rect.size.x / maxf(raster_size.x, 1.0)
+	var pitch_y := visible_rect.size.y / maxf(raster_size.y, 1.0)
+	var driver = render_api if render_api != null else api
+	if render_api != null:
+		if not bool(render_api.prepare(center.x, center.y, half.x, half.y, game.player.global_position.y, sprite_offset_y, edge_margin, pitch_x, pitch_y)):
+			return
+	else:
+		api.prepareRender(center.x, center.y, half.x, half.y, game.player.global_position.y, sprite_offset_y, edge_margin, pitch_x, pitch_y)
+	previous_revision = revision
+	previous_view = visible_rect
 	var bounds := visible_rect.grow(edge_margin * 2.0)
 	var world_bounds := AABB(Vector3(bounds.position.x, bounds.position.y, -1.0), Vector3(bounds.size.x, bounds.size.y, 2.0))
 	for layer in batches.size():
 		var mesh := batches[layer]
-		var count: int = int(api.layerCount(layer))
+		var count: int = int(driver.layerCount(layer))
 		# Upload only the prefix occupied by this layer. Spare slots amortize
 		# scene changes; they do not multiply transfer cost by the total swarm.
 		var allocated := mesh.instance_count
@@ -121,6 +127,6 @@ func _process(_delta: float) -> void:
 		if view_moved:
 			mesh.custom_aabb = world_bounds
 		if count > 0:
-			var bytes := JavaScriptBridge.js_buffer_to_packed_byte_array(api.layerBuffer(layer, allocated))
+			var bytes := JavaScriptBridge.js_buffer_to_packed_byte_array(driver.layerBuffer(layer, allocated))
 			RenderingServer.multimesh_set_buffer(mesh.get_rid(), bytes.to_float32_array())
 		mesh.visible_instance_count = count

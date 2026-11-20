@@ -1,5 +1,6 @@
-import {buildReviewPack} from "./pack.js";
+import {buildReviewPack} from "./pack.js?v=100k-r3";
 
+const build = "100k-r3";
 const commit = "1ca4d9f926535de42690583d28cb931c10e718b8";
 const upstream = "https://raw.githubusercontent.com/vtuber-survival/vtuber-survival.github.io/" + commit + "/";
 const hashes = {
@@ -18,11 +19,12 @@ const mode = params.get("mode") === "original" ? "original" : "optimized";
 const scenario = params.get("scenario") === "normal" ? "normal" : "stress";
 const sceneName = scenario === "normal" ? "normal_scene.tscn" : "review_scene.tscn";
 const resources = [
+  "first_use.gd",
   "optimized_game.gd", "crowd_target.gd", "crowd_renderer.gd", "crowd_aura.gd", "stress_aura.gd",
   ...(scenario === "normal" ? ["normal_game.gd", "normal_scene.gd"] : ["stock_debug_game.gd", "review_scene.gd"]),
   sceneName,
 ];
-const config = {mode, count, seed, commit, scenario};
+const config = Object.freeze({mode, count, seed, commit, scenario, build});
 const samples = [];
 const frames = [];
 const rolling = [];
@@ -70,8 +72,9 @@ function queue(action, options = {}) {
 
 function urlFor(nextMode = mode, nextCount = count, nextSeed = seed, nextScenario = scenario) {
   const url = new URL(location.href);
-  url.search = new URLSearchParams({mode: nextMode, count: String(nextCount), seed: String(nextSeed)});
+  url.search = new URLSearchParams({v: build, mode: nextMode, count: String(nextCount), seed: String(nextSeed)});
   if (nextScenario === "normal") url.searchParams.set("scenario", "normal");
+  if (params.get("render") === "sync") url.searchParams.set("render", "sync");
   url.hash = "";
   return url.href;
 }
@@ -105,6 +108,8 @@ function paint() {
   ]) {
     element(id).textContent = Number.isFinite(data[key]) ? format.format(data[key]) : "—";
   }
+  element("drawn-bodies").textContent = Number.isFinite(data.submittedBodies) && data.submittedBodies >= 0 ? format.format(data.submittedBodies) : "—";
+  element("crowd-hz").textContent = Number.isFinite(data.crowdDisplayHz) ? Math.round(data.crowdDisplayHz) : "—";
   const metrics = recentMetrics();
   element("fps").textContent = metrics.fps == null ? "—" : Math.round(metrics.fps);
   element("p95").textContent = metrics.p95 == null ? "—" : metrics.p95.toFixed(1);
@@ -170,7 +175,11 @@ function showArea(nova) {
 
 function onSample(json) {
   const data = JSON.parse(json);
-  const point = {...data, at: performance.now()};
+  const renderer = mode === "optimized" && scenario === "stress" ? globalThis.VSRender?.stats() : null;
+  const point = {...data, at: performance.now(), ...(renderer ? {
+    crowdDisplayHz: renderer.hz, crowdDisplayFrames: renderer.applied, crowdFrameAgeMs: renderer.ageMs,
+    crowdPrepareMs: renderer.workMs, crowdLagMs: renderer.lagMs, crowdPipeline: renderer.mode,
+  } : {})};
   if (!data.ready) readyAt = Infinity;
   else if (!latest?.ready || data.phase !== lastSamplePhase) readyAt = point.at;
   latest = point;
@@ -201,10 +210,11 @@ function onSample(json) {
 
 window.VSReview = {
   ...config,
+  config,
   sample: onSample,
   queue,
   takeCommands: () => commands.length ? JSON.stringify(commands.splice(0)) : "[]",
-  snapshot: () => ({config, ready: !!latest?.ready, sample: latest, frame: recentMetrics(), areaFrame: areaFrames.at(-1) || null, samples: samples.length, startError}),
+  snapshot: () => ({config, ready: !!latest?.ready, sample: latest, frame: recentMetrics(), render: globalThis.VSRender?.stats(), areaFrame: areaFrames.at(-1) || null, samples: samples.length, startError}),
   exportMetrics: () => ({config, samples: samples.slice(), frames: frames.slice(), areaFrames: areaFrames.slice(), droppedFrames, droppedSamples, startError}),
 };
 document.addEventListener("visibilitychange", () => {
@@ -310,7 +320,7 @@ async function boot() {
   probeContext.getExtension("WEBGL_lose_context")?.loseContext();
   const packedPromise = Promise.all([
     getOriginal("index.pck"),
-    Promise.all(resources.map(async name => ({name, content: await fetchBytes("./game/" + name)}))),
+    Promise.all(resources.map(async name => ({name, content: await fetchBytes("./game/" + name + "?v=" + build)}))),
   ]).then(([original, files]) => buildReviewPack(original, files, "res://review/" + sceneName));
   const [packed, audio, positionAudio] = await Promise.all([
     packedPromise, getOriginal("index.audio.worklet.js"), getOriginal("index.audio.position.worklet.js"),

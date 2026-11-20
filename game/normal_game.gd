@@ -3,6 +3,7 @@ extends "res://scripts/game/game.gd"
 var common_shadows: MultiMesh
 
 func _ready() -> void:
+	preload("res://review/first_use.gd").warm(Data.MAPS[map_id].bosses)
 	super._ready()
 	var texture: Texture2D = Data.tex("res://assets/fx/shadow.png")
 	var quad := QuadMesh.new()

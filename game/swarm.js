@@ -13,68 +13,137 @@
   const SHADOW_STRIDE = 8;
   const EMPTY = new ArrayBuffer(0);
 
-  // A tile is marked only when every world point in its 2×2 area is behind
-  // opaque atlas texels. This remains conservative at any window resolution.
-  class Coverage {
-    begin(cx, cy, halfWidth, halfHeight, margin) {
-      const padding = 2 * margin + 8;
-      this.x = Math.floor((cx - halfWidth - padding) / 2) * 2;
-      this.y = Math.floor((cy - halfHeight - padding) / 2) * 2;
-      this.columns = Math.ceil((halfWidth + padding + 2) * 1.0);
-      this.rows = Math.ceil((halfHeight + padding + 2) * 1.0);
-      this.words = Math.ceil(this.columns / 32);
-      const n = this.rows * this.words;
-      if (!this.bits || this.bits.length < n) this.bits = new Uint32Array(n);
-      else this.bits.fill(0, 0, n);
+  // The native Godot 2D viewport snaps transformed quad vertices to whole
+  // pixels. Precompute the opaque pixels the nearest sampler will actually
+  // fetch. A four-row coverage hierarchy rejects enclosed spans cheaply.
+  class NativeCoverage {
+    constructor(pixels, sheetWidth, height, worldWidth, worldHeight) {
+      const width = sheetWidth / 4;
+      this.valid = Number.isInteger(worldWidth) && Number.isInteger(worldHeight) &&
+        worldWidth <= 32 && worldWidth > 0 && worldHeight > 0;
+      if (!this.valid) return;
+      this.halfW = worldWidth / 2;
+      this.halfH = worldHeight / 2;
+      this.poses = [];
+      for (let frame = 0; frame < 2; frame++) {
+        for (let flip = 0; flip < 2; flip++) {
+          const nativeRows = [];
+          let first = -1, end = 0;
+          for (let y = 0; y < worldHeight; y++) {
+            const sy = Math.min(height - 1, Math.floor((y + 0.5) * height / worldHeight + 0.0001));
+            let mask = 0;
+            for (let x = 0; x < worldWidth; x++) {
+              const u = (flip ? worldWidth - x - 0.5 : x + 0.5) / worldWidth;
+              const sx = Math.min(width - 1, Math.floor(u * width + 0.0001));
+              const alpha = pixels.charCodeAt((sy * sheetWidth + frame * width + sx) * 4 + 3);
+              if (alpha !== 0 && alpha !== 255) this.valid = false;
+              if (alpha === 255) mask |= 1 << x;
+            }
+            nativeRows.push(mask);
+            if (mask) {
+              if (first === -1) first = y;
+              end = y + 1;
+            }
+          }
+          first = Math.max(0, first);
+          const shifts = [];
+          for (let s = 0; s < 32; s++) {
+            const lo = new Int32Array(end - first);
+            const hi = new Int32Array(end - first);
+            for (let j = first; j < end; j++) {
+              lo[j - first] = nativeRows[j] << s;
+              hi[j - first] = s ? nativeRows[j] >>> (32 - s) : 0;
+            }
+            const layouts = [];
+            for (let a = 0; a < 4; a++) {
+              const groups = [];
+              for (let j = 0; j < lo.length;) {
+                const from = j;
+                const stop = Math.min(lo.length, j + 4 - ((j + a) & 3));
+                let lm = 0, hm = 0;
+                while (j < stop) {
+                  lm |= lo[j];
+                  hm |= hi[j++];
+                }
+                groups.push({from, stop, lm, hm});
+              }
+              layouts.push(groups);
+            }
+            shifts.push({lo, hi, layouts});
+          }
+          this.poses.push({first, shifts});
+        }
+      }
     }
 
-    covered(left, top, right, bottom) {
-      const x0 = Math.floor((left - this.x) * 0.5);
-      const x1 = Math.ceil((right - this.x) * 0.5) - 1;
-      const y0 = Math.floor((top - this.y) * 0.5);
-      const y1 = Math.ceil((bottom - this.y) * 0.5);
-      if (x0 < 0 || x1 >= this.columns || y0 < 0 || y1 > this.rows) return false;
-      const w0 = x0 >>> 5, w1 = x1 >>> 5, words = this.words;
-      const lo = -1 << (x0 & 31), hi = -1 >>> (31 - (x1 & 31));
-      const data = this.bits;
-      if (w0 === w1) {
-        const mask = lo & hi;
-        for (let a = y0 * words + w0, end = y1 * words + w0; a < end; a += words) {
-          if ((data[a] & mask) !== mask) return false;
-        }
+    begin(cx, cy, halfWidth, halfHeight, margin) {
+      const pad = Math.ceil(2 * margin + 16);
+      this.left = cx - halfWidth;
+      this.top = cy - halfHeight;
+      this.pad = pad;
+      this.words = Math.ceil((Math.ceil(2 * halfWidth) + 2 * pad) / 32) + 2;
+      const rows = 4 * Math.ceil((Math.ceil(2 * halfHeight) + 2 * pad + 8) / 4);
+      const len = rows * this.words;
+      if (!this.bits || this.bits.length < len) {
+        this.bits = new Uint32Array(len);
+        this.blocks = new Uint32Array(len / 4);
       } else {
-        for (let y = y0; y < y1; y++) {
-          const a = y * words;
-          if ((data[a + w0] & lo) !== lo || (data[a + w1] & hi) !== (hi | 0)) return false;
-          for (let w = w0 + 1; w < w1; w++) if (data[a + w] !== 0xffffffff) return false;
+        this.bits.fill(0, 0, len);
+        this.blocks.fill(0, 0, len / 4);
+      }
+    }
+
+    stamp(x, y, frame, flip) {
+      const px = Math.floor(x - this.halfW - this.left + 0.5) + this.pad;
+      const pose = this.poses[2 * frame + flip];
+      const py = Math.floor(y - this.halfH - this.top + 0.5) + this.pad + pose.first;
+      const shape = pose.shifts[px & 31];
+      const groups = shape.layouts[py & 3];
+      const w = this.words, col = px >>> 5;
+      const bits = this.bits, blocks = this.blocks, lo = shape.lo, hi = shape.hi;
+      let changed = 0;
+      for (let g = 0; g < groups.length; g++) {
+        const block = groups[g];
+        const row = py + block.from;
+        const floor = (row >>> 2) * w + col;
+        if (!(block.lm & ~blocks[floor]) && !(block.hm & ~blocks[floor + 1])) continue;
+        let dl = 0, dh = 0;
+        for (let j = block.from, k = row * w + col; j < block.stop; j++, k += w) {
+          const l = lo[j], h = hi[j];
+          dl |= l & ~bits[k];
+          dh |= h & ~bits[k + 1];
+          bits[k] |= l;
+          bits[k + 1] |= h;
+        }
+        const aligned = (row & ~3) * w + col;
+        if (dl) blocks[floor] = bits[aligned] & bits[aligned + w] & bits[aligned + 2 * w] & bits[aligned + 3 * w];
+        if (dh) blocks[floor + 1] = bits[aligned + 1] & bits[aligned + w + 1] & bits[aligned + 2 * w + 1] & bits[aligned + 3 * w + 1];
+        changed |= dl | dh;
+      }
+      return changed !== 0;
+    }
+
+    coversShadow(x, y, hw, hh) {
+      const l = Math.floor(x - hw - this.left + 0.5) + this.pad;
+      const r = Math.floor(x + hw - this.left + 0.5) + this.pad - 1;
+      const t = Math.floor(y - hh - this.top + 0.5) + this.pad;
+      const b = Math.floor(y + hh - this.top + 0.5) + this.pad;
+      const lw = l >>> 5, rw = r >>> 5, lo = -1 << (l & 31), hi = -1 >>> (31 - (r & 31));
+      const mask = lo & hi, bits = this.bits, w = this.words;
+      for (let a = t * w, last = b * w; a < last; a += w) {
+        if (lw === rw) {
+          if ((bits[a + lw] & mask) !== mask) return false;
+        } else if ((bits[a + lw] & lo) !== lo || (bits[a + rw] & hi) !== (hi | 0)) {
+          return false;
         }
       }
       return true;
-    }
-
-    paint(left, top, right, bottom) {
-      const x0 = Math.max(0, Math.ceil((left - this.x) * 0.5));
-      const x1 = Math.min(this.columns, Math.floor((right - this.x) * 0.5)) - 1;
-      const y0 = Math.max(0, Math.ceil((top - this.y) * 0.5));
-      const y1 = Math.min(this.rows, Math.floor((bottom - this.y) * 0.5));
-      if (x0 > x1 || y0 >= y1) return;
-      const w0 = x0 >>> 5, w1 = x1 >>> 5, words = this.words;
-      const lo = -1 << (x0 & 31), hi = -1 >>> (31 - (x1 & 31));
-      const data = this.bits;
-      for (let y = y0; y < y1; y++) {
-        const a = y * words;
-        if (w0 === w1) data[a + w0] |= lo & hi;
-        else {
-          data[a + w0] |= lo;
-          for (let w = w0 + 1; w < w1; w++) data[a + w] = 0xffffffff;
-          data[a + w1] |= hi;
-        }
-      }
     }
   }
 
   class Swarm {
     reset(capacity, seed) {
+      if (globalThis.VSCrowd === this) globalThis.VSRender?.invalidate();
       this.capacity = Math.max(1, Math.trunc(capacity));
       this.seed = (seed >>> 0) || 1;
       this.placementSeed = this.seed;
@@ -106,11 +175,11 @@
       this.spawnRow = new Float32Array(5);
       this.rewardBins = new Float64Array(4 * 256);
       this.feedback = new Float32Array(5 * 4);
-      this.rowHead = new Int32Array(ROWS);
+      this.rowHead = new Int32Array(2 * ROWS);
       this.rowNext = new Int32Array(size);
       this.bodyIds = new Int32Array(size);
+      this.pose = new Uint8Array(size);
       this.shadowIds = new Int32Array(size);
-      this.coverage = new Coverage();
       this.layers = [
         new Float32Array(size * SHADOW_STRIDE),
         new Float32Array(size * BODY_STRIDE),
@@ -183,6 +252,7 @@
     }
 
     clear() {
+      if (globalThis.VSCrowd === this) globalThis.VSRender?.invalidate();
       const old = this.aliveCount();
       this.live.fill(0);
       this.hp.fill(0);
@@ -204,6 +274,35 @@
         if (this.live[i] && this.hp[i] > 0) count++;
       }
       return count;
+    }
+
+    auditSignature() {
+      let hash = 2166136261, count = 0;
+      for (let i = 0; i < this.capacity; i++) {
+        if (!this.live[i] || this.hp[i] <= 0) continue;
+        const id = i + 1;
+        for (let shift = 0; shift < 32; shift += 8) {
+          hash = Math.imul(hash ^ ((id >>> shift) & 255), 16777619);
+        }
+        count++;
+      }
+      return count ? (hash >>> 0).toString(16).padStart(8, "0") : "00000000";
+    }
+
+    warmCombat() {
+      // Exercise the actual combat paths while the page is still loading,
+      // isolated from the player's seed, health, drops and audit counters.
+      if (!this.warmed) {
+        const scratch = new Swarm();
+        scratch.reset(2048, 137);
+        for (let i = 0; i < 5; i++) {
+          scratch.fill(2048, 0, 0, true, 8, 34);
+          scratch.pulse(0, 0, 96, 4, 0.7, 0.5, 0.1, 2, 0, 0);
+          scratch.pulseAll(0, 0, 1000, 0.7, 0.5, 0.1, 2, 0.001, 0.001);
+        }
+        this.warmed = true;
+      }
+      if (this.rewardBins.length < 4 * 100 * 100) this.rewardBins = new Float64Array(4 * 100 * 100);
     }
 
     bucket(x, y) {
@@ -253,60 +352,16 @@
     aliveCount() { return this.capacity - this.freeCount; }
     updatedCount() { return this.lastUpdated; }
     renderedCount() { return this.drawn; }
+    renderSampleSpacing() { return this.lastSpacing || 0; }
     revision() { return this.version; }
     clock() { return this.seconds; }
     ticks() { return this.totalSteps; }
 
     configureAtlas(sheetWidth, sheetHeight, worldWidth, worldHeight, rgba64, shadowWidth, shadowHeight) {
-      // Inspect the downloaded game's own texture. Across both walk frames
-      // and horizontal mirrors, find a box containing every contributing
-      // texel and a rectangle made only of always-opaque texels.
       const pixels = atob(rgba64);
-      const width = sheetWidth / 4, height = sheetHeight;
-      const heights = new Int32Array(width);
-      let x0 = width, x1 = 0, y0 = height, y1 = 0;
-      let largest = 0, inner = [0, 0, 0, 0];
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          let solid = true, visible = false;
-          for (let frame = 0; frame < 2; frame++) {
-            const row = y * sheetWidth + frame * width;
-            const a = pixels.charCodeAt((row + x) * 4 + 3);
-            const b = pixels.charCodeAt((row + width - 1 - x) * 4 + 3);
-            solid = solid && a === 255 && b === 255;
-            visible = visible || a > 0 || b > 0;
-          }
-          heights[x] = solid ? heights[x] + 1 : 0;
-          if (visible) {
-            x0 = Math.min(x0, x); x1 = Math.max(x1, x + 1);
-            y0 = Math.min(y0, y); y1 = Math.max(y1, y + 1);
-          }
-        }
-        for (let left = 0; left < width; left++) {
-          let h = heights[left];
-          for (let right = left; right < width && h; right++) {
-            h = Math.min(h, heights[right]);
-            const area = (right + 1 - left) * h;
-            if (area > largest) {
-              largest = area;
-              inner = [left, y + 1 - h, right + 1, y + 1];
-            }
-          }
-        }
-      }
-      const sx = worldWidth / width, sy = worldHeight / height;
-      const wx = n => (n - width / 2) * sx, wy = n => (n - height / 2) * sy;
-      const epsilon = 0.04;
-      // Hop ranges from -3 to zero; the outer envelope is the union and the
-      // opaque interior is the intersection of all those possible poses.
-      this.mask = {
-        l: wx(x0) - epsilon, t: wy(y0) - 3 - epsilon,
-        r: wx(x1) + epsilon, b: wy(y1) + epsilon,
-        il: wx(inner[0]) + epsilon, it: wy(inner[1]) + epsilon,
-        ir: wx(inner[2]) - epsilon, ib: wy(inner[3]) - 3 - epsilon,
-        sw: shadowWidth / 2 + epsilon, sh: shadowHeight / 2 + epsilon
-      };
-      if (!largest) this.mask = null;
+      this.shadowHalfWidth = shadowWidth / 2 + 0.01;
+      this.shadowHalfHeight = shadowHeight / 2 + 0.01;
+      this.native = new NativeCoverage(pixels, sheetWidth, sheetHeight, worldWidth, worldHeight);
     }
 
     visibleCount(cx, cy, halfWidth, halfHeight) {
@@ -445,6 +500,7 @@
         this.unlink(id);
         this.live[id] = 0;
         this.free[this.freeCount++] = id;
+        if (this.freeCount === this.capacity && globalThis.VSCrowd === this) globalThis.VSRender?.invalidate();
       }
       return this.hp[id];
     }
@@ -554,6 +610,7 @@
         }
       }
       if (hits) this.version++;
+      if (kills && this.freeCount === this.capacity && globalThis.VSCrowd === this) globalThis.VSRender?.invalidate();
       const out = new Float32Array(11 + (samples + binCount) * 4);
       out.set([hits, kills, effective, raw, crits, cheeseX, cheeseY, ticketX, ticketY, samples, binCount]);
       out.set(this.feedback.subarray(0, samples * 4), 11);
@@ -569,7 +626,7 @@
       return out.buffer;
     }
 
-    prepareRender(cx, cy, halfWidth, halfHeight, splitY, bodyOffset, margin) {
+    prepareRender(cx, cy, halfWidth, halfHeight, splitY, bodyOffset, margin, pitchX = 1, pitchY = 1) {
       this.rowHead.fill(-1);
       const top = cy - halfHeight - margin;
       const height = Math.max(1, 2 * (halfHeight + margin));
@@ -580,25 +637,31 @@
       for (let i = 0; i < this.capacity; i++) {
         if (!this.live[i] || Math.abs(this.x[i] - cx) > halfWidth + margin ||
             Math.abs(this.y[i] - cy) > halfHeight + margin) continue;
-        const row = Math.min(lastRow, Math.max(0, Math.floor((this.y[i] - top) * rowScale)));
+        const layer = this.y[i] > splitY ? ROWS : 0;
+        const row = layer + Math.min(lastRow, Math.max(0, Math.floor((this.y[i] - top) * rowScale)));
         this.rowNext[i] = this.rowHead[row];
         this.rowHead[row] = i;
         this.shadowIds[inView++] = i;
       }
       let bodies = 0;
-      const m = this.mask;
-      const test = Boolean(m && inView > 1500 && !this.disableOcclusion);
-      const cov = this.coverage;
-      if (test) cov.begin(cx, cy, halfWidth, halfHeight, margin);
-      // Inspect the nearest bodies first. Their opaque interiors form a
-      // conservative visibility mask; hidden enemies remain fully simulated.
-      for (let row = lastRow; row >= 0; row--) {
+      // Exact native-pixel coverage. Other raster scales submit the full
+      // view, including all overlaps. The combat index never reads this mask.
+      const mask = !this.disableOcclusion && inView > 1500 && this.native && this.native.valid &&
+        Math.abs(pitchX - 1) < 0.0001 && Math.abs(pitchY - 1) < 0.0001 ? this.native : null;
+      this.lastSpacing = mask ? 1 : 0;
+      if (mask) mask.begin(cx, cy, halfWidth, halfHeight, margin);
+      for (let row = ROWS + lastRow; row >= 0; row--) {
+        if (row === ROWS - 1) row = lastRow;
         for (let i = this.rowHead[row]; i !== -1; i = this.rowNext[i]) {
-          const x = this.x[i], y = this.y[i] + bodyOffset;
-          if (test) {
-            if (cov.covered(x + m.l, y + m.t, x + m.r, y + m.b)) continue;
-            cov.paint(x + m.il, y + m.it, x + m.ir, y + m.ib);
-          }
+          const age = this.seconds - this.born[i];
+          const phase = this.phase[i];
+          const frame = Math.floor(age * 6 + phase) & 1;
+          const t = age * 2.6 + phase;
+          const d = Math.abs(t - Math.floor(t) - 0.5);
+          // Exact integer rounding of 3*sin(pi*fract(t)) used by the source.
+          const hop = d > 0.4466996209618863 ? 0 : (d > 1 / 3 ? 1 : (d > 0.1864294986773373 ? 2 : 3));
+          this.pose[i] = frame | (hop << 1);
+          if (mask && !mask.stamp(this.x[i], this.y[i] + bodyOffset - hop, frame, this.flip[i])) continue;
           this.bodyIds[bodies++] = i;
         }
       }
@@ -606,7 +669,7 @@
       for (let k = 0; k < inView; k++) {
         const i = this.shadowIds[k];
         const x = this.x[i], y = this.y[i];
-        if (test && cov.covered(x - m.sw, y - m.sh, x + m.sw, y + m.sh)) continue;
+        if (mask && mask.coversShadow(x, y, this.shadowHalfWidth, this.shadowHalfHeight)) continue;
         const j = this.layerSizes[0]++ * SHADOW_STRIDE;
         shadows[j + 3] = x;
         shadows[j + 7] = y;
@@ -620,11 +683,11 @@
         const body = this.layers[layer];
         body[index + 3] = this.x[i];
         body[index + 7] = y + bodyOffset;
-        body[index + 8] = this.phase[i];
+        body[index + 8] = this.pose[i] & 1;
         body[index + 9] = this.flip[i];
         body[index + 10] = this.flashUntil[i] > this.seconds ? 2 :
           (this.slowUntil[i] > this.seconds ? 1 : 0);
-        body[index + 11] = this.born[i];
+        body[index + 11] = this.pose[i] >>> 1;
       }
       this.drawn = bodies;
     }
