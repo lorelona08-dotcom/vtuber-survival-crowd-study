@@ -14,11 +14,14 @@ from playwright.sync_api import sync_playwright
 PAGES = "https://lorelona08-dotcom.github.io/vtuber-survival-crowd-study/"
 RECORD = """
 (() => {
-    const record = { frames: [], longTasks: [], enabled: false, previous: null };
+    const record = { frames: [], times: [], longTasks: [], enabled: false, previous: null };
     window.reviewCapture = record;
     function tick(time) {
         if (record.enabled) {
-            if (record.previous !== null) record.frames.push(time - record.previous);
+            if (record.previous !== null) {
+                record.frames.push(time - record.previous);
+                record.times.push(time);
+            }
             record.previous = time;
         }
         requestAnimationFrame(tick);
@@ -53,7 +56,8 @@ def summarize(intervals):
 
 
 def capture(browser, args, output):
-    config = {"mode": args.mode, "count": args.count, "seed": args.seed}
+    config = {"mode": args.mode, "count": args.count, "seed": args.seed,
+              "scenario": "normal" if args.case == "normal" else "stress"}
     if args.build:
         config["v"] = args.build
     url = args.url.rstrip("/") + "/?" + urlencode(config)
@@ -82,6 +86,14 @@ def capture(browser, args, output):
         canvas.focus()
         canvas.click(position={"x": 8, "y": 8}, force=True)
         page.wait_for_timeout(900)
+        if args.case in ("projectiles", "boss"):
+            page.locator("#clear-enemies").click()
+            page.wait_for_function("() => window.VSReview.snapshot()?.sample?.alive === 0", timeout=30000)
+        if args.case in ("boss", "combined"):
+            page.locator("#boss-kind").select_option(args.boss_kind)
+            page.locator("#add-boss").click()
+            page.wait_for_function("() => window.VSReview.snapshot()?.sample?.bosses > 0", timeout=30000)
+        canvas.focus()
         if args.throttle > 1:
             context.new_cdp_session(page).send("Emulation.setCPUThrottlingRate", {"rate": args.throttle})
         begin = page.evaluate("""() => {
@@ -91,15 +103,30 @@ def capture(browser, args, output):
         }""")
         deadline = time.monotonic() + args.seconds
         movements = []
+        next_wave = next_pattern = time.monotonic()
         # The sequence and hold duration are identical for both implementations.
         for step in range(1000):
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 break
+            if args.case in ("projectiles", "combined") and time.monotonic() >= next_wave:
+                for _ in range(args.waves):
+                    page.locator("#add-projectiles").evaluate("(button) => button.click()")
+                next_wave = time.monotonic() + 3
+            if args.case in ("boss", "combined") and time.monotonic() >= next_pattern:
+                page.locator("#trigger-pattern").evaluate("(button) => button.click()")
+                next_pattern = time.monotonic() + 4
             key = ("KeyD", "KeyS", "KeyA", "KeyW")[step % 4]
             wall = time.monotonic()
             page.keyboard.down(key)
-            page.wait_for_timeout(int(1000 * min(1.3, remaining)))
+            if args.case == "normal":
+                hold_until = wall + min(1.3, remaining)
+                while time.monotonic() < hold_until:
+                    page.wait_for_timeout(160)
+                    if page.evaluate("() => window.VSReview.snapshot()?.sample?.phase === 'levelup'"):
+                        page.keyboard.press("Digit1")
+            else:
+                page.wait_for_timeout(int(1000 * min(1.3, remaining)))
             page.keyboard.up(key)
             movements.append([key, round(time.monotonic() - wall, 3)])
         end = page.evaluate("""() => {
@@ -110,14 +137,16 @@ def capture(browser, args, output):
             const metrics = window.VSReview.exportMetrics();
             return {at:performance.now(), sample:window.VSReview.snapshot().sample,
                 samples:metrics.samples, visibility:document.visibilityState, gpu,
-                canvas:[canvas.width,canvas.height], frames:r.frames, longTasks:r.longTasks};
+                canvas:[canvas.width,canvas.height], frames:r.frames, times:r.times, longTasks:r.longTasks};
         }""")
         samples = [s for s in end["samples"] if begin["at"] <= s["at"] <= end["at"]]
         active = [s for s in samples if s.get("phase") == "playing" and s.get("ready")]
         if not active:
             raise ValueError("No active game samples during recording")
         stats = summarize(end["frames"])
-        for field in ("alive", "visible", "updated", "draws", "kills", "damage", "xp", "level", "hp", "x", "y"):
+        for field in ("alive", "visible", "updated", "draws", "kills", "damage", "xp", "level", "hp", "x", "y",
+                      "projectiles", "hostileProjectiles", "playerProjectiles", "bosses", "bossProjectiles",
+                      "bossPatterns", "zones", "nodes", "gameClock", "hitsTaken", "damageTaken"):
             values = [s[field] for s in active if isinstance(s.get(field), (float, int))]
             if values:
                 stats[field + "Range"] = [min(values), max(values)]
@@ -126,14 +155,15 @@ def capture(browser, args, output):
             if isinstance(latest.get(field), (float, int)) and isinstance(earliest.get(field), (float, int)):
                 stats[field + "Delta"] = round(latest[field] - earliest[field], 4)
         stats["playingSamples"] = len(active)
-        stats["otherPhases"] = sorted({s.get("phase", "") for s in samples if s not in active})
+        stats["otherPhases"] = sorted({s.get("phase", "") for s in samples if s.get("phase") != "playing"})
         stats["timeToReadySeconds"] = round(begin["at"] / 1000, 3)
         result = {
             "url": page.url, "dateUtc": datetime.now(timezone.utc).isoformat(), "browser": browser.version,
             "headed": args.headed, "gpu": end["gpu"], "canvas": end["canvas"], "visibility": end["visibility"],
-            "cpuThrottle": args.throttle, "configuration": config, "summary": stats,
+            "cpuThrottle": args.throttle, "configuration": config, "case": args.case,
+            "bossKind": args.boss_kind, "wavesPerBurst": args.waves, "summary": stats,
             "first": earliest, "last": latest, "input": movements, "samples": samples,
-            "millisecondsPerBrowserFrame": end["frames"], "longTasks": end["longTasks"],
+            "millisecondsPerBrowserFrame": end["frames"], "frameTimes": end["times"], "longTasks": end["longTasks"],
             "originsAndStatus": sorted(requests), "scriptErrors": errors,
         }
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -159,7 +189,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", default=PAGES)
     parser.add_argument("--mode", choices=("original", "optimized"), default="optimized")
-    parser.add_argument("--count", type=int, choices=(300, 10000, 12000), default=10000)
+    parser.add_argument("--count", type=int, choices=(300, 10000, 12000, 100000), default=100000)
+    parser.add_argument("--case", choices=("crowd", "projectiles", "boss", "combined", "normal"), default="crowd")
+    parser.add_argument("--boss-kind", choices=("daebuntang", "doebaebot", "buffering", "glitch"), default="daebuntang")
+    parser.add_argument("--waves", type=int, default=1, choices=(1, 2, 4))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--seconds", type=float, default=30)
     parser.add_argument("--timeout", type=int, default=240)

@@ -1,19 +1,22 @@
 extends Node
 
-const OriginalGame = preload("res://scripts/game/game.gd")
+const OriginalGame = preload("res://review/stock_debug_game.gd")
 const OptimizedGame = preload("res://review/optimized_game.gd")
 const ViewSettings = preload("res://scripts/ui/ui_util.gd")
+const NativeProjectile = preload("res://scripts/game/projectile.gd")
+const NativeEnemy = preload("res://scripts/game/enemy.gd")
 const HALF_VIEW := Vector2(320, 180)
-const SPAWN_RECT := Vector2(286, 148)
 const TELEMETRY_INTERVAL := 0.25
+const CAPACITY := 100000
+const BOSS_TYPES := ["daebuntang", "doebaebot", "buffering", "glitch"]
 
 var bridge
 var game
 var optimized := false
 var mode := "original"
-var target_count := 10000
+var target_count := CAPACITY
 var scenario_seed := 7
-var placement := RandomNumberGenerator.new()
+var cohort
 var enemy_kind: Dictionary
 var phase := "spawning"
 var spawned := 0
@@ -25,16 +28,34 @@ var hits_taken := 0
 var damage_taken := 0.0
 var recoveries := 0
 var last_updated := 0
+var next_input := 0.0
+var command_id := 0
+var command_message := ""
+var pattern_events := 0
+var boss_shots := 0
+var prior_shots := 0
+var prior_zones := 0
+var prior_state := ""
+var active_pattern := ""
+var other_enemies: Dictionary = {}
+var manual_bullet := false
+var pending_bullets := 0
+var bullet_index := 0
+var clear_index := -1
+var first_fill := true
+var pending_nova := 0
+var nova: Dictionary = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	process_physics_priority = 1000002
 	bridge = JavaScriptBridge.get_interface("VSReview")
 	mode = str(bridge.mode)
-	target_count = clampi(int(bridge.count), 1, 12000)
+	target_count = clampi(int(bridge.count), 0, CAPACITY)
 	scenario_seed = int(bridge.seed)
 	optimized = mode == "optimized"
-	placement.seed = scenario_seed
+	cohort = JavaScriptBridge.get_interface("VSCrowd")
+	cohort.reset(CAPACITY, scenario_seed)
 	seed(scenario_seed)
 	# Every visit starts with the same equipment and no account progress.
 	Save.data = Save.default_data()
@@ -52,25 +73,36 @@ func _ready() -> void:
 	game.boss_index = Data.BOSS_TIMES.size()
 	game.final_spawned = true
 	game.process_mode = Node.PROCESS_MODE_DISABLED
+	game.visible = false
 	enemy_kind = Data.ENEMIES["jjorang"]
 	if optimized:
-		game.configure_crowd(target_count, scenario_seed)
+		game.configure_crowd(CAPACITY)
 	last_health = game.player.hp
 	_report()
 
 func _process(_delta: float) -> void:
+	var now := Time.get_ticks_msec() / 1000.0
+	if now >= next_input:
+		next_input = now + 0.045
+		_read_commands()
+	if phase == "clearing":
+		_clear_some()
 	if phase == "spawning":
-		var deadline := Time.get_ticks_usec() + 4200
-		while spawned < target_count:
-			_spawn_one(true)
-			if Time.get_ticks_usec() >= deadline:
-				break
-		if spawned == target_count:
-			seed(scenario_seed)
+		_fill_population(true)
+		if _population() >= target_count:
+			if first_fill:
+				seed(scenario_seed)
+				first_fill = false
 			phase = "playing"
+			game.visible = true
 			game.process_mode = Node.PROCESS_MODE_PAUSABLE
 			_report()
-	var now := Time.get_ticks_msec() / 1000.0
+	if pending_nova > 0 and phase == "playing":
+		var requested := pending_nova
+		pending_nova = 0
+		_cast_nova(requested)
+	if pending_bullets > 0:
+		_emit_projectiles()
 	if now >= next_report:
 		next_report = now + TELEMETRY_INTERVAL
 		_report()
@@ -82,7 +114,7 @@ func _physics_process(delta: float) -> void:
 		game.advance_crowd(delta)
 	# Jjorang deaths from the aura happen before their movement phase. Count
 	# survivors before adding replacements, which first move on the next tick.
-	last_updated = int(game.crowd.updatedCount()) if optimized else game.enemies.size()
+	last_updated = int(cohort.updatedCount()) if optimized else _population()
 	ticks += 1
 	elapsed += delta
 	var hp: float = game.player.hp
@@ -103,49 +135,265 @@ func _physics_process(delta: float) -> void:
 		else:
 			game.apply_option({"type": "gold"})
 	last_health = game.player.hp
-	var missing := target_count - _population()
-	for i in missing:
-		_spawn_one(false)
+	if target_count > 0 and _population() < target_count:
+		_fill_population(false)
+	_observe_pattern()
 
-func _spawn_one(initial: bool) -> void:
-	var position_in_arena: Vector2
-	if initial:
-		position_in_arena = Vector2(
-			placement.randf_range(-SPAWN_RECT.x, SPAWN_RECT.x),
-			placement.randf_range(-SPAWN_RECT.y, SPAWN_RECT.y)
-		)
-		while position_in_arena.length_squared() < 46.0 * 46.0:
-			position_in_arena = Vector2(
-				placement.randf_range(-SPAWN_RECT.x, SPAWN_RECT.x),
-				placement.randf_range(-SPAWN_RECT.y, SPAWN_RECT.y)
-			)
-	else:
-		var angle := placement.randf() * TAU
-		position_in_arena = game.player.global_position + Vector2.from_angle(angle) * SPAWN_RECT
-	var speed: float = float(enemy_kind.speed) * placement.randf_range(0.92, 1.08)
-	var animation_phase := placement.randf() * TAU
+func _fill_population(initial: bool) -> void:
+	var missing := target_count - _population()
+	if missing <= 0:
+		return
+	var at: Vector2 = game.player.global_position
 	if optimized:
-		game.add_crowd_enemy(position_in_arena, speed, animation_phase)
-	else:
-		var enemy = game.spawn_enemy("jjorang", position_in_arena)
-		enemy.speed = speed
-		enemy.phase = animation_phase
-	spawned += 1
+		cohort.fill(target_count, at.x, at.y, initial, float(enemy_kind.hp), float(enemy_kind.speed))
+		spawned += missing
+		return
+	var deadline := Time.get_ticks_usec() + 6000
+	while missing > 0:
+		var count := mini(missing, 96)
+		var data = cohort.spawnRows(count, at.x, at.y, initial, float(enemy_kind.hp), float(enemy_kind.speed))
+		var rows := JavaScriptBridge.js_buffer_to_packed_byte_array(data).to_float32_array()
+		for index in range(0, rows.size(), 5):
+			var enemy = game.spawn_enemy("jjorang", Vector2(rows[index], rows[index + 1]))
+			enemy.speed = rows[index + 3]
+			enemy.phase = rows[index + 4]
+		missing -= count
+		spawned += count
+		if initial and Time.get_ticks_usec() >= deadline:
+			return
 
 func _population() -> int:
-	return int(game.crowd.aliveCount()) if optimized else game.enemies.size()
+	if optimized:
+		return int(cohort.aliveCount())
+	return game.enemies.size() - _other_count()
+
+func _other_count() -> int:
+	if other_enemies.is_empty():
+		return 0
+	for actor_id in other_enemies.keys():
+		var actor = other_enemies[actor_id]
+		if not is_instance_valid(actor) or actor.dead:
+			other_enemies.erase(actor_id)
+	return other_enemies.size()
+
+func _read_commands() -> void:
+	var serialized := str(bridge.takeCommands())
+	if serialized == "[]" or serialized.is_empty():
+		return
+	var commands = JSON.parse_string(serialized)
+	if not commands is Array:
+		return
+	for request in commands:
+		if not request is Dictionary:
+			continue
+		var id := int(request.get("id", 0))
+		if id <= command_id:
+			continue
+		command_id = id
+		match str(request.get("action", "")):
+			"fill":
+				target_count = CAPACITY
+				if _population() < target_count:
+					phase = "spawning"
+					game.process_mode = Node.PROCESS_MODE_DISABLED
+					game.visible = false
+				command_message = "일반 적 10만 마리 배치"
+			"clear":
+				pending_nova = 0
+				target_count = 0
+				if optimized:
+					cohort.clear()
+					game.target_handles.clear()
+					last_updated = 0
+					_resume_arena()
+				else:
+					phase = "clearing"
+					clear_index = game.enemies.size() - 1
+					game.process_mode = Node.PROCESS_MODE_DISABLED
+					game.visible = false
+				command_message = "일반 적 제거"
+			"projectiles":
+				_watch_native_world()
+				pending_bullets += 500
+				command_message = "원작 적 탄환 500개 발사"
+			"clearProjectiles":
+				pending_bullets = 0
+				for shot in game.projectiles:
+					if is_instance_valid(shot):
+						shot.set_physics_process(false)
+						shot.hide()
+						shot.queue_free()
+				game.projectiles.clear()
+				command_message = "탄환 제거"
+			"boss", "pattern":
+				var kind := str(request.get("kind", "daebuntang"))
+				if kind in BOSS_TYPES:
+					_trigger_boss(kind, request.action == "pattern")
+			"nova":
+				if phase == "spawning":
+					pending_nova = id
+					command_message = "적 배치가 끝나면 광역기를 발동합니다"
+				elif phase == "playing":
+					_cast_nova(id)
+	_report()
+
+func _resume_arena() -> void:
+	game.visible = true
+	game.process_mode = Node.PROCESS_MODE_PAUSABLE
+	phase = "playing"
+
+func _clear_some() -> void:
+	var deadline := Time.get_ticks_usec() + 4500
+	while clear_index >= 0:
+		var enemy = game.enemies[clear_index]
+		if not enemy.boss and enemy.kind == "jjorang" and not enemy.minion:
+			game.enemies.remove_at(clear_index)
+			enemy.dead = true
+			enemy.set_physics_process(false)
+			enemy.queue_free()
+		clear_index -= 1
+		if Time.get_ticks_usec() >= deadline:
+			return
+	last_updated = 0
+	_resume_arena()
+
+func _watch_native_world() -> void:
+	if not game.world.child_entered_tree.is_connected(_native_child):
+		game.world.child_entered_tree.connect(_native_child)
+
+func _native_child(node: Node) -> void:
+	if node.get_script() == NativeEnemy and (node.boss or node.minion or node.kind != "jjorang"):
+		other_enemies[node.get_instance_id()] = node
+	elif node.get_script() == NativeProjectile:
+		node.set_meta("review_source", "manual" if manual_bullet else "boss")
+		if not manual_bullet:
+			boss_shots += 1
+
+func _emit_projectiles() -> void:
+	var p: Vector2 = game.player.global_position
+	var deadline := Time.get_ticks_usec() + 1600
+	manual_bullet = true
+	while pending_bullets > 0:
+		var turn := TAU * float(bullet_index % 100) / 100.0
+		var band := (bullet_index / 100) % 5
+		var outward := Vector2.from_angle(turn + band * 0.075)
+		var at := p + outward * (98.0 + 14.0 * band)
+		game.spawn_bullet(at, -outward.rotated(0.08 * (band - 2)) * (50.0 + 8.0 * band), 4.0)
+		bullet_index += 1
+		pending_bullets -= 1
+		if Time.get_ticks_usec() >= deadline:
+			break
+	manual_bullet = false
+
+func _trigger_boss(kind: String, force: bool) -> void:
+	_watch_native_world()
+	var boss
+	for actor in other_enemies.values():
+		if is_instance_valid(actor) and not actor.dead and actor.boss and actor.kind == kind:
+			boss = actor
+			break
+	if boss == null:
+		game._spawn_boss(kind)
+		boss = game.active_boss
+		# The final boss's real 50–75% health phase fires its radial pattern.
+		if kind == "daebuntang":
+			boss.hp = boss.max_hp * 0.65
+	else:
+		game.active_boss = boss
+	if force:
+		boss.b_state = "walk"
+		boss.targetable = true
+		boss.alpha = 1.0
+		boss.b_t = 0.0
+		match kind:
+			"daebuntang":
+				boss.hp = boss.max_hp * 0.65
+				boss.b_t2 = 2.5
+			"doebaebot":
+				boss.b_t = 4.1
+			"buffering":
+				boss.b_t = 5.1
+			"glitch":
+				boss.b_t2 = 2.6
+	command_message = str(Data.BOSSES[kind].name) + (" 패턴 발동" if force else " 소환")
+
+func _observe_pattern() -> void:
+	var boss = game.active_boss
+	var state_label := ""
+	if is_instance_valid(boss) and not boss.dead:
+		state_label = str(boss.kind) + " / " + str(boss.b_state)
+	var new_shots := boss_shots - prior_shots
+	var new_zones: int = game.zones.size() - prior_zones
+	if new_shots > 0 or new_zones > 0 or (not state_label.is_empty() and state_label != prior_state):
+		pattern_events += 1
+		active_pattern = state_label
+		if new_shots > 0:
+			active_pattern += " · 탄 %d발" % new_shots
+		if new_zones > 0:
+			active_pattern += " · 장판 %d개" % new_zones
+	prior_state = state_label
+	prior_shots = boss_shots
+	prior_zones = game.zones.size()
+
+func _audit_population() -> int:
+	if optimized:
+		return int(cohort.auditLiveCount())
+	var total := 0
+	for actor in game.enemies:
+		if not actor.dead and not actor.boss and not actor.minion and actor.kind == "jjorang":
+			total += 1
+	return total
+
+func _cast_nova(requested_id: int) -> void:
+	# Original Jjorang relocation begins at 520 units. A true 768-unit damage
+	# radius covers even respawned units while keeping a geometric range test.
+	var before := _audit_population()
+	target_count = 0
+	var prior_hits: int = game.pulse_targets if optimized else game.full_hits
+	var prior_xp: float = game.xp_dropped if optimized else game.full_xp_created
+	var prior_kills: int = game.kills
+	var prior_damage: float = game.dmg_stats.get("menhera", 0.0)
+	var start := Time.get_ticks_usec()
+	if not optimized:
+		game.count_full_cast = true
+		game._rebuild_grid()
+	game.player.weapons[0].cast_full_field(768.0, 64.0)
+	if not optimized:
+		game.count_full_cast = false
+	var duration := (Time.get_ticks_usec() - start) / 1000.0
+	var after := _audit_population()
+	var hits: int = (game.pulse_targets if optimized else game.full_hits) - prior_hits
+	var reward: float = (game.xp_dropped if optimized else game.full_xp_created) - prior_xp
+	nova = {
+		"id": requested_id, "before": before, "after": after, "hits": hits,
+		"kills": game.kills - prior_kills, "damage": game.dmg_stats.get("menhera", 0.0) - prior_damage,
+		"xpAwarded": reward, "ms": duration, "source": "menhera", "radius": 768, "minimumDamage": 64
+	}
+	command_message = "광역기 1회 · 일반 적 %d → %d" % [before, after]
+	_report()
 
 func _report() -> void:
 	var position_in_world: Vector2 = game.player.global_position
-	var alive := _population()
+	var alive := int(cohort.auditLiveCount()) if optimized else _population()
 	var visible_count := 0
-	if optimized:
-		visible_count = int(game.crowd.visibleCount(position_in_world.x, position_in_world.y, HALF_VIEW.x, HALF_VIEW.y))
-	else:
+	if game.visible and optimized:
+		visible_count = int(cohort.visibleCount(position_in_world.x, position_in_world.y, HALF_VIEW.x, HALF_VIEW.y))
+	elif game.visible:
 		var viewport_rect := Rect2(position_in_world - HALF_VIEW, HALF_VIEW * 2.0)
 		for enemy in game.enemies:
-			if viewport_rect.has_point(enemy.global_position):
+			if not enemy.boss and not enemy.minion and enemy.kind == "jjorang" and viewport_rect.has_point(enemy.global_position):
 				visible_count += 1
+	var boss_count := 0
+	for actor in other_enemies.values():
+		if is_instance_valid(actor) and not actor.dead and actor.boss:
+			boss_count += 1
+	var boss = game.active_boss
+	var native_shots := 0
+	var debug_shots := 0
+	for shot in game.projectiles:
+		match str(shot.get_meta("review_source", "")):
+			"boss": native_shots += 1
+			"manual": debug_shots += 1
 	var data := {
 		"mode": mode, "phase": "paused" if get_tree().paused else phase,
 		"ready": phase == "playing" and ticks > 0 and not get_tree().paused,
@@ -157,7 +405,15 @@ func _report() -> void:
 		"weaponLevel": game.player.weapons[0].level,
 		"x": position_in_world.x, "y": position_in_world.y, "simTime": elapsed, "ticks": ticks,
 		"draws": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
-		"engineFps": Engine.get_frames_per_second()
+		"engineFps": Engine.get_frames_per_second(),
+		"nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		"bosses": boss_count, "bossKind": str(boss.kind) if is_instance_valid(boss) and not boss.dead else "",
+		"bossState": str(boss.b_state) if is_instance_valid(boss) and not boss.dead else "",
+		"lastPattern": active_pattern, "patternEvents": pattern_events, "bossPatterns": pattern_events,
+		"projectiles": game.projectiles.size(), "bossProjectiles": native_shots, "manualProjectiles": debug_shots,
+		"bossShotsFired": boss_shots, "projectilesPending": pending_bullets, "zones": game.zones.size(),
+		"xpQueued": game.queued_xp if optimized else 0, "dropBinsPending": game.pending_drops.size() if optimized else 0,
+		"commandId": command_id, "commandMessage": command_message, "nova": nova
 	}
 	bridge.sample(JSON.stringify(data))
 

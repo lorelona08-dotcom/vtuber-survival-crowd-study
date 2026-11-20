@@ -47,26 +47,33 @@ func setup(owner_game, capacity: int) -> void:
 	var shadow: Texture2D = Data.tex("res://assets/fx/shadow.png")
 	var factor := 0.5 if high_res else 1.0
 	var body_size := Vector2(body.get_width() * 0.25, body.get_height()) * factor
+	var shadow_size := shadow.get_size() * Vector2(1.1, 1.0)
 	sprite_offset_y = -30.0 * factor if high_res else -11.0
 	edge_margin = maxf(body_size.length() * 0.5 + absf(sprite_offset_y) + 4.0, shadow.get_size().length())
+	var pixels := body.get_image()
+	if pixels != null and not pixels.is_empty():
+		if pixels.is_compressed():
+			pixels.decompress()
+		pixels.convert(Image.FORMAT_RGBA8)
+		api.configureAtlas(pixels.get_width(), pixels.get_height(), body_size.x, body_size.y,
+			Marshalls.raw_to_base64(pixels.get_data()), shadow_size.x, shadow_size.y)
 	var shader := Shader.new()
 	shader.code = BODY_SHADER
 	body_material = ShaderMaterial.new()
 	body_material.shader = shader
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
-	_add_batch(capacity, shadow, shadow.get_size() * Vector2(1.1, 1.0), -2, false)
-	_add_batch(capacity, body, body_size, -1, true)
-	_add_batch(capacity, body, body_size, 1, true)
+	set_meta("max_instances", capacity)
+	_add_batch(shadow, shadow_size, -2, false)
+	_add_batch(body, body_size, -1, true)
+	_add_batch(body, body_size, 1, true)
 
-func _add_batch(capacity: int, texture: Texture2D, size_world: Vector2, depth: int, body: bool) -> void:
+func _add_batch(texture: Texture2D, size_world: Vector2, depth: int, body: bool) -> void:
 	var quad := QuadMesh.new()
 	quad.size = size_world
 	var batch := MultiMesh.new()
 	batch.transform_format = MultiMesh.TRANSFORM_2D
 	batch.use_custom_data = body
 	batch.mesh = quad
-	batch.instance_count = capacity
-	batch.visible_instance_count = 0
 	var draw_node := MultiMeshInstance2D.new()
 	draw_node.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	draw_node.z_index = depth
@@ -105,9 +112,15 @@ func _process(_delta: float) -> void:
 	for layer in batches.size():
 		var mesh := batches[layer]
 		var count: int = int(api.layerCount(layer))
+		# Upload only the prefix occupied by this layer. Spare slots amortize
+		# scene changes; they do not multiply transfer cost by the total swarm.
+		var allocated := mesh.instance_count
+		if count > allocated or (count > 0 and count * 4 < allocated):
+			allocated = mini(int(get_meta("max_instances")), maxi(32, nearest_po2(count)))
+			mesh.instance_count = allocated
 		if view_moved:
 			mesh.custom_aabb = world_bounds
 		if count > 0:
-			var bytes := JavaScriptBridge.js_buffer_to_packed_byte_array(api.layerBuffer(layer))
+			var bytes := JavaScriptBridge.js_buffer_to_packed_byte_array(api.layerBuffer(layer, allocated))
 			RenderingServer.multimesh_set_buffer(mesh.get_rid(), bytes.to_float32_array())
 		mesh.visible_instance_count = count

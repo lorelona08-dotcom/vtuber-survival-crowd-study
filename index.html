@@ -6,7 +6,7 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://raw.githubusercontent.com/vtuber-survival/vtuber-survival.github.io/1ca4d9f926535de42690583d28cb931c10e718b8/; img-src 'self' data: blob:; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="theme-color" content="#151716">
-  <title>V-tuber 서바이벌 · 대규모 전투 비교</title>
+  <title>V-tuber 서바이벌 · 전투 디버그</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -23,10 +23,14 @@
   <main>
     <div class="title-row">
       <div>
-        <h1>대규모 전투 비교</h1>
-        <p>공원에서 조하구로 플레이하며 같은 적 수와 배치로 두 구현을 비교하세요.</p>
+        <h1 id="scene-title">대규모 전투 디버그</h1>
+        <p id="scene-description">공원에서 조하구로 이동하며 적의 수, 투사체, 보스 패턴을 직접 바꿔 보세요.</p>
       </div>
-      <button id="share" class="subtle-button" type="button">조건 링크 복사</button>
+      <div class="scenario-actions">
+        <a id="normal-play" class="entry-link" href="?scenario=normal">일반 웨이브 플레이 →</a>
+        <a id="debug-play" class="entry-link" href="?mode=optimized&amp;count=100000&amp;seed=7" hidden>10만 마리 디버그 →</a>
+        <button id="share" class="subtle-button" type="button">조건 링크 복사</button>
+      </div>
     </div>
     <div class="controls">
       <nav class="modes" aria-label="전투 구현">
@@ -34,11 +38,12 @@
         <a id="original" href="?mode=original">원본 처리</a>
       </nav>
       <div class="conditions">
-        <label>적 수
+        <label id="initial-population">시작 적 수
           <select id="count">
             <option value="300">300마리</option>
-            <option value="10000" selected>10,000마리</option>
+            <option value="10000">10,000마리</option>
             <option value="12000">12,000마리</option>
+            <option value="100000" selected>100,000마리</option>
           </select>
         </label>
         <form id="seed-form">
@@ -47,7 +52,8 @@
         </form>
       </div>
     </div>
-    <section class="play" aria-label="조작 가능한 게임">
+    <section id="session" class="play-layout" aria-label="게임과 디버그 조작">
+      <div class="play">
       <div class="stage" id="stage">
         <canvas id="game" width="1280" height="720" tabindex="0" aria-label="공원 전투. WASD 또는 방향키로 이동"></canvas>
         <div id="cover" class="cover" role="status">
@@ -62,15 +68,50 @@
       <div class="stage-caption">
         <span id="run-status" role="status">로딩 중</span>
         <span class="keys"><kbd>WASD</kbd> <span>또는</span> <kbd>방향키</kbd> 이동</span>
+        <span class="touch-hint">화면을 드래그해 이동</span>
         <button id="fullscreen" class="subtle-button" type="button">전체 화면</button>
       </div>
+      </div>
+      <aside class="debug-panel" aria-label="전투 디버그 조작">
+        <div class="debug-group">
+          <div class="debug-heading"><h2>생존 일반 적</h2><strong id="alive" class="population">—</strong></div>
+          <div class="debug-grid"><span>화면 안 <b id="visible-count">—</b></span><span>직전 틱 갱신 <b id="updated">—</b></span></div>
+          <div class="debug-actions"><button id="fill-enemies" type="button">10만 마리 나오게 하기</button><button id="clear-enemies" type="button">적 삭제하기</button></div>
+          <button id="area-attack" class="area-attack" type="button">광역기로 전원 공격</button>
+          <div id="area-result" class="area-result" hidden aria-live="polite">
+            <span id="area-kills"></span>
+            <span id="area-experience"></span>
+            <span id="area-timing"></span>
+          </div>
+        </div>
+        <div class="debug-group">
+          <div class="debug-heading"><h2>투사체</h2><strong id="projectiles">—</strong></div>
+          <div class="debug-actions"><button id="add-projectiles" type="button">500발 추가</button><button id="clear-projectiles" type="button">투사체 삭제</button></div>
+        </div>
+        <div class="debug-group">
+          <div class="debug-heading"><h2>보스</h2><strong id="bosses">—</strong></div>
+          <label class="boss-select">종류
+            <select id="boss-kind">
+              <option value="daebuntang">대분탕 · 원형 탄막</option>
+              <option value="doebaebot">도배봇 · 돌진과 장판</option>
+              <option value="buffering">버퍼링 · 순간이동</option>
+              <option value="glitch">글리치 · 역전탄</option>
+            </select>
+          </label>
+          <div class="debug-actions"><button id="add-boss" type="button">보스 소환</button><button id="trigger-pattern" type="button">특수 패턴 발동</button></div>
+          <div class="debug-grid"><span>보스 탄 <b id="boss-projectiles">—</b></span><span>장판 <b id="zones">—</b></span></div>
+        </div>
+        <div class="debug-end">
+          <div class="debug-heading"><span>Godot 노드</span><strong id="nodes">—</strong></div>
+          <span id="command-status" role="status">전투를 준비하고 있습니다.</span>
+        </div>
+      </aside>
     </section>
     <section class="metrics" aria-label="실시간 전투 측정">
-      <div class="metric"><span class="metric-label">살아 있는 적</span><strong id="alive">—</strong></div>
-      <div class="metric"><span class="metric-label">화면 안의 적</span><strong id="visible-count">—</strong></div>
       <div class="metric"><span class="metric-label">누적 처치</span><strong id="kills">—</strong></div>
       <div class="metric"><span class="metric-label">브라우저 FPS</span><strong id="fps">—</strong></div>
       <div class="metric"><span class="metric-label">프레임 시간 P95</span><strong><span id="p95">—</span><small> ms</small></strong></div>
+      <div class="metric"><span class="metric-label">최근 5초 최장</span><strong><span id="max-frame">—</span><small> ms</small></strong></div>
       <div class="chart">
         <span class="metric-label">최근 5초 <span>· 기준선 16.7ms</span></span>
         <canvas id="plot" width="260" height="42" aria-label="최근 5초간 프레임 시간 그래프"></canvas>

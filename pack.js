@@ -40,7 +40,7 @@ function md5(bytes) {
   return new Uint8Array(digest.buffer);
 }
 
-function changeMainScene(project) {
+function changeMainScene(project, entry) {
   const view = new DataView(project.buffer, project.byteOffset, project.byteLength);
   if (decoder.decode(project.subarray(0, 4)) !== "ECFG") throw new Error("Godot 설정을 읽을 수 없습니다.");
   const properties = view.getUint32(4, true);
@@ -56,7 +56,7 @@ function changeMainScene(project) {
       const length = view.getUint32(value + 4, true);
       const previous = decoder.decode(project.subarray(value + 8, value + 8 + length));
       if (view.getUint32(value, true) !== 4 || previous !== "res://main.tscn") throw new Error("원작의 시작 장면이 달라졌습니다.");
-      const scene = encoder.encode("res://review/review_scene.tscn");
+      const scene = encoder.encode(entry);
       const newSize = 8 + align(scene.length, 4);
       const output = new Uint8Array(project.length + newSize - valueSize);
       output.set(project.subarray(0, pos));
@@ -73,7 +73,10 @@ function changeMainScene(project) {
   throw new Error("원작의 시작 장면 설정이 없습니다.");
 }
 
-export function buildReviewPack(original, files) {
+export function buildReviewPack(original, files, entry = "res://review/review_scene.tscn") {
+  if (!["res://review/review_scene.tscn", "res://review/normal_scene.tscn"].includes(entry)) {
+    throw new Error("지원하지 않는 시작 장면입니다.");
+  }
   const header = new DataView(original.buffer, original.byteOffset, original.byteLength);
   if (header.getUint32(0, true) !== 0x43504447 || header.getUint32(4, true) !== 4 || header.getUint32(20, true) !== 2) {
     throw new Error("고정된 배포본의 PCK 형식을 확인할 수 없습니다.");
@@ -92,7 +95,7 @@ export function buildReviewPack(original, files) {
       projectDescriptor = descriptor;
       const start = fileBase + Number(header.getBigUint64(descriptor, true));
       const length = Number(header.getBigUint64(descriptor + 8, true));
-      project = changeMainScene(original.subarray(start, start + length));
+      project = changeMainScene(original.subarray(start, start + length), entry);
     }
     descriptor += 36;
   }
